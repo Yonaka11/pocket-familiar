@@ -7,13 +7,11 @@
     <!-- Foreground service (API 28+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!-- Foreground service type: specialUse (required for API 34+ when no other type applies) -->
+    <!-- Foreground service type: specialUse (required for API 34+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
-    <!-- Receive boot completed broadcast for auto-start (not connected to permissions, declared intent only) -->
+    <!-- Optional auto-start after reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <!-- Battery state monitoring (no permission needed for ACTION_BATTERY_CHANGED sticky broadcast) -->
 
     <application
         android:name=".PocketFamiliarApplication"
@@ -23,6 +21,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketFamiliar">
+
+        <!--
+            PROPERTY_SPECIAL_USE_FGS_SUBTYPE describes the specialUse foreground service
+            for Play Store review. Declared at application level as required.
+        -->
+        <property
+            android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+            android:value="Animated pet overlay that draws above other apps." />
 
         <activity
             android:name=".MainActivity"
@@ -39,11 +45,7 @@
         <service
             android:name=".service.PetOverlayService"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="overlay_pet_animation" />
-        </service>
+            android:foregroundServiceType="specialUse" />
 
         <!-- Boot receiver for optional auto-start -->
         <receiver

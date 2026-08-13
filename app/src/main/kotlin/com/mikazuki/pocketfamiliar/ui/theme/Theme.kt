@@ -56,8 +56,12 @@ fun PocketFamiliarTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            @Suppress("DEPRECATION")
-            window.statusBarColor = colorScheme.primary.toArgb()
+            // statusBarColor is deprecated on API 35+ and conflicts with enableEdgeToEdge().
+            // On API 35+ the system controls status-bar color via edge-to-edge; set appearance only.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                @Suppress("DEPRECATION")
+                window.statusBarColor = colorScheme.primary.toArgb()
+            }
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
