@@ -6,7 +6,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.hardware.display.DisplayManager
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -107,8 +109,13 @@ class PetOverlayService : Service() {
 
         // Create the notification channel and call startForeground() as quickly
         // as possible (Android 14+ requires it within a few seconds).
+        // Android 14+ (API 34) also requires passing the declared service type flag.
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, buildNotification())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        } else {
+            startForeground(NOTIFICATION_ID, buildNotification())
+        }
 
         if (!Settings.canDrawOverlays(this)) {
             Log.e(TAG, "Overlay permission not granted — stopping service")
