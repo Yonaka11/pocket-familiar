@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder pet: simple cat-spirit silhouette, 64x64dp -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body -->
+    <path
+        android:pathData="M12,40 Q8,44 8,48 L8,52 Q8,56 12,56 L16,56 L16,52 L20,56 L24,52 L28,56 L32,52 L36,56 L40,52 L44,56 L48,52 L48,56 L52,56 Q56,56 56,52 L56,48 Q56,44 52,40 L52,16 Q52,8 32,8 Q12,8 12,16 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Left ear -->
+    <path
+        android:pathData="M16,18 L20,10 L26,18 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Right ear -->
+    <path
+        android:pathData="M38,18 L44,10 L48,18 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Left eye white: circle cx=24 cy=28 r=4 -->
+    <path
+        android:pathData="M20,28 A4,4 0 1 0 28,28 A4,4 0 1 0 20,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Left pupil: circle cx=25 cy=28 r=2 -->
+    <path
+        android:pathData="M23,28 A2,2 0 1 0 27,28 A2,2 0 1 0 23,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Right eye white: circle cx=40 cy=28 r=4 -->
+    <path
+        android:pathData="M36,28 A4,4 0 1 0 44,28 A4,4 0 1 0 36,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Right pupil: circle cx=41 cy=28 r=2 -->
+    <path
+        android:pathData="M39,28 A2,2 0 1 0 43,28 A2,2 0 1 0 39,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Nose -->
+    <path
+        android:pathData="M30,35 L32,38 L34,35 Z"
+        android:fillColor="#FF8BB5" />
+
+    <!-- Mouth -->
+    <path
+        android:pathData="M29,38 Q32,42 35,38"
+        android:strokeColor="#FF8BB5"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Tail -->
+    <path
+        android:pathData="M54,46 Q62,40 60,32 Q58,26 54,30"
+        android:strokeColor="#5A4FD6"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+</vector>

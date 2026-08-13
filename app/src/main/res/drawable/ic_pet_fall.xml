@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fall/surprised frame -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body (stretched) -->
+    <path
+        android:pathData="M14,38 Q10,42 10,46 L10,50 Q10,54 14,54 L18,54 L18,50 L22,54 L26,50 L30,54 L34,50 L38,54 L42,50 L46,54 L50,50 L50,54 L54,54 Q58,54 58,50 L58,46 Q58,42 54,38 L54,16 Q54,8 34,8 Q14,8 14,16 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Left ear -->
+    <path
+        android:pathData="M16,18 L14,10 L22,18 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Right ear -->
+    <path
+        android:pathData="M42,18 L50,10 L52,18 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Left eye white: cx=26 cy=28 r=5 -->
+    <path
+        android:pathData="M21,28 A5,5 0 1 0 31,28 A5,5 0 1 0 21,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Left pupil: cx=26 cy=28 r=3 -->
+    <path
+        android:pathData="M23,28 A3,3 0 1 0 29,28 A3,3 0 1 0 23,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Right eye white: cx=42 cy=28 r=5 -->
+    <path
+        android:pathData="M37,28 A5,5 0 1 0 47,28 A5,5 0 1 0 37,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Right pupil: cx=42 cy=28 r=3 -->
+    <path
+        android:pathData="M39,28 A3,3 0 1 0 45,28 A3,3 0 1 0 39,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Nose -->
+    <path
+        android:pathData="M32,35 L34,37 L36,35 Z"
+        android:fillColor="#FF8BB5" />
+
+    <!-- Open mouth O: cx=34 cy=41 rx=3 ry=2 -->
+    <path
+        android:pathData="M31,41 A3,2 0 1 0 37,41 A3,2 0 1 0 31,41 Z"
+        android:fillColor="#FF6B9D" />
+
+    <!-- Tail flailing -->
+    <path
+        android:pathData="M56,46 Q66,32 60,20"
+        android:strokeColor="#5A4FD6"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Speed lines -->
+    <path
+        android:pathData="M2,20 L10,20"
+        android:strokeColor="#C4BFFF"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M2,28 L8,28"
+        android:strokeColor="#C4BFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M2,36 L10,36"
+        android:strokeColor="#C4BFFF"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+</vector>

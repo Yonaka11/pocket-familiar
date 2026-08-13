@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sleep frame 2: slight body exhale, ZZ float higher -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body (slightly inflated on exhale) -->
+    <path
+        android:pathData="M11,43 Q7,47 7,51 L7,57 Q7,61 11,61 L15,61 L15,57 L19,61 L23,57 L27,61 L31,57 L35,61 L39,57 L43,61 L47,57 L47,61 L51,61 Q55,61 55,57 L55,51 Q55,47 51,43 L51,19 Q51,9 31,9 Q11,9 11,19 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Left ear -->
+    <path
+        android:pathData="M13,21 L16,13 L21,21 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Right ear -->
+    <path
+        android:pathData="M37,21 L42,13 L45,21 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Left eye closed -->
+    <path
+        android:pathData="M19,31 Q23,28 27,31"
+        android:strokeColor="#1A1A2E"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Right eye closed -->
+    <path
+        android:pathData="M35,31 Q39,28 43,31"
+        android:strokeColor="#1A1A2E"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Nose -->
+    <path
+        android:pathData="M29,37 L31,40 L33,37 Z"
+        android:fillColor="#FF8BB5" />
+
+    <!-- Mouth - small smile -->
+    <path
+        android:pathData="M29,40 Q31,43 33,40"
+        android:strokeColor="#FF8BB5"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Tail curled under -->
+    <path
+        android:pathData="M52,54 Q59,58 59,50 Q59,43 51,45"
+        android:strokeColor="#5A4FD6"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- ZZZ floated higher than sleep1 -->
+    <path
+        android:pathData="M39,6 L45,2 L39,2"
+        android:strokeColor="#A8A0F8"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M45,2 L45,6"
+        android:strokeColor="#A8A0F8"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M48,4 L53,0 L48,0"
+        android:strokeColor="#A8A0F8"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M53,0 L53,4"
+        android:strokeColor="#A8A0F8"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+</vector>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Walk frame 1 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body -->
+    <path
+        android:pathData="M10,42 Q6,46 6,50 L6,54 Q6,58 10,58 L14,58 L14,54 L18,58 L22,54 L26,58 L30,54 L34,58 L38,54 L42,58 L46,54 L46,58 L50,58 Q54,58 54,54 L54,50 Q54,46 50,42 L52,18 Q52,8 30,8 Q10,8 10,18 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Left ear -->
+    <path
+        android:pathData="M14,20 L18,12 L24,20 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Right ear -->
+    <path
+        android:pathData="M36,20 L42,12 L46,20 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Left eye white: cx=22 cy=28 r=4 -->
+    <path
+        android:pathData="M18,28 A4,4 0 1 0 26,28 A4,4 0 1 0 18,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Left pupil: cx=23 cy=28 r=2 -->
+    <path
+        android:pathData="M21,28 A2,2 0 1 0 25,28 A2,2 0 1 0 21,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Right eye white: cx=38 cy=28 r=4 -->
+    <path
+        android:pathData="M34,28 A4,4 0 1 0 42,28 A4,4 0 1 0 34,28 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Right pupil: cx=39 cy=28 r=2 -->
+    <path
+        android:pathData="M37,28 A2,2 0 1 0 41,28 A2,2 0 1 0 37,28 Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Nose -->
+    <path
+        android:pathData="M28,35 L30,38 L32,35 Z"
+        android:fillColor="#FF8BB5" />
+
+    <!-- Tail raised while walking -->
+    <path
+        android:pathData="M52,46 Q62,36 56,26"
+        android:strokeColor="#5A4FD6"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+</vector>
