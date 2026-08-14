@@ -23,7 +23,7 @@ import com.mikazuki.pocketfamiliar.pet.behavior.PetState
  */
 class PetView(context: Context) : View(context) {
 
-    private var currentAnimation: PetAnimation = PetAnimation(emptyList())
+    private var currentAnimation: PetAnimation? = null
     private var currentFrameIndex: Int = 0
     private var lastFrameTimeMs: Long = 0L
     private var currentDrawable: Drawable? = null
@@ -39,6 +39,7 @@ class PetView(context: Context) : View(context) {
 
         if (newAnimation != currentAnimation || shouldFlip != flipped) {
             currentAnimation = newAnimation
+
             currentFrameIndex = 0
             lastFrameTimeMs = System.currentTimeMillis()
             flipped = shouldFlip
@@ -52,15 +53,14 @@ class PetView(context: Context) : View(context) {
      * Advances the frame if enough time has passed.
      */
     fun tick() {
-        if (currentAnimation.frames.isEmpty()) return
-
+        val anim = currentAnimation ?: return
         val now = System.currentTimeMillis()
-        if (now - lastFrameTimeMs >= currentAnimation.frameDurationMs) {
+        if (now - lastFrameTimeMs >= anim.frameDurationMs) {
             lastFrameTimeMs = now
-            currentFrameIndex = if (currentAnimation.loop) {
-                (currentFrameIndex + 1) % currentAnimation.frames.size
+            currentFrameIndex = if (anim.loop) {
+                (currentFrameIndex + 1) % anim.frames.size
             } else {
-                (currentFrameIndex + 1).coerceAtMost(currentAnimation.frames.size - 1)
+                (currentFrameIndex + 1).coerceAtMost(anim.frames.size - 1)
             }
             loadCurrentFrame()
             invalidate()
@@ -68,12 +68,8 @@ class PetView(context: Context) : View(context) {
     }
 
     private fun loadCurrentFrame() {
-        if (currentAnimation.frames.isEmpty()) {
-            currentDrawable = null
-            return
-        }
-        val resId = currentAnimation.frames[currentFrameIndex]
-        currentDrawable = ContextCompat.getDrawable(context, resId)
+        val anim = currentAnimation ?: return
+        currentDrawable = ContextCompat.getDrawable(context, anim.frames[currentFrameIndex])
     }
 
     override fun onDraw(canvas: Canvas) {
