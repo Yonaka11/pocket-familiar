@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Familiar run frame 1: body leaned forward, legs split wide -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body leaned forward -->
+    <path
+        android:pathData="M8,38 Q4,43 4,48 L4,53 Q4,57 8,57 L12,57 L12,53 L16,57 L20,53 L24,57 L28,53 L32,57 L36,53 L40,57 L44,53 L44,57 L48,57 Q52,57 52,53 L52,48 Q52,43 48,38 L50,14 Q48,6 28,6 Q10,8 8,18 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Ears flattened back (running) -->
+    <path
+        android:pathData="M10,16 L8,8 L16,16 Z"
+        android:fillColor="#5A4FD6" />
+    <path
+        android:pathData="M36,16 L42,8 L46,16 Z"
+        android:fillColor="#5A4FD6" />
+
+    <!-- Left eye (squinting from wind) -->
+    <path
+        android:pathData="M18,24 Q22,21 26,24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M19,25 Q22,23 25,25"
+        android:strokeColor="#1A1A2E"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Right eye (squinting) -->
+    <path
+        android:pathData="M34,24 Q38,21 42,24"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M35,25 Q38,23 41,25"
+        android:strokeColor="#1A1A2E"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Determined mouth -->
+    <path
+        android:pathData="M27,32 L32,32 L37,32"
+        android:strokeColor="#FF8BB5"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Tail streaming back (left) -->
+    <path
+        android:pathData="M8,42 Q-2,32 2,20"
+        android:strokeColor="#5A4FD6"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Speed lines -->
+    <path android:pathData="M0,20 L6,20" android:strokeColor="#C4BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M0,28 L4,28" android:strokeColor="#C4BFFF" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M0,36 L6,36" android:strokeColor="#C4BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

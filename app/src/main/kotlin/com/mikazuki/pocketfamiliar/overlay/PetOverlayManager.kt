@@ -9,6 +9,8 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.WindowManager
+import com.mikazuki.pocketfamiliar.model.PetProfile
+import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 import kotlin.math.roundToInt
 
@@ -107,6 +109,10 @@ class PetOverlayManager(
 
     fun applyState(state: PetState) {
         petView?.applyState(state)
+    }
+
+    fun setProfile(profile: PetProfile) {
+        petView?.setProfile(profile)
     }
 
     fun tick() {

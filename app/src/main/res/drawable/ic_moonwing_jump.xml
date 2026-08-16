@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing jump: leaping triumphantly from wall, wings fully extended, huge smile -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings at max spread, glowing at edges -->
+    <path android:pathData="M32,20 Q16,4 2,10 Q-2,20 8,28 Q18,32 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,22 Q18,8 4,14 Q0,22 10,26 Q20,28 32,24 Z" android:fillColor="#D4AAFF" />
+    <path android:pathData="M32,26 Q14,32 6,44 Q10,54 20,50 Q28,44 32,32 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,24 Q18,30 10,42 Q14,50 22,46 Q30,40 32,30 Z" android:fillColor="#C4A0F0" />
+
+    <path android:pathData="M32,20 Q48,4 62,10 Q66,20 56,28 Q46,32 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,22 Q46,8 60,14 Q64,22 54,26 Q44,28 32,24 Z" android:fillColor="#D4AAFF" />
+    <path android:pathData="M32,26 Q50,32 58,44 Q54,54 44,50 Q36,44 32,32 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,24 Q46,30 54,42 Q50,50 42,46 Q34,40 32,30 Z" android:fillColor="#C4A0F0" />
+
+    <!-- Wing markings glowing -->
+    <path android:pathData="M8,22 A3,3 0 1 0 14,22 A3,3 0 1 0 8,22 Z" android:fillColor="#F0E0FF" />
+    <path android:pathData="M50,22 A3,3 0 1 0 56,22 A3,3 0 1 0 50,22 Z" android:fillColor="#F0E0FF" />
+
+    <!-- Body -->
+    <path android:pathData="M26,14 Q24,18 24,26 L24,48 Q24,52 28,54 L36,54 Q40,52 40,48 L40,26 Q40,18 38,14 Q36,8 32,8 Q28,8 26,14 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair flying joyfully -->
+    <path android:pathData="M24,16 Q20,12 22,6 Q26,2 32,2 Q38,2 42,6 Q44,12 40,16 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M24,16 Q14,18 8,12" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M40,16 Q50,18 56,12" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Huge sparkling eyes -->
+    <path android:pathData="M23,18 A4,4 0 1 0 31,18 A4,4 0 1 0 23,18 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M25,18 A2,2 0 1 0 29,18 A2,2 0 1 0 25,18 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M25,16 L27,16 L27,18" android:strokeColor="#FFFFFF" android:strokeWidth="1" android:fillColor="#00000000" />
+
+    <path android:pathData="M33,18 A4,4 0 1 0 41,18 A4,4 0 1 0 33,18 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M35,18 A2,2 0 1 0 39,18 A2,2 0 1 0 35,18 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M35,16 L37,16 L37,18" android:strokeColor="#FFFFFF" android:strokeWidth="1" android:fillColor="#00000000" />
+
+    <!-- Huge smile -->
+    <path android:pathData="M27,24 Q32,30 37,24" android:strokeColor="#C4A0F0" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae flying up -->
+    <path android:pathData="M29,4 Q24,0 20,-2" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M18,-2 A1.5,1.5 0 1 0 21,-2 A1.5,1.5 0 1 0 18,-2 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M35,4 Q40,0 44,-2" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M42,-2 A1.5,1.5 0 1 0 45,-2 A1.5,1.5 0 1 0 42,-2 Z" android:fillColor="#9B72CF" />
+
+    <!-- Launch sparkles -->
+    <path android:pathData="M4,38 L8,32 M6,35 L4,31" android:strokeColor="#D4AAFF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M2,26 L6,20 M4,23 L2,19" android:strokeColor="#D4AAFF" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

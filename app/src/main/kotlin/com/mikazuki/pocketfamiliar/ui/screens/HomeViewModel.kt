@@ -75,4 +75,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun setSleepEnabled(value: Boolean) = viewModelScope.launch { repository.setSleepEnabled(value) }
 
     fun setAutoStartOnBoot(value: Boolean) = viewModelScope.launch { repository.setAutoStartOnBoot(value) }
+
+    fun setSelectedPetId(id: String) = viewModelScope.launch { repository.setSelectedPetId(id) }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing run frame 1: wings swept back, body leaned forward -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings swept back aerodynamically -->
+    <path android:pathData="M32,18 Q28,10 14,12 Q8,18 12,24 Q20,26 32,22 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,20 Q28,26 14,30 Q10,36 14,40 Q22,38 32,26 Z" android:fillColor="#7A52AF" />
+    <path android:pathData="M32,18 Q36,10 50,12 Q56,18 52,24 Q44,26 32,22 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,20 Q36,26 50,30 Q54,36 50,40 Q42,38 32,26 Z" android:fillColor="#7A52AF" />
+
+    <!-- Body leaned forward -->
+    <path android:pathData="M24,14 Q22,18 22,26 L22,46 Q22,52 28,54 L36,54 Q42,52 42,46 L42,26 Q42,18 40,14 Q38,8 32,8 Q26,8 24,14 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair blown back -->
+    <path android:pathData="M24,16 Q20,12 22,6 Q26,2 32,2 Q38,2 42,6 Q44,12 40,16 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M24,16 Q14,14 10,20" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M40,16 Q50,14 54,20" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Eyes (determined squint) -->
+    <path android:pathData="M25,16 Q28,14 31,16" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M33,16 Q36,14 39,16" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Determined expression -->
+    <path android:pathData="M29,20 L32,20 L35,20" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae swept back -->
+    <path android:pathData="M29,4 Q24,2 20,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M18,0 A1.5,1.5 0 1 0 21,0 A1.5,1.5 0 1 0 18,0 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M35,4 Q40,2 44,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M42,0 A1.5,1.5 0 1 0 45,0 A1.5,1.5 0 1 0 42,0 Z" android:fillColor="#9B72CF" />
+
+    <!-- Speed lines -->
+    <path android:pathData="M0,22 L6,22" android:strokeColor="#D4C0FF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M0,30 L4,30" android:strokeColor="#D4C0FF" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M0,38 L6,38" android:strokeColor="#D4C0FF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing walk frame 1: wings folded slightly, mid-step -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings half-closed while walking -->
+    <path android:pathData="M32,22 Q22,14 14,20 Q12,26 20,26 Q26,26 32,24 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,22 Q42,14 50,20 Q52,26 44,26 Q38,26 32,24 Z" android:fillColor="#9B72CF" />
+    <!-- Lower wings tucked -->
+    <path android:pathData="M32,24 Q20,28 18,36 Q22,38 26,34 Q30,30 32,28 Z" android:fillColor="#7A52AF" />
+    <path android:pathData="M32,24 Q44,28 46,36 Q42,38 38,34 Q34,30 32,28 Z" android:fillColor="#7A52AF" />
+
+    <!-- Body -->
+    <path android:pathData="M26,16 Q24,20 24,28 L24,50 Q24,54 28,56 L36,56 Q40,54 40,50 L40,28 Q40,20 38,16 Q36,12 32,12 Q28,12 26,16 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair -->
+    <path android:pathData="M24,18 Q20,14 22,8 Q26,4 32,4 Q38,4 42,8 Q44,14 40,18 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M24,18 Q18,24 18,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M40,18 Q46,24 46,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Eyes -->
+    <path android:pathData="M27,18 Q30,16 33,18" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M35,18 Q38,16 41,18" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M30,22 Q32,24 34,22" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae -->
+    <path android:pathData="M30,6 Q27,2 24,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M22,0 A1.5,1.5 0 1 0 25,0 A1.5,1.5 0 1 0 22,0 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M34,6 Q37,2 40,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M38,0 A1.5,1.5 0 1 0 41,0 A1.5,1.5 0 1 0 38,0 Z" android:fillColor="#9B72CF" />
+
+</vector>

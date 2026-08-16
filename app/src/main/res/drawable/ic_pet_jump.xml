@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Familiar jump: launching off a wall, arms and tail wide open, triumphant -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body (mid-leap, slightly rotated) -->
+    <path
+        android:pathData="M14,30 Q10,35 10,42 L10,48 Q10,52 14,52 L18,52 L18,48 L22,52 L26,48 L30,52 L34,48 L38,52 L42,48 L46,52 L46,48 L50,52 Q54,52 54,48 L54,42 Q54,35 50,30 L52,10 Q50,2 32,2 Q14,4 14,14 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Ears up (excited) -->
+    <path android:pathData="M16,14 L14,4 L22,12 Z" android:fillColor="#5A4FD6" />
+    <path android:pathData="M42,12 L50,4 L52,14 Z" android:fillColor="#5A4FD6" />
+
+    <!-- Big happy eyes -->
+    <path android:pathData="M18,22 A5,5 0 1 0 28,22 A5,5 0 1 0 18,22 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M20,22 A2.5,2.5 0 1 0 25,22 A2.5,2.5 0 1 0 20,22 Z" android:fillColor="#1A1A2E" />
+    <!-- Sparkle in eye -->
+    <path android:pathData="M21,20 L22,20 L22,21" android:strokeColor="#FFFFFF" android:strokeWidth="1" android:fillColor="#00000000" />
+
+    <path android:pathData="M36,22 A5,5 0 1 0 46,22 A5,5 0 1 0 36,22 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M38,22 A2.5,2.5 0 1 0 43,22 A2.5,2.5 0 1 0 38,22 Z" android:fillColor="#1A1A2E" />
+    <path android:pathData="M39,20 L40,20 L40,21" android:strokeColor="#FFFFFF" android:strokeWidth="1" android:fillColor="#00000000" />
+
+    <!-- Big open smile -->
+    <path android:pathData="M26,32 Q32,38 38,32" android:strokeColor="#FF8BB5" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Tail flying up and out -->
+    <path android:pathData="M52,46 Q64,36 60,22 Q58,14 52,18" android:strokeColor="#5A4FD6" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Leap sparkles -->
+    <path android:pathData="M6,38 L10,34 M8,36 L6,32" android:strokeColor="#A8A0F8" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M4,26 L8,22 M6,24 L4,20" android:strokeColor="#A8A0F8" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

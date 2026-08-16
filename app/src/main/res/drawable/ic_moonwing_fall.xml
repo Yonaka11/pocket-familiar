@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing fall: arms out, wings spread wide trying to catch air, big eyes -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings fully spread trying to brake fall -->
+    <path android:pathData="M32,22 Q14,8 2,14 Q0,22 10,28 Q20,30 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,22 Q16,10 4,16 Q2,22 12,26 Q22,28 32,24 Z" android:fillColor="#C4A0F0" />
+    <path android:pathData="M32,26 Q12,30 6,42 Q10,50 18,46 Q26,40 32,30 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,24 Q50,8 62,14 Q64,22 54,28 Q44,30 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,22 Q48,10 60,16 Q62,22 52,26 Q42,28 32,24 Z" android:fillColor="#C4A0F0" />
+    <path android:pathData="M32,26 Q52,30 58,42 Q54,50 46,46 Q38,40 32,30 Z" android:fillColor="#9B72CF" />
+
+    <!-- Wing dots -->
+    <path android:pathData="M10,22 A2,2 0 1 0 14,22 A2,2 0 1 0 10,22 Z" android:fillColor="#F0C4FF" />
+    <path android:pathData="M50,22 A2,2 0 1 0 54,22 A2,2 0 1 0 50,22 Z" android:fillColor="#F0C4FF" />
+
+    <!-- Body (slightly elongated in fall) -->
+    <path android:pathData="M26,16 Q24,20 24,28 L24,50 Q24,54 28,56 L36,56 Q40,54 40,50 L40,28 Q40,20 38,16 Q36,12 32,12 Q28,12 26,16 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair blown up -->
+    <path android:pathData="M24,18 Q20,14 20,8 Q24,2 32,2 Q40,2 44,8 Q44,14 40,18 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M24,18 Q16,16 12,10" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M40,18 Q48,16 52,10" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Wide scared eyes -->
+    <path android:pathData="M24,20 A4,4 0 1 0 32,20 A4,4 0 1 0 24,20 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M26,20 A2,2 0 1 0 30,20 A2,2 0 1 0 26,20 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M34,20 A4,4 0 1 0 42,20 A4,4 0 1 0 34,20 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M36,20 A2,2 0 1 0 40,20 A2,2 0 1 0 36,20 Z" android:fillColor="#2D1B69" />
+
+    <!-- O mouth -->
+    <path android:pathData="M30,26 A2,2 0 1 0 34,26 A2,2 0 1 0 30,26 Z" android:fillColor="#C4A0F0" />
+
+    <!-- Antennae blown sideways -->
+    <path android:pathData="M30,4 Q24,2 18,4" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M16,4 A1.5,1.5 0 1 0 19,4 A1.5,1.5 0 1 0 16,4 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M34,4 Q40,2 46,4" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M44,4 A1.5,1.5 0 1 0 47,4 A1.5,1.5 0 1 0 44,4 Z" android:fillColor="#9B72CF" />
+
+</vector>

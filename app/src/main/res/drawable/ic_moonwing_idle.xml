@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing idle: butterfly familiar, wings slightly spread, serene expression -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Left upper wing -->
+    <path android:pathData="M32,20 Q18,10 8,18 Q6,26 16,28 Q24,28 32,24 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,20 Q20,12 10,20 Q8,26 18,26 Q26,26 32,22 Z" android:fillColor="#C4A0F0" />
+    <!-- Left lower wing -->
+    <path android:pathData="M32,24 Q14,28 10,38 Q14,44 22,40 Q28,36 32,28 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,24 Q16,30 12,38 Q16,42 22,38 Q28,34 32,28 Z" android:fillColor="#C4A0F0" />
+
+    <!-- Right upper wing (mirrored) -->
+    <path android:pathData="M32,20 Q46,10 56,18 Q58,26 48,28 Q40,28 32,24 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,20 Q44,12 54,20 Q56,26 46,26 Q38,26 32,22 Z" android:fillColor="#C4A0F0" />
+    <!-- Right lower wing -->
+    <path android:pathData="M32,24 Q50,28 54,38 Q50,44 42,40 Q36,36 32,28 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,24 Q48,30 52,38 Q48,42 42,38 Q36,34 32,28 Z" android:fillColor="#C4A0F0" />
+
+    <!-- Wing dots (markings) -->
+    <path android:pathData="M16,22 A2,2 0 1 0 20,22 A2,2 0 1 0 16,22 Z" android:fillColor="#F0C4FF" />
+    <path android:pathData="M44,22 A2,2 0 1 0 48,22 A2,2 0 1 0 44,22 Z" android:fillColor="#F0C4FF" />
+
+    <!-- Body (white dress, slender) -->
+    <path android:pathData="M26,16 Q24,20 24,28 L24,48 Q24,52 28,54 L36,54 Q40,52 40,48 L40,28 Q40,20 38,16 Q36,12 32,12 Q28,12 26,16 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair (long, dark purple) -->
+    <path android:pathData="M24,18 Q20,14 22,8 Q26,4 32,4 Q38,4 42,8 Q44,14 40,18 Z" android:fillColor="#2D1B69" />
+    <!-- Hair strands on sides -->
+    <path android:pathData="M24,18 Q18,22 16,30 Q18,36 22,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M40,18 Q46,22 48,30 Q46,36 42,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Face -->
+    <!-- Eyes (calm, half-lidded) -->
+    <path android:pathData="M27,18 Q30,16 33,18" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M35,18 Q38,16 41,18" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Small smile -->
+    <path android:pathData="M30,22 Q32,24 34,22" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae -->
+    <path android:pathData="M30,6 Q26,2 22,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M22,0 A1.5,1.5 0 1 0 25,0 A1.5,1.5 0 1 0 22,0 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M34,6 Q38,2 42,0" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M39,0 A1.5,1.5 0 1 0 42,0 A1.5,1.5 0 1 0 39,0 Z" android:fillColor="#9B72CF" />
+
+    <!-- Dress ribbon -->
+    <path android:pathData="M29,28 Q32,32 35,28" android:strokeColor="#9B72CF" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

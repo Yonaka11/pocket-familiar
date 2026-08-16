@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing sleep 2: slightly deeper breath, wings puffed a tiny bit -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings slightly more puffed -->
+    <path android:pathData="M14,26 Q6,34 8,48 Q14,58 30,56 Q46,58 52,48 Q54,34 46,26 Q40,22 30,24 Q20,22 14,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M16,28 Q10,36 12,46 Q16,54 30,52 Q44,54 48,46 Q50,36 44,28 Q40,26 30,26 Q20,26 16,28 Z" android:fillColor="#C4A0F0" />
+
+    <!-- Body nestled -->
+    <path android:pathData="M26,32 Q24,36 24,42 L24,50 Q24,52 28,54 L34,54 Q38,52 38,50 L38,42 Q38,36 36,32 Q34,28 30,28 Q26,28 26,32 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair -->
+    <path android:pathData="M24,32 Q20,28 22,24 Q26,20 30,20 Q34,20 38,24 Q40,28 38,32 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M24,32 Q18,32 14,36" android:strokeColor="#2D1B69" android:strokeWidth="3" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M38,32 Q44,32 48,36" android:strokeColor="#2D1B69" android:strokeWidth="3" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Eyes still closed -->
+    <path android:pathData="M25,28 Q28,25 31,28" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M33,28 Q36,25 39,28" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M29,32 Q31,34 33,32" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae drooping -->
+    <path android:pathData="M29,22 Q26,18 24,16" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M22,16 A1.5,1.5 0 1 0 25,16 A1.5,1.5 0 1 0 22,16 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M33,22 Q36,18 38,16" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M36,16 A1.5,1.5 0 1 0 39,16 A1.5,1.5 0 1 0 36,16 Z" android:fillColor="#9B72CF" />
+
+    <!-- ZZZ floated higher -->
+    <path android:pathData="M41,12 L47,8 L41,8" android:strokeColor="#C4A0F0" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M47,8 L47,12" android:strokeColor="#C4A0F0" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M49,8 L54,4 L49,4" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M54,4 L54,8" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>

@@ -5,53 +5,60 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.mikazuki.pocketfamiliar.model.PetProfile
+import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
-import com.mikazuki.pocketfamiliar.pet.animation.PetAnimationSet
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 
 /**
- * A lightweight custom [View] that renders the pet sprite.
+ * Custom [View] that renders the active pet sprite.
  *
- * We chose a plain View over ComposeView because:
- *  1. The overlay window is detached from the Activity lifecycle; Compose
- *     requires a ViewTreeLifecycleOwner/SavedStateRegistryOwner which adds
- *     significant boilerplate to attach to a bare WindowManager view.
- *  2. A custom View with manual frame stepping is simpler, has zero extra
- *     dependencies, and draws only what it needs — ideal for a small overlay.
- *  3. Invalidation is controlled externally by the service ticker, not by
- *     Compose's recomposition scheduler.
+ * Rendering approach: plain View with manual frame stepping.
+ * The service calls [tick] on every animation tick and [applyState] on every
+ * state transition; [invalidate] is only called when the frame actually changes,
+ * so battery impact is minimal.
+ *
+ * Horizontal flipping for left-facing states is done by scaling the canvas
+ * around its centre, so we don't need mirrored sprite assets.
  */
 class PetView(context: Context) : View(context) {
 
+    private var profile: PetProfile = PetRegistry.all.first()
     private var currentAnimation: PetAnimation? = null
     private var currentFrameIndex: Int = 0
     private var lastFrameTimeMs: Long = 0L
     private var currentDrawable: Drawable? = null
     private var flipped: Boolean = false
 
-    /**
-     * Update the displayed animation when the pet state changes.
-     * Resets the frame counter so the new animation always starts at frame 0.
-     */
+    // ── Profile switching ────────────────────────────────────────────────────
+
+    fun setProfile(newProfile: PetProfile) {
+        if (newProfile.id == profile.id) return
+        profile = newProfile
+        currentAnimation = null
+        currentDrawable = null
+        currentFrameIndex = 0
+        invalidate()
+    }
+
+    // ── State transitions ────────────────────────────────────────────────────
+
     fun applyState(state: PetState) {
-        val newAnimation = PetAnimationSet.forState(state)
-        val shouldFlip = PetAnimationSet.isFlipped(state)
+        val newAnim  = profile.animationForState(state)
+        val newFlip  = profile.isFlippedForState(state)
 
-        if (newAnimation != currentAnimation || shouldFlip != flipped) {
-            currentAnimation = newAnimation
-
+        if (newAnim != currentAnimation || newFlip != flipped) {
+            currentAnimation  = newAnim
             currentFrameIndex = 0
-            lastFrameTimeMs = System.currentTimeMillis()
-            flipped = shouldFlip
+            lastFrameTimeMs   = System.currentTimeMillis()
+            flipped           = newFlip
             loadCurrentFrame()
             invalidate()
         }
     }
 
-    /**
-     * Called by the service ticker on every animation update.
-     * Advances the frame if enough time has passed.
-     */
+    // ── Animation tick ───────────────────────────────────────────────────────
+
     fun tick() {
         val anim = currentAnimation ?: return
         val now = System.currentTimeMillis()
@@ -67,30 +74,27 @@ class PetView(context: Context) : View(context) {
         }
     }
 
-    private fun loadCurrentFrame() {
-        val anim = currentAnimation ?: return
-        currentDrawable = ContextCompat.getDrawable(context, anim.frames[currentFrameIndex])
-    }
+    // ── Drawing ──────────────────────────────────────────────────────────────
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val drawable = currentDrawable ?: return
-
-        val w = width
-        val h = height
+        val w = width; val h = height
         if (w <= 0 || h <= 0) return
 
         if (flipped) {
-            // Flip horizontally around the center
             canvas.save()
             canvas.scale(-1f, 1f, w / 2f, h / 2f)
         }
-
         drawable.setBounds(0, 0, w, h)
         drawable.draw(canvas)
+        if (flipped) canvas.restore()
+    }
 
-        if (flipped) {
-            canvas.restore()
-        }
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private fun loadCurrentFrame() {
+        val anim = currentAnimation ?: return
+        currentDrawable = ContextCompat.getDrawable(context, anim.frames[currentFrameIndex])
     }
 }

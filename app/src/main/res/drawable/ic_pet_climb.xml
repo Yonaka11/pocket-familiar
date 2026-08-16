@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Familiar climb: body vertical, paws pressed against an invisible wall, facing up -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Body oriented vertically, pressed to right side (wall on right) -->
+    <path
+        android:pathData="M20,8 Q14,8 12,14 L10,20 Q10,24 12,26 L12,50 Q12,56 18,58 L22,58 Q28,58 30,52 L30,26 Q32,24 32,20 L30,14 Q28,8 20,8 Z"
+        android:fillColor="#7C6AF5" />
+
+    <!-- Ear top -->
+    <path android:pathData="M14,12 L12,4 L20,12 Z" android:fillColor="#5A4FD6" />
+    <path android:pathData="M22,12 L26,4 L28,12 Z" android:fillColor="#5A4FD6" />
+
+    <!-- Eyes (looking upward, concentrated) -->
+    <path android:pathData="M13,26 A3,3 0 1 0 19,26 A3,3 0 1 0 13,26 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M14,25 A1.5,1.5 0 1 0 17,25 A1.5,1.5 0 1 0 14,25 Z" android:fillColor="#1A1A2E" />
+
+    <path android:pathData="M23,26 A3,3 0 1 0 29,26 A3,3 0 1 0 23,26 Z" android:fillColor="#FFFFFF" />
+    <path android:pathData="M24,25 A1.5,1.5 0 1 0 27,25 A1.5,1.5 0 1 0 24,25 Z" android:fillColor="#1A1A2E" />
+
+    <!-- Paw grips on the wall -->
+    <path android:pathData="M30,32 Q36,30 38,34" android:strokeColor="#5A4FD6" android:strokeWidth="3" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M30,44 Q36,42 38,46" android:strokeColor="#5A4FD6" android:strokeWidth="3" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Tail curling away from wall -->
+    <path android:pathData="M16,56 Q6,58 4,50 Q2,42 10,40" android:strokeColor="#5A4FD6" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Effort indicator (small sweat drop) -->
+    <path android:pathData="M34,16 Q36,12 38,16 Q36,20 34,16 Z" android:fillColor="#A8D8EA" />
+
+</vector>

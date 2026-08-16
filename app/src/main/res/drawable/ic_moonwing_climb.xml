@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moonwing climb: hovering up the wall edge, wings gently beating -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Wings beating upward (tilted for lift) -->
+    <path android:pathData="M32,24 Q22,12 10,16 Q6,24 14,28 Q22,30 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,26 Q18,30 12,40 Q16,46 22,42 Q28,36 32,30 Z" android:fillColor="#7A52AF" />
+    <path android:pathData="M32,24 Q42,12 54,16 Q58,24 50,28 Q42,30 32,26 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M32,26 Q46,30 52,40 Q48,46 42,42 Q36,36 32,30 Z" android:fillColor="#7A52AF" />
+
+    <!-- Glowing wing tips while flying -->
+    <path android:pathData="M10,24 A2,2 0 1 0 14,24 A2,2 0 1 0 10,24 Z" android:fillColor="#E0D0FF" />
+    <path android:pathData="M50,24 A2,2 0 1 0 54,24 A2,2 0 1 0 50,24 Z" android:fillColor="#E0D0FF" />
+
+    <!-- Body (upright, determined) -->
+    <path android:pathData="M27,18 Q25,22 25,30 L25,50 Q25,54 29,56 L35,56 Q39,54 39,50 L39,30 Q39,22 37,18 Q35,14 31,14 Q27,14 27,18 Z" android:fillColor="#F5F0FF" />
+
+    <!-- Hair -->
+    <path android:pathData="M25,20 Q21,16 23,10 Q27,6 31,6 Q35,6 39,10 Q41,16 39,20 Z" android:fillColor="#2D1B69" />
+    <path android:pathData="M25,20 Q20,24 20,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M39,20 Q44,24 44,32" android:strokeColor="#2D1B69" android:strokeWidth="4" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Concentrated eyes -->
+    <path android:pathData="M27,20 Q30,17 33,20" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M34,20 Q37,17 40,20" android:strokeColor="#2D1B69" android:strokeWidth="2" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M29,24 Q31,26 33,24" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+    <!-- Antennae upright (alert) -->
+    <path android:pathData="M29,8 Q28,4 26,2" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M24,2 A1.5,1.5 0 1 0 27,2 A1.5,1.5 0 1 0 24,2 Z" android:fillColor="#9B72CF" />
+    <path android:pathData="M33,8 Q34,4 36,2" android:strokeColor="#2D1B69" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M34,2 A1.5,1.5 0 1 0 37,2 A1.5,1.5 0 1 0 34,2 Z" android:fillColor="#9B72CF" />
+
+    <!-- Sparkles from wing beats -->
+    <path android:pathData="M8,36 L10,32 M9,34 L7,32" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+    <path android:pathData="M54,36 L56,32 M55,34 L57,32" android:strokeColor="#C4A0F0" android:strokeWidth="1.5" android:fillColor="#00000000" android:strokeLineCap="round" />
+
+</vector>
