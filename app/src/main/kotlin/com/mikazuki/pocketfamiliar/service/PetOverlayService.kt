@@ -24,6 +24,7 @@ import com.mikazuki.pocketfamiliar.overlay.PetOverlayManager
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 import com.mikazuki.pocketfamiliar.pet.behavior.PetStateMachine
 import com.mikazuki.pocketfamiliar.pet.physics.ForcedTransition
+import com.mikazuki.pocketfamiliar.pet.physics.ImpactSeverity
 import com.mikazuki.pocketfamiliar.pet.physics.PetPhysicsEngine
 import com.mikazuki.pocketfamiliar.util.BatteryMonitor
 import kotlinx.coroutines.CoroutineScope
@@ -229,7 +230,15 @@ class PetOverlayService : Service() {
             ForcedTransition.ClimbLeft -> stateMachine.forceState(PetState.ClimbLeft)
             ForcedTransition.ClimbRight -> stateMachine.forceState(PetState.ClimbRight)
             ForcedTransition.JumpOff -> stateMachine.forceState(PetState.Jumping)
-            ForcedTransition.Land -> stateMachine.forceState(PetState.Idle)
+            ForcedTransition.Land -> {
+                val landingState = when (physics.lastImpactSeverity) {
+                    ImpactSeverity.HARD,
+                    ImpactSeverity.CATASTROPHIC -> PetState.HardLanding
+                    ImpactSeverity.SOFT,
+                    ImpactSeverity.NORMAL -> PetState.Idle
+                }
+                stateMachine.forceState(landingState)
+            }
         }
     }
 
@@ -261,7 +270,8 @@ class PetOverlayService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         val stop = PendingIntent.getService(
-            this, 1, Intent(this, PetOverlayService::class.java).apply { action = ACTION_STOP_SERVICE },
+            this, 1,
+            Intent(this, PetOverlayService::class.java).apply { action = ACTION_STOP_SERVICE },
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
