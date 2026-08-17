@@ -17,12 +17,16 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.mikazuki.pocketfamiliar.MainActivity
 import com.mikazuki.pocketfamiliar.R
+import com.mikazuki.pocketfamiliar.data.FamiliarProgressRepository
 import com.mikazuki.pocketfamiliar.data.PetSettingsRepository
+import com.mikazuki.pocketfamiliar.model.FamiliarRewardEngine
 import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.model.PetSettings
+import com.mikazuki.pocketfamiliar.model.TouchInteraction
 import com.mikazuki.pocketfamiliar.overlay.PetOverlayManager
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 import com.mikazuki.pocketfamiliar.pet.behavior.PetStateMachine
+import com.mikazuki.pocketfamiliar.pet.behavior.isAirborne
 import com.mikazuki.pocketfamiliar.pet.physics.ForcedTransition
 import com.mikazuki.pocketfamiliar.pet.physics.ImpactSeverity
 import com.mikazuki.pocketfamiliar.pet.physics.PetPhysicsEngine
@@ -42,6 +46,7 @@ private const val NOTIFICATION_ID = 1001
 private const val CHANNEL_ID = "pocket_familiar_overlay"
 private const val TICK_MS = 16L
 private const val THROW_THRESHOLD_PX_S = 180f
+private const val SOFT_CATCH_SPEED_PX_S = 650f
 
 const val ACTION_STOP_SERVICE = "com.mikazuki.pocketfamiliar.STOP"
 
@@ -53,11 +58,14 @@ class PetOverlayService : Service() {
     private lateinit var stateMachine: PetStateMachine
     private lateinit var batteryMonitor: BatteryMonitor
     private lateinit var settingsRepository: PetSettingsRepository
+    private lateinit var progressRepository: FamiliarProgressRepository
     private lateinit var displayManager: DisplayManager
 
     private var settings: PetSettings = PetSettings()
     private var tickJob: Job? = null
     private var isOverlayRunning = false
+    private var currentJuggleCombo = 0
+    private var touchGestureConsumed = false
 
     private val displayListener = object : DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) { if (isOverlayRunning) updateScreenDimensions() }
@@ -68,6 +76,7 @@ class PetOverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         settingsRepository = PetSettingsRepository(applicationContext)
+        progressRepository = FamiliarProgressRepository(applicationContext)
         batteryMonitor = BatteryMonitor(applicationContext)
         displayManager = getSystemService(DisplayManager::class.java)
         physics = PetPhysicsEngine()
@@ -83,6 +92,7 @@ class PetOverlayService : Service() {
             onDragStarted = ::onDragStarted,
             onDragMoved = ::onDragMoved,
             onDragReleased = ::onDragReleased,
+            onTouchInteraction = ::onTouchInteraction,
         )
     }
 
@@ -100,7 +110,7 @@ class PetOverlayService : Service() {
         }
 
         if (!Settings.canDrawOverlays(this)) {
-            Log.e(TAG, "Overlay permission not granted — stopping service")
+            Log.e(TAG, "Overlay permission not granted")
             stopSelf()
             return START_NOT_STICKY
         }
@@ -127,6 +137,7 @@ class PetOverlayService : Service() {
                     val profile = PetRegistry.getById(newSettings.selectedPetId)
                     overlayManager.setProfile(profile)
                     physics.profile = profile.physics
+                    currentJuggleCombo = 0
                 }
             }
         }
@@ -203,6 +214,22 @@ class PetOverlayService : Service() {
     }
 
     private fun onDragStarted(startX: Float, startY: Float) {
+        touchGestureConsumed = false
+        val previousState = stateMachine.currentState
+        val catchSpeed = hypot(physics.velocityX, physics.velocityY)
+
+        if (previousState.isAirborne) {
+            currentJuggleCombo += 1
+            rewardTouch(TouchInteraction.CATCH, currentJuggleCombo)
+            rewardTouch(TouchInteraction.JUGGLE, currentJuggleCombo)
+            if (catchSpeed <= SOFT_CATCH_SPEED_PX_S) {
+                rewardTouch(TouchInteraction.SOFT_CATCH, currentJuggleCombo)
+            }
+            progressRepository.recordJuggle(activeProfile().id, currentJuggleCombo)
+        } else {
+            currentJuggleCombo = 0
+        }
+
         physics.x = startX
         physics.y = startY
         physics.velocityX = 0f
@@ -215,13 +242,44 @@ class PetOverlayService : Service() {
         physics.y = y
     }
 
+    private fun onTouchInteraction(interaction: TouchInteraction) {
+        touchGestureConsumed = true
+        rewardTouch(interaction, currentJuggleCombo.coerceAtLeast(1))
+        stateMachine.forceState(PetState.Happy)
+    }
+
     private fun onDragReleased(releaseVelocityX: Float, releaseVelocityY: Float) {
         physics.x = overlayManager.currentX().toFloat()
         physics.y = overlayManager.currentY().toFloat()
+
+        if (touchGestureConsumed) {
+            touchGestureConsumed = false
+            physics.velocityX = 0f
+            physics.velocityY = 0f
+            return
+        }
+
         physics.onThrown(releaseVelocityX, releaseVelocityY)
         val releaseSpeed = hypot(releaseVelocityX, releaseVelocityY)
-        stateMachine.forceState(if (releaseSpeed >= THROW_THRESHOLD_PX_S) PetState.Thrown else PetState.Falling)
+        if (releaseSpeed >= THROW_THRESHOLD_PX_S) {
+            rewardTouch(TouchInteraction.THROW, currentJuggleCombo.coerceAtLeast(1))
+            stateMachine.forceState(PetState.Thrown)
+        } else {
+            stateMachine.forceState(PetState.Falling)
+        }
     }
+
+    private fun rewardTouch(interaction: TouchInteraction, combo: Int) {
+        val profile = activeProfile()
+        val reward = FamiliarRewardEngine.rewardForInteraction(interaction, profile.preferences, combo)
+        val progress = progressRepository.addReward(profile.id, reward)
+        Log.d(
+            TAG,
+            "interaction=$interaction combo=$combo bond=${progress.bondXp} play=${progress.playXp} level=${progress.level} playLevel=${progress.playLevel} bonus=${reward.preferenceBonusApplied}",
+        )
+    }
+
+    private fun activeProfile() = PetRegistry.getById(settings.selectedPetId)
 
     private fun handleForcedTransition(t: ForcedTransition) {
         when (t) {
@@ -231,6 +289,7 @@ class PetOverlayService : Service() {
             ForcedTransition.ClimbRight -> stateMachine.forceState(PetState.ClimbRight)
             ForcedTransition.JumpOff -> stateMachine.forceState(PetState.Jumping)
             ForcedTransition.Land -> {
+                currentJuggleCombo = 0
                 val landingState = when (physics.lastImpactSeverity) {
                     ImpactSeverity.HARD,
                     ImpactSeverity.CATASTROPHIC -> PetState.HardLanding
