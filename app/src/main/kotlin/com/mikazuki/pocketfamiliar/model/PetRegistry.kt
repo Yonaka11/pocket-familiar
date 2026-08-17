@@ -4,29 +4,15 @@ import com.mikazuki.pocketfamiliar.R
 import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
 import com.mikazuki.pocketfamiliar.pet.animation.atlasFrames
 import com.mikazuki.pocketfamiliar.pet.animation.resourceFrames
+import com.mikazuki.pocketfamiliar.pet.physics.FamiliarPhysicsProfile
 
-/**
- * Central registry of all built-in pet profiles.
- *
- * To add a custom sprite pack:
- *  1. Add drawable resources or a 4x3 atlas for each animation state.
- *  2. Create a new [PetProfile] entry here.
- *  3. The profile is immediately available in the pet selector.
- */
 object PetRegistry {
 
     val all: List<PetProfile> by lazy {
-        listOf(
-            familiar(),
-            moonwing(),
-            shinobuKocho(),
-            shinobuOshino(),
-        )
+        listOf(familiar(), moonwing(), shinobuKocho(), shinobuOshino())
     }
 
     fun getById(id: String): PetProfile = all.find { it.id == id } ?: all.first()
-
-    // ── Familiar ─────────────────────────────────────────────────────────────
 
     private fun familiar() = PetProfile(
         id = "familiar",
@@ -35,19 +21,14 @@ object PetRegistry {
         previewResId = R.drawable.ic_pet_idle,
         idleAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_idle), 500),
         walkAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_walk1, R.drawable.ic_pet_walk2), 160),
-        runAnim = PetAnimation(resourceFrames(
-            R.drawable.ic_pet_run1,
-            R.drawable.ic_pet_run2,
-            R.drawable.ic_pet_run1,
-            R.drawable.ic_pet_run2,
-        ), 110),
+        runAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_run1, R.drawable.ic_pet_run2, R.drawable.ic_pet_run1, R.drawable.ic_pet_run2), 110),
         sleepAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_sleep, R.drawable.ic_pet_sleep2), 1200),
         fallAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_fall), 100),
         climbAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_climb), 300),
         jumpAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_jump), 100),
+        holdAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_jump), 180),
+        physics = FamiliarPhysicsProfile(mass = 0.85f, restitution = 0.42f, airDrag = 0.58f),
     )
-
-    // ── Moonwing ─────────────────────────────────────────────────────────────
 
     private fun moonwing() = PetProfile(
         id = "moonwing",
@@ -56,21 +37,14 @@ object PetRegistry {
         previewResId = R.drawable.ic_moonwing_idle,
         idleAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_idle), 600),
         walkAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_walk1, R.drawable.ic_moonwing_walk2), 200),
-        runAnim = PetAnimation(resourceFrames(
-            R.drawable.ic_moonwing_run1,
-            R.drawable.ic_moonwing_run2,
-            R.drawable.ic_moonwing_run1,
-            R.drawable.ic_moonwing_run2,
-        ), 120),
+        runAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_run1, R.drawable.ic_moonwing_run2, R.drawable.ic_moonwing_run1, R.drawable.ic_moonwing_run2), 120),
         sleepAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_sleep, R.drawable.ic_moonwing_sleep2), 1400),
         fallAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_fall), 100),
         climbAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_climb), 250),
         jumpAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_jump), 100),
+        holdAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_jump), 180),
+        physics = FamiliarPhysicsProfile(mass = 0.55f, gravityScale = 0.78f, airDrag = 0.82f, restitution = 0.30f),
     )
-
-    // ── Shinobu Kocho ────────────────────────────────────────────────────────
-    // Atlas layout (4x3):
-    // 0-1 idle, 2-3 walk, 4-5 run, 6-7 jump, 8-9 sleep, 10 fall/hurt.
 
     private fun shinobuKocho() = PetProfile(
         id = "shinobu_kocho",
@@ -84,11 +58,10 @@ object PetRegistry {
         fallAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 10), 100),
         climbAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 2, 3), 230),
         jumpAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 6, 7), 120),
+        holdAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 7), 180),
+        throwAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 6, 7), 90),
+        physics = FamiliarPhysicsProfile(mass = 0.72f, gravityScale = 0.90f, airDrag = 0.72f, restitution = 0.34f),
     )
-
-    // ── Shinobu Oshino ───────────────────────────────────────────────────────
-    // Same atlas contract as Kocho. Walk frames temporarily double as climbing
-    // until a dedicated wall-climb pose is added to the character pack.
 
     private fun shinobuOshino() = PetProfile(
         id = "shinobu_oshino",
@@ -102,5 +75,8 @@ object PetRegistry {
         fallAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 10), 100),
         climbAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 2, 3), 230),
         jumpAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 6, 7), 120),
+        holdAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 7), 180),
+        throwAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 6, 7), 90),
+        physics = FamiliarPhysicsProfile(mass = 0.95f, gravityScale = 1.02f, airDrag = 0.60f, restitution = 0.38f),
     )
 }
