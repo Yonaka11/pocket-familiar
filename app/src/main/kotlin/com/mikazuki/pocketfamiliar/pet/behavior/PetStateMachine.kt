@@ -47,10 +47,10 @@ class PetStateMachine(
             is PetState.Eating -> scheduleReactionReturn(1_800L..3_200L)
             is PetState.Grooming -> scheduleReactionReturn(1_800L..3_000L)
             is PetState.Happy -> scheduleReactionReturn(1_200L..2_400L)
+            is PetState.StepActivity -> scheduleReactionReturn(1_600L..2_800L)
             is PetState.HardLanding -> scheduleRecover()
             is PetState.Recovering -> scheduleReactionReturn(700L..1_400L)
             is PetState.Music,
-            is PetState.StepActivity,
             is PetState.Charging,
             is PetState.LowBattery,
             is PetState.Held,
