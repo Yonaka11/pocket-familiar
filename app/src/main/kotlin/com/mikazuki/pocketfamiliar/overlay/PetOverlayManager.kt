@@ -10,16 +10,23 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.WindowManager
 import com.mikazuki.pocketfamiliar.model.PetProfile
+import com.mikazuki.pocketfamiliar.model.TouchInteraction
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
+import kotlin.math.hypot
 import kotlin.math.roundToInt
 
 private const val TAG = "PetOverlayManager"
+private const val TAP_MAX_MS = 220L
+private const val DOUBLE_TAP_WINDOW_MS = 320L
+private const val TAP_MOVE_FRACTION = 0.18f
+private const val PET_MOVE_FRACTION = 0.65f
 
 class PetOverlayManager(
     private val context: Context,
     private val onDragStarted: (startX: Float, startY: Float) -> Unit,
     private val onDragMoved: (x: Float, y: Float) -> Unit,
     private val onDragReleased: (releaseVelocityX: Float, releaseVelocityY: Float) -> Unit,
+    private val onTouchInteraction: (TouchInteraction) -> Unit,
 ) {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var petView: PetView? = null
@@ -28,6 +35,13 @@ class PetOverlayManager(
     private var velocityTracker: VelocityTracker? = null
     private var grabOffsetX = 0f
     private var grabOffsetY = 0f
+    private var touchDownRawX = 0f
+    private var touchDownRawY = 0f
+    private var touchDownMs = 0L
+    private var totalTouchTravel = 0f
+    private var lastRawX = 0f
+    private var lastRawY = 0f
+    private var lastTapMs = 0L
 
     val petSizePx: Int get() = layoutParams?.width ?: 128
 
@@ -105,11 +119,20 @@ class PetOverlayManager(
                 velocityTracker = VelocityTracker.obtain().also { it.addMovement(event) }
                 grabOffsetX = event.x
                 grabOffsetY = event.y
+                touchDownRawX = event.rawX
+                touchDownRawY = event.rawY
+                lastRawX = event.rawX
+                lastRawY = event.rawY
+                totalTouchTravel = 0f
+                touchDownMs = event.eventTime
                 onDragStarted(params.x.toFloat(), params.y.toFloat())
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
                 velocityTracker?.addMovement(event)
+                totalTouchTravel += hypot(event.rawX - lastRawX, event.rawY - lastRawY)
+                lastRawX = event.rawX
+                lastRawY = event.rawY
                 params.x = (event.rawX - grabOffsetX).roundToInt()
                 params.y = (event.rawY - grabOffsetY).roundToInt()
                 try { windowManager.updateViewLayout(petView, params) } catch (e: Exception) { Log.e(TAG, "Drag move update failed", e) }
@@ -123,11 +146,39 @@ class PetOverlayManager(
                 val vy = velocityTracker?.yVelocity ?: 0f
                 velocityTracker?.recycle()
                 velocityTracker = null
+
+                if (event.actionMasked == MotionEvent.ACTION_UP) {
+                    classifyTouch(event.eventTime)?.let(onTouchInteraction)
+                }
                 onDragReleased(vx, vy)
                 return true
             }
         }
         return false
+    }
+
+    private fun classifyTouch(upMs: Long): TouchInteraction? {
+        val duration = upMs - touchDownMs
+        val straightDistance = hypot(lastRawX - touchDownRawX, lastRawY - touchDownRawY)
+        val tapLimit = petSizePx * TAP_MOVE_FRACTION
+        val petLimit = petSizePx * PET_MOVE_FRACTION
+
+        if (duration <= TAP_MAX_MS && straightDistance <= tapLimit && totalTouchTravel <= tapLimit * 1.5f) {
+            val interaction = if (upMs - lastTapMs <= DOUBLE_TAP_WINDOW_MS) {
+                lastTapMs = 0L
+                TouchInteraction.DOUBLE_TAP
+            } else {
+                lastTapMs = upMs
+                TouchInteraction.TAP
+            }
+            return interaction
+        }
+
+        if (duration >= 280L && totalTouchTravel >= petLimit && straightDistance < totalTouchTravel * 0.75f) {
+            return TouchInteraction.PET
+        }
+
+        return null
     }
 
     private fun scaleToPx(petScale: Float): Int {
