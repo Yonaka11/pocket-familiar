@@ -31,6 +31,7 @@ import com.mikazuki.pocketfamiliar.pet.physics.ForcedTransition
 import com.mikazuki.pocketfamiliar.pet.physics.ImpactSeverity
 import com.mikazuki.pocketfamiliar.pet.physics.PetPhysicsEngine
 import com.mikazuki.pocketfamiliar.util.BatteryMonitor
+import com.mikazuki.pocketfamiliar.util.StepTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -47,6 +48,7 @@ private const val CHANNEL_ID = "pocket_familiar_overlay"
 private const val TICK_MS = 16L
 private const val THROW_THRESHOLD_PX_S = 180f
 private const val SOFT_CATCH_SPEED_PX_S = 650f
+private const val STEP_REWARD_CHUNK = 250
 
 const val ACTION_STOP_SERVICE = "com.mikazuki.pocketfamiliar.STOP"
 
@@ -57,6 +59,7 @@ class PetOverlayService : Service() {
     private lateinit var physics: PetPhysicsEngine
     private lateinit var stateMachine: PetStateMachine
     private lateinit var batteryMonitor: BatteryMonitor
+    private lateinit var stepTracker: StepTracker
     private lateinit var settingsRepository: PetSettingsRepository
     private lateinit var progressRepository: FamiliarProgressRepository
     private lateinit var displayManager: DisplayManager
@@ -66,6 +69,7 @@ class PetOverlayService : Service() {
     private var isOverlayRunning = false
     private var currentJuggleCombo = 0
     private var touchGestureConsumed = false
+    private var pendingRewardSteps = 0
 
     private val displayListener = object : DisplayManager.DisplayListener {
         override fun onDisplayChanged(displayId: Int) { if (isOverlayRunning) updateScreenDimensions() }
@@ -78,6 +82,7 @@ class PetOverlayService : Service() {
         settingsRepository = PetSettingsRepository(applicationContext)
         progressRepository = FamiliarProgressRepository(applicationContext)
         batteryMonitor = BatteryMonitor(applicationContext)
+        stepTracker = StepTracker(applicationContext, ::onSteps)
         displayManager = getSystemService(DisplayManager::class.java)
         physics = PetPhysicsEngine()
 
@@ -117,6 +122,7 @@ class PetOverlayService : Service() {
         if (isOverlayRunning) return START_STICKY
 
         batteryMonitor.register()
+        stepTracker.register()
         displayManager.registerDisplayListener(displayListener, Handler(Looper.getMainLooper()))
 
         serviceScope.launch {
@@ -138,6 +144,7 @@ class PetOverlayService : Service() {
                     overlayManager.setProfile(profile)
                     physics.profile = profile.physics
                     currentJuggleCombo = 0
+                    pendingRewardSteps = 0
                 }
             }
         }
@@ -149,6 +156,7 @@ class PetOverlayService : Service() {
         tickJob?.cancel()
         stateMachine.stop()
         batteryMonitor.unregister()
+        stepTracker.unregister()
         displayManager.unregisterDisplayListener(displayListener)
         overlayManager.remove()
         serviceScope.cancel()
@@ -267,6 +275,26 @@ class PetOverlayService : Service() {
         } else {
             stateMachine.forceState(PetState.Falling)
         }
+    }
+
+    private fun onSteps(delta: Int) {
+        val profile = activeProfile()
+        progressRepository.addSteps(profile.id, delta)
+        pendingRewardSteps += delta
+
+        val chunks = pendingRewardSteps / STEP_REWARD_CHUNK
+        if (chunks <= 0) return
+
+        val rewardedSteps = chunks * STEP_REWARD_CHUNK
+        pendingRewardSteps %= STEP_REWARD_CHUNK
+        val reward = FamiliarRewardEngine.rewardForSteps(rewardedSteps, profile.preferences)
+        val progress = progressRepository.addReward(profile.id, reward)
+
+        if (stateMachine.currentState is PetState.Idle || stateMachine.currentState is PetState.WalkLeft || stateMachine.currentState is PetState.WalkRight) {
+            stateMachine.forceState(PetState.StepActivity)
+        }
+
+        Log.d(TAG, "steps=$rewardedSteps charms=${progress.charms} bond=${progress.bondXp} bonus=${reward.preferenceBonusApplied}")
     }
 
     private fun rewardTouch(interaction: TouchInteraction, combo: Int) {
