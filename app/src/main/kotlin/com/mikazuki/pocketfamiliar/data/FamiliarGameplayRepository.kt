@@ -6,10 +6,18 @@ import android.content.Context
 class FamiliarGameplayRepository(context: Context) {
     private val store = context.getSharedPreferences("familiar_gameplay", Context.MODE_PRIVATE)
 
-    fun giftCount(id: String): Int = store.getInt("${id}_gifts", 0)
+    fun giftCount(id: String): Int = counter(id, "gifts")
 
     fun addGift(id: String) {
-        store.edit().putInt("${id}_gifts", giftCount(id) + 1).apply()
+        incrementCounter(id, "gifts")
+    }
+
+    fun counter(id: String, name: String): Int = store.getInt("${id}_$name", 0)
+
+    fun incrementCounter(id: String, name: String, amount: Int = 1): Int {
+        val next = counter(id, name) + amount.coerceAtLeast(0)
+        store.edit().putInt("${id}_$name", next).apply()
+        return next
     }
 
     fun achievementIds(id: String): Set<String> =
