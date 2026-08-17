@@ -1,5 +1,6 @@
 package com.mikazuki.pocketfamiliar.model
 
+/** One-time skill milestones that reward playful interaction without gating progression. */
 data class FamiliarAchievement(
     val id: String,
     val title: String,
