@@ -4,6 +4,9 @@
     <!-- Draw over other apps (overlay) -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <!-- Step counter on Android 10+ -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
     <!-- Foreground service (API 28+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -22,10 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketFamiliar">
 
-        <!--
-            PROPERTY_SPECIAL_USE_FGS_SUBTYPE describes the specialUse foreground service
-            for Play Store review. Declared at application level as required.
-        -->
         <property
             android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
             android:value="Animated pet overlay that draws above other apps." />
@@ -41,13 +40,11 @@
             </intent-filter>
         </activity>
 
-        <!-- Foreground overlay service -->
         <service
             android:name=".service.PetOverlayService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
-        <!-- Boot receiver for optional auto-start -->
         <receiver
             android:name=".service.BootReceiver"
             android:exported="true">
