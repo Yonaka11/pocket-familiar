@@ -4,7 +4,7 @@ import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 import com.mikazuki.pocketfamiliar.pet.physics.FamiliarPhysicsProfile
 
-/** Defines one selectable familiar, its animations, and its physical feel. */
+/** Defines one selectable familiar, its animations, preferences, and physical feel. */
 data class PetProfile(
     val id: String,
     val displayName: String,
@@ -29,6 +29,7 @@ data class PetProfile(
     val chargingAnim: PetAnimation = sleepAnim,
     val lowBatteryAnim: PetAnimation = sleepAnim,
     val deepSleepAnim: PetAnimation = sleepAnim,
+    val preferences: FamiliarPreferences = FamiliarPreferences(),
     val physics: FamiliarPhysicsProfile = FamiliarPhysicsProfile(),
 ) {
     fun animationForState(state: PetState): PetAnimation = when (state) {
