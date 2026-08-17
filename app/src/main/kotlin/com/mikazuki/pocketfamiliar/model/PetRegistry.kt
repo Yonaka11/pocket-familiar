@@ -17,7 +17,7 @@ object PetRegistry {
     private fun familiar() = PetProfile(
         id = "familiar",
         displayName = "Familiar",
-        description = "A mischievous purple cat-spirit.",
+        description = "A playful purple cat-spirit.",
         previewResId = R.drawable.ic_pet_idle,
         idleAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_idle), 500),
         walkAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_walk1, R.drawable.ic_pet_walk2), 160),
@@ -27,6 +27,11 @@ object PetRegistry {
         climbAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_climb), 300),
         jumpAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_jump), 100),
         holdAnim = PetAnimation(resourceFrames(R.drawable.ic_pet_jump), 180),
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.PLAY, FamiliarInterest.WALKING),
+            favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.JUGGLE, TouchInteraction.CATCH),
+            lessPreferredInterests = setOf(FamiliarInterest.READING),
+        ),
         physics = FamiliarPhysicsProfile(mass = 0.85f, restitution = 0.42f, airDrag = 0.58f),
     )
 
@@ -43,6 +48,11 @@ object PetRegistry {
         climbAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_climb), 250),
         jumpAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_jump), 100),
         holdAnim = PetAnimation(resourceFrames(R.drawable.ic_moonwing_jump), 180),
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.MUSIC, FamiliarInterest.NIGHT, FamiliarInterest.SLEEP),
+            favoriteTouch = setOf(TouchInteraction.PET),
+            lessPreferredTouch = setOf(TouchInteraction.JUGGLE),
+        ),
         physics = FamiliarPhysicsProfile(mass = 0.55f, gravityScale = 0.78f, airDrag = 0.82f, restitution = 0.30f),
     )
 
@@ -60,6 +70,10 @@ object PetRegistry {
         jumpAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 6, 7), 120),
         holdAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 7), 180),
         throwAnim = PetAnimation(atlasFrames(R.drawable.shinobu_kocho_atlas, 6, 7), 90),
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.WALKING, FamiliarInterest.READING),
+            favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.CATCH),
+        ),
         physics = FamiliarPhysicsProfile(mass = 0.72f, gravityScale = 0.90f, airDrag = 0.72f, restitution = 0.34f),
     )
 
@@ -77,6 +91,12 @@ object PetRegistry {
         jumpAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 6, 7), 120),
         holdAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 7), 180),
         throwAnim = PetAnimation(atlasFrames(R.drawable.shinobu_oshino_atlas, 6, 7), 90),
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.FOOD, FamiliarInterest.NIGHT, FamiliarInterest.SLEEP),
+            favoriteTouch = setOf(TouchInteraction.TAP),
+            lessPreferredInterests = setOf(FamiliarInterest.WALKING),
+            lessPreferredTouch = setOf(TouchInteraction.JUGGLE),
+        ),
         physics = FamiliarPhysicsProfile(mass = 0.95f, gravityScale = 1.02f, airDrag = 0.60f, restitution = 0.38f),
     )
 }
