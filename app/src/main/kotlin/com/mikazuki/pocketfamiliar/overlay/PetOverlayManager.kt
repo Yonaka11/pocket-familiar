@@ -20,6 +20,7 @@ private const val TAP_MAX_MS = 220L
 private const val DOUBLE_TAP_WINDOW_MS = 320L
 private const val TAP_MOVE_FRACTION = 0.18f
 private const val PET_MOVE_FRACTION = 0.65f
+private const val TICKLE_MAX_MS = 900L
 
 class PetOverlayManager(
     private val context: Context,
@@ -148,7 +149,7 @@ class PetOverlayManager(
                 velocityTracker = null
 
                 if (event.actionMasked == MotionEvent.ACTION_UP) {
-                    classifyTouch(event.eventTime)?.let(onTouchInteraction)
+                    classifyTouch(event.eventTime, event.x, event.y)?.let(onTouchInteraction)
                 }
                 onDragReleased(vx, vy)
                 return true
@@ -157,21 +158,25 @@ class PetOverlayManager(
         return false
     }
 
-    private fun classifyTouch(upMs: Long): TouchInteraction? {
+    private fun classifyTouch(upMs: Long, localX: Float, localY: Float): TouchInteraction? {
         val duration = upMs - touchDownMs
         val straightDistance = hypot(lastRawX - touchDownRawX, lastRawY - touchDownRawY)
         val tapLimit = petSizePx * TAP_MOVE_FRACTION
         val petLimit = petSizePx * PET_MOVE_FRACTION
 
         if (duration <= TAP_MAX_MS && straightDistance <= tapLimit && totalTouchTravel <= tapLimit * 1.5f) {
-            val interaction = if (upMs - lastTapMs <= DOUBLE_TAP_WINDOW_MS) {
+            if (upMs - lastTapMs <= DOUBLE_TAP_WINDOW_MS) {
                 lastTapMs = 0L
-                TouchInteraction.DOUBLE_TAP
-            } else {
-                lastTapMs = upMs
-                TouchInteraction.TAP
+                return TouchInteraction.DOUBLE_TAP
             }
-            return interaction
+            lastTapMs = upMs
+            val centered = localX in petSizePx * 0.30f..petSizePx * 0.70f
+            val faceZone = localY in petSizePx * 0.15f..petSizePx * 0.48f
+            return if (centered && faceZone) TouchInteraction.BOOP else TouchInteraction.TAP
+        }
+
+        if (duration in 250L..TICKLE_MAX_MS && totalTouchTravel >= petLimit * 1.5f) {
+            return TouchInteraction.TICKLE
         }
 
         if (duration >= 280L && totalTouchTravel >= petLimit && straightDistance < totalTouchTravel * 0.75f) {
