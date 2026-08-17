@@ -9,23 +9,6 @@ import kotlin.random.Random
 
 private const val TAG = "PetStateMachine"
 
-/**
- * Drives all autonomous state transitions for the pet.
- *
- * The machine schedules future transitions on the provided [scope]. External
- * code (touch events, physics boundary hits) calls [forceState] to override
- * the schedule immediately.
- *
- * Transition graph (simplified):
- *
- *   Idle → WalkLeft | WalkRight | RunLeft | RunRight | Sleep
- *   Walk/Run → Idle (after random duration)
- *   Idle/Walk/Run → ClimbLeft | ClimbRight (when forced by physics on reaching edge)
- *   Climb → Jumping (after climbing for a bit)
- *   Jumping/Falling → Idle (on physics landing)
- *   Any → Dragged (user touch)
- *   Dragged → Falling (user release)
- */
 class PetStateMachine(
     private val scope: CoroutineScope,
     private val onStateChanged: (PetState) -> Unit,
@@ -52,22 +35,20 @@ class PetStateMachine(
         Log.d(TAG, "→ ${newState::class.simpleName}")
 
         transitionJob = when (newState) {
-            is PetState.Idle       -> scheduleFromIdle()
+            is PetState.Idle -> scheduleFromIdle()
             is PetState.WalkLeft,
-            is PetState.WalkRight  -> scheduleFromWalk()
+            is PetState.WalkRight -> scheduleFromWalk()
             is PetState.RunLeft,
-            is PetState.RunRight   -> scheduleFromRun()
-            is PetState.Sleep      -> scheduleFromSleep()
+            is PetState.RunRight -> scheduleFromRun()
+            is PetState.Sleep -> scheduleFromSleep()
             is PetState.ClimbLeft,
-            is PetState.ClimbRight -> scheduleFromClimb(newState)
-            // Physics / user events control these; no timer needed.
-            is PetState.Dragged,
+            is PetState.ClimbRight -> scheduleFromClimb()
+            is PetState.Held,
+            is PetState.Thrown,
             is PetState.Falling,
-            is PetState.Jumping    -> null
+            is PetState.Jumping -> null
         }
     }
-
-    // ── Scheduled transitions ────────────────────────────────────────────────
 
     private fun scheduleFromIdle(): Job = scope.launch {
         delay(Random.nextLong(1_500, 4_000))
@@ -77,7 +58,7 @@ class PetStateMachine(
             r < 0.45f -> PetState.WalkLeft
             r < 0.70f -> PetState.WalkRight
             r < 0.85f -> PetState.RunLeft
-            else       -> PetState.RunRight
+            else -> PetState.RunRight
         }
         transitionTo(next)
     }
@@ -97,14 +78,8 @@ class PetStateMachine(
         transitionTo(PetState.Idle)
     }
 
-    /**
-     * Climbing up an edge: after a random height the pet launches off into the
-     * screen ([PetState.Jumping]).  Physics handles the arc; it lands and calls
-     * [forceState](PetState.Idle) via [ForcedTransition.Land].
-     */
-    private fun scheduleFromClimb(climbState: PetState): Job = scope.launch {
-        val climbDurationMs = Random.nextLong(800, 2_500)
-        delay(climbDurationMs)
+    private fun scheduleFromClimb(): Job = scope.launch {
+        delay(Random.nextLong(800, 2_500))
         transitionTo(PetState.Jumping)
     }
 }
