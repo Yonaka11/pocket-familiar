@@ -10,7 +10,6 @@ private const val CLIMB_SPEED = 120f
 private const val RUN_MULTIPLIER = 2.2f
 private const val SETTLE_VERTICAL_SPEED = 150f
 
-/** Lightweight game physics for the overlay familiar. */
 class PetPhysicsEngine {
 
     var x: Float = 0f
@@ -20,6 +19,11 @@ class PetPhysicsEngine {
 
     var profile: FamiliarPhysicsProfile = FamiliarPhysicsProfile()
     var lastImpactSeverity: ImpactSeverity = ImpactSeverity.SOFT
+        private set
+
+    var currentAirTimeSeconds: Float = 0f
+        private set
+    var wallBouncesThisFlight: Int = 0
         private set
 
     var screenWidth: Int = 1080
@@ -73,6 +77,7 @@ class PetPhysicsEngine {
     }
 
     private fun updateAirborne(delta: Float): ForcedTransition? {
+        currentAirTimeSeconds += delta
         val gravity = BASE_GRAVITY * profile.gravityScale
         velocityY = (velocityY + gravity * delta).coerceAtMost(MAX_FALL_SPEED)
 
@@ -86,9 +91,11 @@ class PetPhysicsEngine {
         if (x < 0f) {
             x = 0f
             velocityX = -velocityX * profile.restitution
+            wallBouncesThisFlight += 1
         } else if (x > maxX) {
             x = maxX
             velocityX = -velocityX * profile.restitution
+            wallBouncesThisFlight += 1
         }
 
         if (y >= maxY) {
@@ -99,31 +106,24 @@ class PetPhysicsEngine {
             if (impactSpeed > SETTLE_VERTICAL_SPEED) {
                 velocityY = -impactSpeed * profile.restitution
                 velocityX *= profile.floorFriction
-
-                if (kotlin.math.abs(velocityY) > SETTLE_VERTICAL_SPEED) {
-                    return null
-                }
+                if (kotlin.math.abs(velocityY) > SETTLE_VERTICAL_SPEED) return null
             }
 
             velocityX = 0f
             velocityY = 0f
             return ForcedTransition.Land
         }
-
         return null
     }
 
     fun launchFromEdge(fromLeftWall: Boolean) {
+        beginFlight()
         velocityX = if (fromLeftWall) 400f else -400f
         velocityY = -600f
     }
 
-    /**
-     * Seeds the airborne simulation from the user's release gesture. Lower-mass
-     * familiars inherit more speed from the same finger movement; heavy ones feel
-     * harder to yeet. Both axes are preserved, so upward and sideways throws arc.
-     */
     fun onThrown(releaseVelocityX: Float, releaseVelocityY: Float) {
+        beginFlight()
         val massScale = 1f / profile.mass.coerceAtLeast(0.25f)
         var vx = releaseVelocityX * massScale
         var vy = releaseVelocityY * massScale
@@ -135,6 +135,11 @@ class PetPhysicsEngine {
         }
         velocityX = vx
         velocityY = vy
+    }
+
+    private fun beginFlight() {
+        currentAirTimeSeconds = 0f
+        wallBouncesThisFlight = 0
     }
 
     private fun severityForImpact(speed: Float): ImpactSeverity = when {
