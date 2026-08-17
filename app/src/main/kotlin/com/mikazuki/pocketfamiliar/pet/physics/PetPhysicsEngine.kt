@@ -1,25 +1,16 @@
 package com.mikazuki.pocketfamiliar.pet.physics
 
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
+import kotlin.math.hypot
 import kotlin.random.Random
 
-private const val GRAVITY        = 1400f     // px/s²
-private const val MAX_FALL_SPEED = 2000f
-private const val CLIMB_SPEED    = 120f      // px/s upward
-private const val RUN_MULTIPLIER = 2.2f      // run is this much faster than walk
+private const val BASE_GRAVITY = 1400f
+private const val MAX_FALL_SPEED = 2400f
+private const val CLIMB_SPEED = 120f
+private const val RUN_MULTIPLIER = 2.2f
+private const val SETTLE_VERTICAL_SPEED = 150f
 
-/**
- * Lightweight, delta-time physics for the pet overlay.
- *
- * Coordinates are in raw screen pixels, matching [WindowManager.LayoutParams] x/y.
- *
- * New in this version:
- *  - [velocityX] is applied during [PetState.Falling] and [PetState.Jumping] for
- *    arcing jumps off wall edges.
- *  - [updateClimb] moves the pet up the left/right edge and returns
- *    [ForcedTransition.JumpOff] when the pet reaches the top climb boundary.
- *  - [launchFromEdge] seeds [velocityX] and [velocityY] for the wall-launch arc.
- */
+/** Lightweight game physics for the overlay familiar. */
 class PetPhysicsEngine {
 
     var x: Float = 0f
@@ -27,51 +18,44 @@ class PetPhysicsEngine {
     var velocityX: Float = 0f
     var velocityY: Float = 0f
 
-    var screenWidth: Int  = 1080
+    var profile: FamiliarPhysicsProfile = FamiliarPhysicsProfile()
+    var lastImpactSeverity: ImpactSeverity = ImpactSeverity.SOFT
+        private set
+
+    var screenWidth: Int = 1080
     var screenHeight: Int = 1920
-    var petWidth: Int     = 128
-    var petHeight: Int    = 128
+    var petWidth: Int = 128
+    var petHeight: Int = 128
     var bottomInsetPx: Int = 0
 
-    // How high the pet can climb before jumping off (fraction of screen height).
-    // 0.15 = top 15 % of screen.
     private val climbCeilingFraction = 0.15f
-
     private val maxX get() = (screenWidth - petWidth).toFloat().coerceAtLeast(0f)
     private val maxY get() = (screenHeight - petHeight - bottomInsetPx).toFloat().coerceAtLeast(0f)
     private val climbCeiling get() = screenHeight * climbCeilingFraction
 
-    // ── Main update ──────────────────────────────────────────────────────────
-
     fun update(currentState: PetState, deltaSeconds: Float, movementSpeed: Float): ForcedTransition? =
         when (currentState) {
-            is PetState.WalkLeft  -> updateWalk(-movementSpeed, deltaSeconds)
-            is PetState.WalkRight -> updateWalk( movementSpeed, deltaSeconds)
-            is PetState.RunLeft   -> updateWalk(-movementSpeed * RUN_MULTIPLIER, deltaSeconds)
-            is PetState.RunRight  -> updateWalk( movementSpeed * RUN_MULTIPLIER, deltaSeconds)
-            is PetState.ClimbLeft  -> updateClimb(onLeftWall = true,  delta = deltaSeconds)
-            is PetState.ClimbRight -> updateClimb(onLeftWall = false, delta = deltaSeconds)
+            is PetState.WalkLeft -> updateWalk(-movementSpeed, deltaSeconds)
+            is PetState.WalkRight -> updateWalk(movementSpeed, deltaSeconds)
+            is PetState.RunLeft -> updateWalk(-movementSpeed * RUN_MULTIPLIER, deltaSeconds)
+            is PetState.RunRight -> updateWalk(movementSpeed * RUN_MULTIPLIER, deltaSeconds)
+            is PetState.ClimbLeft -> updateClimb(true, deltaSeconds)
+            is PetState.ClimbRight -> updateClimb(false, deltaSeconds)
             is PetState.Falling,
-            is PetState.Jumping   -> updateFalling(deltaSeconds)
+            is PetState.Thrown,
+            is PetState.Jumping -> updateAirborne(deltaSeconds)
             else -> null
         }
-
-    // ── Walk / run ───────────────────────────────────────────────────────────
 
     private fun updateWalk(speed: Float, delta: Float): ForcedTransition? {
         x += speed * delta
         return when {
-            x < 0f  -> { x = 0f;   decideEdgeReaction(leftEdge = true)  }
-            x > maxX -> { x = maxX; decideEdgeReaction(leftEdge = false) }
+            x < 0f -> { x = 0f; decideEdgeReaction(true) }
+            x > maxX -> { x = maxX; decideEdgeReaction(false) }
             else -> null
         }
     }
 
-    /**
-     * When the pet hits a screen edge during walking/running:
-     *  - 35 % chance → climb up that edge
-     *  - 65 % chance → simply turn around
-     */
     private fun decideEdgeReaction(leftEdge: Boolean): ForcedTransition =
         if (Random.nextFloat() < 0.35f) {
             if (leftEdge) ForcedTransition.ClimbLeft else ForcedTransition.ClimbRight
@@ -79,62 +63,89 @@ class PetPhysicsEngine {
             if (leftEdge) ForcedTransition.TurnRight else ForcedTransition.TurnLeft
         }
 
-    // ── Climb ────────────────────────────────────────────────────────────────
-
     private fun updateClimb(onLeftWall: Boolean, delta: Float): ForcedTransition? {
-        // Keep pinned to the wall
         x = if (onLeftWall) 0f else maxX
         y -= CLIMB_SPEED * delta
-
-        return when {
-            y <= climbCeiling -> {
-                y = climbCeiling
-                ForcedTransition.JumpOff   // state machine will transition to Jumping
-            }
-            else -> null
-        }
-    }
-
-    // ── Fall / jump arc ──────────────────────────────────────────────────────
-
-    private fun updateFalling(delta: Float): ForcedTransition? {
-        velocityY = (velocityY + GRAVITY * delta).coerceAtMost(MAX_FALL_SPEED)
-        y += velocityY * delta
-        x += velocityX * delta
-
-        // Horizontal friction so the pet doesn't slide forever
-        velocityX *= (1f - 3f * delta).coerceAtLeast(0f)
-
-        x = x.coerceIn(0f, maxX)
-
-        return if (y >= maxY) {
-            y = maxY
-            velocityX = 0f
-            velocityY = 0f
-            ForcedTransition.Land
+        return if (y <= climbCeiling) {
+            y = climbCeiling
+            ForcedTransition.JumpOff
         } else null
     }
 
-    /**
-     * Launch the pet off the wall it was just climbing.
-     * [fromLeftWall] determines the horizontal direction (toward center).
-     */
+    private fun updateAirborne(delta: Float): ForcedTransition? {
+        val gravity = BASE_GRAVITY * profile.gravityScale
+        velocityY = (velocityY + gravity * delta).coerceAtMost(MAX_FALL_SPEED)
+
+        val dragFactor = (1f - profile.airDrag * delta).coerceIn(0f, 1f)
+        velocityX *= dragFactor
+        velocityY *= (1f - profile.airDrag * 0.08f * delta).coerceIn(0f, 1f)
+
+        x += velocityX * delta
+        y += velocityY * delta
+
+        if (x < 0f) {
+            x = 0f
+            velocityX = -velocityX * profile.restitution
+        } else if (x > maxX) {
+            x = maxX
+            velocityX = -velocityX * profile.restitution
+        }
+
+        if (y >= maxY) {
+            y = maxY
+            val impactSpeed = kotlin.math.abs(velocityY)
+            lastImpactSeverity = severityForImpact(impactSpeed)
+
+            if (impactSpeed > SETTLE_VERTICAL_SPEED) {
+                velocityY = -impactSpeed * profile.restitution
+                velocityX *= profile.floorFriction
+
+                if (kotlin.math.abs(velocityY) > SETTLE_VERTICAL_SPEED) {
+                    return null
+                }
+            }
+
+            velocityX = 0f
+            velocityY = 0f
+            return ForcedTransition.Land
+        }
+
+        return null
+    }
+
     fun launchFromEdge(fromLeftWall: Boolean) {
-        velocityX = if (fromLeftWall) 400f else -400f   // px/s toward center
-        velocityY = -600f                                // upward impulse, then gravity
+        velocityX = if (fromLeftWall) 400f else -400f
+        velocityY = -600f
     }
 
-    // ── Drag ─────────────────────────────────────────────────────────────────
-
-    fun onDragReleased(releaseVelocityY: Float = 0f) {
-        velocityX = 0f
-        velocityY = releaseVelocityY.coerceIn(0f, MAX_FALL_SPEED)
+    /**
+     * Seeds the airborne simulation from the user's release gesture. Lower-mass
+     * familiars inherit more speed from the same finger movement; heavy ones feel
+     * harder to yeet. Both axes are preserved, so upward and sideways throws arc.
+     */
+    fun onThrown(releaseVelocityX: Float, releaseVelocityY: Float) {
+        val massScale = 1f / profile.mass.coerceAtLeast(0.25f)
+        var vx = releaseVelocityX * massScale
+        var vy = releaseVelocityY * massScale
+        val speed = hypot(vx, vy)
+        if (speed > profile.maxThrowSpeed && speed > 0f) {
+            val scale = profile.maxThrowSpeed / speed
+            vx *= scale
+            vy *= scale
+        }
+        velocityX = vx
+        velocityY = vy
     }
 
-    // ── Screen resize ────────────────────────────────────────────────────────
+    private fun severityForImpact(speed: Float): ImpactSeverity = when {
+        speed < 420f -> ImpactSeverity.SOFT
+        speed < 900f -> ImpactSeverity.NORMAL
+        speed < 1500f -> ImpactSeverity.HARD
+        else -> ImpactSeverity.CATASTROPHIC
+    }
 
     fun onScreenSizeChanged(newWidth: Int, newHeight: Int, newBottomInset: Int = bottomInsetPx) {
-        screenWidth  = newWidth
+        screenWidth = newWidth
         screenHeight = newHeight
         bottomInsetPx = newBottomInset
         x = x.coerceIn(0f, maxX)
@@ -143,8 +154,10 @@ class PetPhysicsEngine {
 }
 
 enum class ForcedTransition {
-    TurnLeft, TurnRight,    // simple direction change
-    ClimbLeft, ClimbRight,  // start climbing an edge
-    JumpOff,                // launch from wall after climbing
-    Land,                   // hit the floor after falling/jumping
+    TurnLeft,
+    TurnRight,
+    ClimbLeft,
+    ClimbRight,
+    JumpOff,
+    Land,
 }
