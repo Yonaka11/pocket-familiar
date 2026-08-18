@@ -15,4 +15,6 @@ data class PetSettings(
     val autoStartOnBoot: Boolean = false,
     /** Identifier for the selected pet sprite pack. */
     val selectedPetId: String = "default",
+    /** Identifier for the active cosmetic screen theme. */
+    val selectedThemeId: String = FamiliarThemeCatalog.DEFAULT_THEME_ID,
 )
