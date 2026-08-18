@@ -21,6 +21,7 @@ private const val DOUBLE_TAP_WINDOW_MS = 320L
 private const val TAP_MOVE_FRACTION = 0.18f
 private const val PET_MOVE_FRACTION = 0.65f
 private const val TICKLE_MAX_MS = 900L
+private const val FLICK_OVERRIDE_PX_S = 180f
 
 class PetOverlayManager(
     private val context: Context,
@@ -145,10 +146,11 @@ class PetOverlayManager(
                 velocityTracker?.computeCurrentVelocity(1000)
                 val vx = velocityTracker?.xVelocity ?: 0f
                 val vy = velocityTracker?.yVelocity ?: 0f
+                val releaseSpeed = hypot(vx, vy)
                 velocityTracker?.recycle()
                 velocityTracker = null
 
-                if (event.actionMasked == MotionEvent.ACTION_UP) {
+                if (event.actionMasked == MotionEvent.ACTION_UP && releaseSpeed < FLICK_OVERRIDE_PX_S) {
                     classifyTouch(event.eventTime, event.x, event.y)?.let(onTouchInteraction)
                 }
                 onDragReleased(vx, vy)
