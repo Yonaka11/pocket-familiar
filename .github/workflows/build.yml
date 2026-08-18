@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main, agent/add-shinobu-familiars]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -44,8 +44,6 @@ jobs:
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
-        env:
-          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
