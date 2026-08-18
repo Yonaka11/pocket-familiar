@@ -1,50 +1,43 @@
 package com.mikazuki.pocketfamiliar.pet.behavior
 
 /**
- * All possible states the pet can be in.
- *
- * Sealed class enables exhaustive when-expressions and safe future extension.
+ * All possible familiar states. Movement/physics states are mixed with short
+ * reaction states so character packs can provide personality-specific art.
  */
 sealed class PetState {
-    /** Standing still. */
     data object Idle : PetState()
-
-    /** Walking at normal speed toward the left edge. */
     data object WalkLeft : PetState()
-
-    /** Walking at normal speed toward the right edge. */
     data object WalkRight : PetState()
-
-    /** Running (faster walk) toward the left edge. */
     data object RunLeft : PetState()
-
-    /** Running (faster walk) toward the right edge. */
     data object RunRight : PetState()
-
-    /** Ascending along the left screen edge. */
     data object ClimbLeft : PetState()
-
-    /** Ascending along the right screen edge. */
     data object ClimbRight : PetState()
-
-    /**
-     * Leaping off a wall edge into the screen.
-     * Physics engine applies a horizontal impulse and gravity until landing.
-     */
     data object Jumping : PetState()
-
-    /** Dozing; entered from Idle after a long idle delay. */
     data object Sleep : PetState()
+    data object DeepSleep : PetState()
 
-    /** User is actively holding and moving the pet. */
-    data object Dragged : PetState()
-
-    /** Falling under gravity after being released or jumping off a wall. */
+    // Touch / physics reactions
+    data object Held : PetState()
+    data object Thrown : PetState()
     data object Falling : PetState()
+    data object HardLanding : PetState()
+    data object Recovering : PetState()
+
+    // Cute autonomous reactions
+    data object Eating : PetState()
+    data object Grooming : PetState()
+    data object Happy : PetState()
+
+    // Context/activity reactions. Detection can force these states without
+    // changing the animation model.
+    data object Music : PetState()
+    data object StepActivity : PetState()
+    data object Charging : PetState()
+    data object LowBattery : PetState()
 }
 
-/** Convenience groups used by physics and the state machine. */
 val PetState.isWalking get() = this is PetState.WalkLeft || this is PetState.WalkRight
-val PetState.isRunning get() = this is PetState.RunLeft  || this is PetState.RunRight
+val PetState.isRunning get() = this is PetState.RunLeft || this is PetState.RunRight
 val PetState.isClimbing get() = this is PetState.ClimbLeft || this is PetState.ClimbRight
-val PetState.movesLeft get() = this is PetState.WalkLeft || this is PetState.RunLeft  || this is PetState.ClimbLeft
+val PetState.movesLeft get() = this is PetState.WalkLeft || this is PetState.RunLeft || this is PetState.ClimbLeft
+val PetState.isAirborne get() = this is PetState.Jumping || this is PetState.Thrown || this is PetState.Falling

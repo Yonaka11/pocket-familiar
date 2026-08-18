@@ -9,23 +9,6 @@ import kotlin.random.Random
 
 private const val TAG = "PetStateMachine"
 
-/**
- * Drives all autonomous state transitions for the pet.
- *
- * The machine schedules future transitions on the provided [scope]. External
- * code (touch events, physics boundary hits) calls [forceState] to override
- * the schedule immediately.
- *
- * Transition graph (simplified):
- *
- *   Idle → WalkLeft | WalkRight | RunLeft | RunRight | Sleep
- *   Walk/Run → Idle (after random duration)
- *   Idle/Walk/Run → ClimbLeft | ClimbRight (when forced by physics on reaching edge)
- *   Climb → Jumping (after climbing for a bit)
- *   Jumping/Falling → Idle (on physics landing)
- *   Any → Dragged (user touch)
- *   Dragged → Falling (user release)
- */
 class PetStateMachine(
     private val scope: CoroutineScope,
     private val onStateChanged: (PetState) -> Unit,
@@ -52,32 +35,43 @@ class PetStateMachine(
         Log.d(TAG, "→ ${newState::class.simpleName}")
 
         transitionJob = when (newState) {
-            is PetState.Idle       -> scheduleFromIdle()
+            is PetState.Idle -> scheduleFromIdle()
             is PetState.WalkLeft,
-            is PetState.WalkRight  -> scheduleFromWalk()
+            is PetState.WalkRight -> scheduleFromWalk()
             is PetState.RunLeft,
-            is PetState.RunRight   -> scheduleFromRun()
-            is PetState.Sleep      -> scheduleFromSleep()
+            is PetState.RunRight -> scheduleFromRun()
+            is PetState.Sleep -> scheduleFromSleep()
+            is PetState.DeepSleep -> scheduleReactionReturn(6_000L..12_000L)
             is PetState.ClimbLeft,
-            is PetState.ClimbRight -> scheduleFromClimb(newState)
-            // Physics / user events control these; no timer needed.
-            is PetState.Dragged,
+            is PetState.ClimbRight -> scheduleFromClimb()
+            is PetState.Eating -> scheduleReactionReturn(1_800L..3_200L)
+            is PetState.Grooming -> scheduleReactionReturn(1_800L..3_000L)
+            is PetState.Happy -> scheduleReactionReturn(1_200L..2_400L)
+            is PetState.StepActivity -> scheduleReactionReturn(1_600L..2_800L)
+            is PetState.HardLanding -> scheduleRecover()
+            is PetState.Recovering -> scheduleReactionReturn(700L..1_400L)
+            is PetState.Music,
+            is PetState.Charging,
+            is PetState.LowBattery,
+            is PetState.Held,
+            is PetState.Thrown,
             is PetState.Falling,
-            is PetState.Jumping    -> null
+            is PetState.Jumping -> null
         }
     }
-
-    // ── Scheduled transitions ────────────────────────────────────────────────
 
     private fun scheduleFromIdle(): Job = scope.launch {
         delay(Random.nextLong(1_500, 4_000))
         val r = Random.nextFloat()
         val next = when {
-            isSleepEnabled() && r < 0.15f -> PetState.Sleep
-            r < 0.45f -> PetState.WalkLeft
-            r < 0.70f -> PetState.WalkRight
-            r < 0.85f -> PetState.RunLeft
-            else       -> PetState.RunRight
+            isSleepEnabled() && r < 0.10f -> PetState.Sleep
+            r < 0.17f -> PetState.Eating
+            r < 0.24f -> PetState.Grooming
+            r < 0.30f -> PetState.Happy
+            r < 0.52f -> PetState.WalkLeft
+            r < 0.74f -> PetState.WalkRight
+            r < 0.87f -> PetState.RunLeft
+            else -> PetState.RunRight
         }
         transitionTo(next)
     }
@@ -93,18 +87,22 @@ class PetStateMachine(
     }
 
     private fun scheduleFromSleep(): Job = scope.launch {
-        delay(Random.nextLong(4_000, 10_000))
+        delay(Random.nextLong(4_000, 9_000))
+        transitionTo(if (isSleepEnabled() && Random.nextFloat() < 0.35f) PetState.DeepSleep else PetState.Idle)
+    }
+
+    private fun scheduleFromClimb(): Job = scope.launch {
+        delay(Random.nextLong(800, 2_500))
+        transitionTo(PetState.Jumping)
+    }
+
+    private fun scheduleReactionReturn(duration: LongRange): Job = scope.launch {
+        delay(Random.nextLong(duration.first, duration.last + 1))
         transitionTo(PetState.Idle)
     }
 
-    /**
-     * Climbing up an edge: after a random height the pet launches off into the
-     * screen ([PetState.Jumping]).  Physics handles the arc; it lands and calls
-     * [forceState](PetState.Idle) via [ForcedTransition.Land].
-     */
-    private fun scheduleFromClimb(climbState: PetState): Job = scope.launch {
-        val climbDurationMs = Random.nextLong(800, 2_500)
-        delay(climbDurationMs)
-        transitionTo(PetState.Jumping)
+    private fun scheduleRecover(): Job = scope.launch {
+        delay(Random.nextLong(500, 1_000))
+        transitionTo(PetState.Recovering)
     }
 }

@@ -10,63 +10,52 @@ import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.WindowManager
 import com.mikazuki.pocketfamiliar.model.PetProfile
-import com.mikazuki.pocketfamiliar.model.PetRegistry
+import com.mikazuki.pocketfamiliar.model.TouchInteraction
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
+import kotlin.math.hypot
 import kotlin.math.roundToInt
 
 private const val TAG = "PetOverlayManager"
+private const val TAP_MAX_MS = 220L
+private const val DOUBLE_TAP_WINDOW_MS = 320L
+private const val TAP_MOVE_FRACTION = 0.18f
+private const val PET_MOVE_FRACTION = 0.65f
 
-/**
- * Owns the pet overlay [WindowManager] window and delegates all positioning,
- * animation ticks, and touch events between [PetOverlayService] and [PetView].
- *
- * Window flags used:
- *  - TYPE_APPLICATION_OVERLAY  — appears over other apps (requires SYSTEM_ALERT_WINDOW)
- *  - FLAG_NOT_FOCUSABLE         — key events pass through to the app beneath
- *  - FLAG_NOT_TOUCH_MODAL       — touches outside the pet window are not intercepted
- *  - FLAG_LAYOUT_IN_SCREEN      — position is relative to the full display
- *
- * The overlay window is sized to the pet sprite only, never to the full screen,
- * so unrelated touches are never blocked.
- */
 class PetOverlayManager(
     private val context: Context,
     private val onDragStarted: (startX: Float, startY: Float) -> Unit,
     private val onDragMoved: (x: Float, y: Float) -> Unit,
-    private val onDragReleased: (releaseVelocityY: Float) -> Unit,
+    private val onDragReleased: (releaseVelocityX: Float, releaseVelocityY: Float) -> Unit,
+    private val onTouchInteraction: (TouchInteraction) -> Unit,
 ) {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var petView: PetView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
     private var isAdded = false
-
     private var velocityTracker: VelocityTracker? = null
+    private var grabOffsetX = 0f
+    private var grabOffsetY = 0f
+    private var touchDownRawX = 0f
+    private var touchDownRawY = 0f
+    private var touchDownMs = 0L
+    private var totalTouchTravel = 0f
+    private var lastRawX = 0f
+    private var lastRawY = 0f
+    private var lastTapMs = 0L
 
-    /** Size of the overlay window in pixels (width == height for square sprite). */
     val petSizePx: Int get() = layoutParams?.width ?: 128
 
-    // -------------------------------------------------------------------------
-    // Lifecycle
-    // -------------------------------------------------------------------------
-
     fun create(petScale: Float, startX: Int, startY: Int) {
-        if (isAdded) {
-            Log.w(TAG, "Overlay already added — skipping create()")
-            return
-        }
-
+        if (isAdded) return
         val sizePx = scaleToPx(petScale)
         val params = buildLayoutParams(sizePx, startX, startY)
-
         val view = PetView(context)
         view.setOnTouchListener { _, event -> handleTouch(event) }
-
         try {
             windowManager.addView(view, params)
             petView = view
             layoutParams = params
             isAdded = true
-            Log.d(TAG, "Overlay created at ($startX, $startY) size=${sizePx}px")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to add overlay view", e)
         }
@@ -75,186 +64,135 @@ class PetOverlayManager(
     fun remove() {
         if (!isAdded) return
         val view = petView ?: return
-        try {
-            windowManager.removeView(view)
-            Log.d(TAG, "Overlay removed")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to remove overlay view", e)
-        } finally {
-            petView = null
-            layoutParams = null
-            isAdded = false
-            velocityTracker?.recycle()
-            velocityTracker = null
-        }
+        try { windowManager.removeView(view) } catch (e: Exception) { Log.e(TAG, "Failed to remove overlay view", e) }
+        petView = null
+        layoutParams = null
+        isAdded = false
+        velocityTracker?.recycle()
+        velocityTracker = null
     }
 
-    // -------------------------------------------------------------------------
-    // Position and appearance
-    // -------------------------------------------------------------------------
-
-    /** Push a new position (from physics) into the window without touching anything else. */
     fun updatePosition(x: Float, y: Float) {
         val params = layoutParams ?: return
         val view = petView ?: return
-        if (!isAdded) return
         params.x = x.roundToInt()
         params.y = y.roundToInt()
-        try {
-            windowManager.updateViewLayout(view, params)
-        } catch (e: Exception) {
-            Log.e(TAG, "updatePosition failed", e)
-        }
+        try { windowManager.updateViewLayout(view, params) } catch (e: Exception) { Log.e(TAG, "updatePosition failed", e) }
     }
 
-    fun applyState(state: PetState) {
-        petView?.applyState(state)
-    }
+    fun applyState(state: PetState) { petView?.applyState(state) }
+    fun setProfile(profile: PetProfile) { petView?.setProfile(profile) }
+    fun tick() { petView?.tick() }
 
-    fun setProfile(profile: PetProfile) {
-        petView?.setProfile(profile)
-    }
-
-    fun tick() {
-        petView?.tick()
-    }
-
-    /** Resize the overlay; called when the pet size setting changes. */
     fun updatePetSize(petScale: Float) {
         val params = layoutParams ?: return
         val view = petView ?: return
-        if (!isAdded) return
         val sizePx = scaleToPx(petScale)
         params.width = sizePx
         params.height = sizePx
-        try {
-            windowManager.updateViewLayout(view, params)
-            Log.d(TAG, "Pet resized to ${sizePx}px")
-        } catch (e: Exception) {
-            Log.e(TAG, "updatePetSize failed", e)
-        }
+        try { windowManager.updateViewLayout(view, params) } catch (e: Exception) { Log.e(TAG, "updatePetSize failed", e) }
     }
 
-    // -------------------------------------------------------------------------
-    // Position read-back (for drag reconciliation)
-    // -------------------------------------------------------------------------
-
-    /** Current window X as stored in LayoutParams (updated during drag). */
     fun currentX(): Int = layoutParams?.x ?: 0
-
-    /** Current window Y as stored in LayoutParams (updated during drag). */
     fun currentY(): Int = layoutParams?.y ?: 0
 
-    // -------------------------------------------------------------------------
-    // Screen dimensions
-    // -------------------------------------------------------------------------
+    fun getScreenWidth(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) windowManager.currentWindowMetrics.bounds.width() else {
+        @Suppress("DEPRECATION") Point().also { windowManager.defaultDisplay.getSize(it) }.x
+    }
 
-    fun getScreenWidth(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        windowManager.currentWindowMetrics.bounds.width()
+    fun getScreenHeight(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) windowManager.currentWindowMetrics.bounds.height() else {
+        @Suppress("DEPRECATION") Point().also { windowManager.defaultDisplay.getSize(it) }.y
+    }
+
+    fun getNavBarHeightPx(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        windowManager.currentWindowMetrics.windowInsets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
     } else {
-        @Suppress("DEPRECATION")
-        Point().also { windowManager.defaultDisplay.getSize(it) }.x
+        val id = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        if (id > 0) context.resources.getDimensionPixelSize(id) else 0
     }
-
-    fun getScreenHeight(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        windowManager.currentWindowMetrics.bounds.height()
-    } else {
-        @Suppress("DEPRECATION")
-        Point().also { windowManager.defaultDisplay.getSize(it) }.y
-    }
-
-    /**
-     * Returns the navigation bar height (bottom inset) in pixels.
-     * Used to keep the pet above the nav bar when it lands.
-     */
-    fun getNavBarHeightPx(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val insets = windowManager.currentWindowMetrics.windowInsets
-            insets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
-        } else {
-            // Approximate: check if soft nav bar exists and estimate height
-            val resourceId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
-            if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // Touch handling
-    // -------------------------------------------------------------------------
 
     private fun handleTouch(event: MotionEvent): Boolean {
         val params = layoutParams ?: return false
-
-        when (event.action) {
+        when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 velocityTracker?.recycle()
-                velocityTracker = VelocityTracker.obtain()
-                velocityTracker?.addMovement(event)
-
-                val startX = params.x.toFloat()
-                val startY = params.y.toFloat()
-                onDragStarted(startX, startY)
+                velocityTracker = VelocityTracker.obtain().also { it.addMovement(event) }
+                grabOffsetX = event.x
+                grabOffsetY = event.y
+                touchDownRawX = event.rawX
+                touchDownRawY = event.rawY
+                lastRawX = event.rawX
+                lastRawY = event.rawY
+                totalTouchTravel = 0f
+                touchDownMs = event.eventTime
+                onDragStarted(params.x.toFloat(), params.y.toFloat())
                 return true
             }
-
             MotionEvent.ACTION_MOVE -> {
                 velocityTracker?.addMovement(event)
-
-                // Translate raw pointer position to window-origin coordinates.
-                // The touch offset from the window origin is (rawX - window.x).
-                // We clamp to keep the pet on screen in real-time.
-                val newX = event.rawX - petSizePx / 2f
-                val newY = event.rawY - petSizePx / 2f
-
-                params.x = newX.roundToInt()
-                params.y = newY.roundToInt()
-                try {
-                    windowManager.updateViewLayout(petView, params)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Drag move update failed", e)
-                }
-
+                totalTouchTravel += hypot(event.rawX - lastRawX, event.rawY - lastRawY)
+                lastRawX = event.rawX
+                lastRawY = event.rawY
+                params.x = (event.rawX - grabOffsetX).roundToInt()
+                params.y = (event.rawY - grabOffsetY).roundToInt()
+                try { windowManager.updateViewLayout(petView, params) } catch (e: Exception) { Log.e(TAG, "Drag move update failed", e) }
                 onDragMoved(params.x.toFloat(), params.y.toFloat())
                 return true
             }
-
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 velocityTracker?.addMovement(event)
-                velocityTracker?.computeCurrentVelocity(1000) // px/s
+                velocityTracker?.computeCurrentVelocity(1000)
+                val vx = velocityTracker?.xVelocity ?: 0f
                 val vy = velocityTracker?.yVelocity ?: 0f
                 velocityTracker?.recycle()
                 velocityTracker = null
 
-                // Ensure only downward (positive) velocity feeds the fall simulation.
-                onDragReleased(vy.coerceAtLeast(0f))
+                if (event.actionMasked == MotionEvent.ACTION_UP) {
+                    classifyTouch(event.eventTime)?.let(onTouchInteraction)
+                }
+                onDragReleased(vx, vy)
                 return true
             }
         }
         return false
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
+    private fun classifyTouch(upMs: Long): TouchInteraction? {
+        val duration = upMs - touchDownMs
+        val straightDistance = hypot(lastRawX - touchDownRawX, lastRawY - touchDownRawY)
+        val tapLimit = petSizePx * TAP_MOVE_FRACTION
+        val petLimit = petSizePx * PET_MOVE_FRACTION
+
+        if (duration <= TAP_MAX_MS && straightDistance <= tapLimit && totalTouchTravel <= tapLimit * 1.5f) {
+            val interaction = if (upMs - lastTapMs <= DOUBLE_TAP_WINDOW_MS) {
+                lastTapMs = 0L
+                TouchInteraction.DOUBLE_TAP
+            } else {
+                lastTapMs = upMs
+                TouchInteraction.TAP
+            }
+            return interaction
+        }
+
+        if (duration >= 280L && totalTouchTravel >= petLimit && straightDistance < totalTouchTravel * 0.75f) {
+            return TouchInteraction.PET
+        }
+
+        return null
+    }
 
     private fun scaleToPx(petScale: Float): Int {
-        // Base sprite is 64dp; petScale 1.0 → 64dp, 2.0 → 128dp, 0.5 → 32dp
         val density = context.resources.displayMetrics.density
         return (petScale * 64f * density).roundToInt().coerceAtLeast(32)
     }
 
-    private fun buildLayoutParams(sizePx: Int, x: Int, y: Int): WindowManager.LayoutParams =
-        WindowManager.LayoutParams(
-            sizePx,
-            sizePx,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT,
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-            this.x = x
-            this.y = y
-        }
+    private fun buildLayoutParams(sizePx: Int, x: Int, y: Int): WindowManager.LayoutParams = WindowManager.LayoutParams(
+        sizePx, sizePx, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+        PixelFormat.TRANSLUCENT,
+    ).apply {
+        gravity = Gravity.TOP or Gravity.START
+        this.x = x
+        this.y = y
+    }
 }
