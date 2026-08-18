@@ -104,15 +104,15 @@ object FamiliarThemeCatalog {
 
     fun isUnlocked(theme: FamiliarTheme, progress: FamiliarProgress, achievementCount: Int): Boolean = when (val rule = theme.unlock) {
         ThemeUnlock.Starter -> true
-        is ThemeUnlock.BondLevel -> progress.bondLevel >= rule.level
-        is ThemeUnlock.FamiliarLevel -> progress.level >= rule.level
+        is ThemeUnlock.BondLevel -> progress.level >= rule.level
+        is ThemeUnlock.FamiliarLevel -> progress.playLevel >= rule.level
         is ThemeUnlock.AchievementCount -> achievementCount >= rule.count
     }
 
     fun unlockLabel(theme: FamiliarTheme): String = when (val rule = theme.unlock) {
         ThemeUnlock.Starter -> "Starter"
         is ThemeUnlock.BondLevel -> "Bond ${rule.level}"
-        is ThemeUnlock.FamiliarLevel -> "Level ${rule.level}"
+        is ThemeUnlock.FamiliarLevel -> "Familiar ${rule.level}"
         is ThemeUnlock.AchievementCount -> "${rule.count} achievements"
     }
 }
