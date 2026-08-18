@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 
 @Composable
 fun FamiliarProgressPanel(vm: HomeViewModel) {
     val progress by vm.progress.collectAsStateWithLifecycle()
+    val settings by vm.settings.collectAsStateWithLifecycle()
     val hasActivityPermission by vm.hasActivityPermission.collectAsStateWithLifecycle()
     val achievementCount by vm.achievementCount.collectAsStateWithLifecycle()
     val giftMessage by vm.giftMessage.collectAsStateWithLifecycle()
@@ -83,6 +85,33 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(message, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
                     OutlinedButton(onClick = vm::clearGiftMessage) { Text("OK") }
+                }
+            }
+
+            Text("Theme Rewards", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Unlock screen atmospheres, frames, and auras through Bond, Familiar levels, and achievements.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(vm.themeCatalog, key = { it.id }) { theme ->
+                    val unlocked = FamiliarThemeCatalog.isUnlocked(theme, progress, achievementCount)
+                    val selected = settings.selectedThemeId == theme.id
+                    OutlinedButton(
+                        onClick = { vm.selectTheme(theme) },
+                        enabled = unlocked,
+                        modifier = Modifier.widthIn(min = 148.dp),
+                    ) {
+                        Column {
+                            Text(if (selected) "✓ ${theme.displayName}" else theme.displayName)
+                            Text(
+                                if (unlocked) theme.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                                else "Unlock: ${FamiliarThemeCatalog.unlockLabel(theme)}",
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        }
+                    }
                 }
             }
         }
