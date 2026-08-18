@@ -1,5 +1,6 @@
 package com.mikazuki.pocketfamiliar.model
 
+/** A virtual gift exchanged for Charms to deepen Bond with any familiar. */
 data class FamiliarGift(
     val id: String,
     val displayName: String,

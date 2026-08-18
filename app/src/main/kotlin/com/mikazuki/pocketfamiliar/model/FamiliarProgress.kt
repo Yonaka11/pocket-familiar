@@ -5,7 +5,17 @@ enum class FamiliarInterest {
 }
 
 enum class TouchInteraction {
-    TAP, DOUBLE_TAP, PET, TICKLE, THROW, CATCH, JUGGLE, SOFT_CATCH
+    TAP,
+    DOUBLE_TAP,
+    BOOP,
+    PET,
+    TICKLE,
+    THROW,
+    CATCH,
+    JUGGLE,
+    SOFT_CATCH,
+    TRICK_THROW,
+    AIR_TIME,
 }
 
 data class FamiliarPreferences(
@@ -22,6 +32,13 @@ data class FamiliarProgress(
     val charms: Int = 0,
     val lifetimeSteps: Int = 0,
     val bestJuggleCombo: Int = 0,
+    val giftsGiven: Int = 0,
+    val catches: Int = 0,
+    val softCatches: Int = 0,
+    val trickCatches: Int = 0,
+    val boops: Int = 0,
+    val bestAirTimeMs: Long = 0L,
+    val unlockedAchievements: Set<String> = emptySet(),
 ) {
     val level: Int get() = levelForXp(bondXp)
     val playLevel: Int get() = levelForXp(playXp)

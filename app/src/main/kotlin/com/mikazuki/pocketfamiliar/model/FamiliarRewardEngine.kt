@@ -31,6 +31,9 @@ object FamiliarRewardEngine {
             TouchInteraction.CATCH -> 3
             TouchInteraction.JUGGLE -> 4 + combo.coerceAtMost(10)
             TouchInteraction.SOFT_CATCH -> 5
+            TouchInteraction.BOOP -> 2
+            TouchInteraction.TRICK_THROW -> 8
+            TouchInteraction.AIR_TIME -> 6
         }
         val multiplier = if (favorite) 1.25f else 1f
         return FamiliarReward(

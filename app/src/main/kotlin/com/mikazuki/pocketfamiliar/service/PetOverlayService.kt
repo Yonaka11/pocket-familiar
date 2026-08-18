@@ -17,8 +17,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.mikazuki.pocketfamiliar.MainActivity
 import com.mikazuki.pocketfamiliar.R
+import com.mikazuki.pocketfamiliar.data.FamiliarGameplayRepository
 import com.mikazuki.pocketfamiliar.data.FamiliarProgressRepository
 import com.mikazuki.pocketfamiliar.data.PetSettingsRepository
+import com.mikazuki.pocketfamiliar.model.FamiliarAchievement
+import com.mikazuki.pocketfamiliar.model.FamiliarAchievements
+import com.mikazuki.pocketfamiliar.model.FamiliarReward
 import com.mikazuki.pocketfamiliar.model.FamiliarRewardEngine
 import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.model.PetSettings
@@ -49,6 +53,8 @@ private const val TICK_MS = 16L
 private const val THROW_THRESHOLD_PX_S = 180f
 private const val SOFT_CATCH_SPEED_PX_S = 650f
 private const val STEP_REWARD_CHUNK = 250
+private const val AIR_TIME_REWARD_SECONDS = 3f
+private const val ORBIT_ACHIEVEMENT_SECONDS = 5f
 
 const val ACTION_STOP_SERVICE = "com.mikazuki.pocketfamiliar.STOP"
 
@@ -62,6 +68,7 @@ class PetOverlayService : Service() {
     private lateinit var stepTracker: StepTracker
     private lateinit var settingsRepository: PetSettingsRepository
     private lateinit var progressRepository: FamiliarProgressRepository
+    private lateinit var gameplayRepository: FamiliarGameplayRepository
     private lateinit var displayManager: DisplayManager
 
     private var settings: PetSettings = PetSettings()
@@ -81,6 +88,7 @@ class PetOverlayService : Service() {
         super.onCreate()
         settingsRepository = PetSettingsRepository(applicationContext)
         progressRepository = FamiliarProgressRepository(applicationContext)
+        gameplayRepository = FamiliarGameplayRepository(applicationContext)
         batteryMonitor = BatteryMonitor(applicationContext)
         stepTracker = StepTracker(applicationContext, ::onSteps)
         displayManager = getSystemService(DisplayManager::class.java)
@@ -225,15 +233,39 @@ class PetOverlayService : Service() {
         touchGestureConsumed = false
         val previousState = stateMachine.currentState
         val catchSpeed = hypot(physics.velocityX, physics.velocityY)
+        val airTimeSeconds = physics.currentAirTimeSeconds
+        val wallBounces = physics.wallBouncesThisFlight
 
         if (previousState.isAirborne) {
             currentJuggleCombo += 1
             rewardTouch(TouchInteraction.CATCH, currentJuggleCombo)
             rewardTouch(TouchInteraction.JUGGLE, currentJuggleCombo)
-            if (catchSpeed <= SOFT_CATCH_SPEED_PX_S) {
+            unlockAchievement(FamiliarAchievements.NICE_CATCH)
+
+            val softCatch = catchSpeed <= SOFT_CATCH_SPEED_PX_S
+            if (softCatch) {
                 rewardTouch(TouchInteraction.SOFT_CATCH, currentJuggleCombo)
+                gameplayRepository.incrementCounter(activeProfile().id, "soft_catches")
             }
+
+            if (airTimeSeconds >= AIR_TIME_REWARD_SECONDS) {
+                rewardTouch(TouchInteraction.AIR_TIME, currentJuggleCombo)
+            }
+            if (airTimeSeconds >= ORBIT_ACHIEVEMENT_SECONDS) {
+                unlockAchievement(FamiliarAchievements.ORBIT_ACHIEVED)
+            }
+
+            if (wallBounces >= 2) {
+                rewardTouch(TouchInteraction.TRICK_THROW, currentJuggleCombo)
+                unlockAchievement(FamiliarAchievements.DOUBLE_BOUNCE)
+                gameplayRepository.incrementCounter(activeProfile().id, "trick_catches")
+            }
+
+            gameplayRepository.incrementCounter(activeProfile().id, "catches")
             progressRepository.recordJuggle(activeProfile().id, currentJuggleCombo)
+
+            if (currentJuggleCombo >= 5) unlockAchievement(FamiliarAchievements.COMBO_FIVE)
+            if (currentJuggleCombo >= 10) unlockAchievement(FamiliarAchievements.COMBO_TEN)
         } else {
             currentJuggleCombo = 0
         }
@@ -253,6 +285,12 @@ class PetOverlayService : Service() {
     private fun onTouchInteraction(interaction: TouchInteraction) {
         touchGestureConsumed = true
         rewardTouch(interaction, currentJuggleCombo.coerceAtLeast(1))
+
+        if (interaction == TouchInteraction.BOOP) {
+            val count = gameplayRepository.incrementCounter(activeProfile().id, "boops")
+            if (count >= 25) unlockAchievement(FamiliarAchievements.BOOP_MASTER)
+        }
+
         stateMachine.forceState(PetState.Happy)
     }
 
@@ -305,6 +343,19 @@ class PetOverlayService : Service() {
             TAG,
             "interaction=$interaction combo=$combo bond=${progress.bondXp} play=${progress.playXp} level=${progress.level} playLevel=${progress.playLevel} bonus=${reward.preferenceBonusApplied}",
         )
+    }
+
+    private fun unlockAchievement(achievement: FamiliarAchievement) {
+        val id = activeProfile().id
+        if (!gameplayRepository.unlockAchievement(id, achievement.id)) return
+        progressRepository.addReward(
+            id,
+            FamiliarReward(
+                bondXp = achievement.bonusBondXp,
+                playXp = achievement.bonusPlayXp,
+            ),
+        )
+        Log.d(TAG, "achievement=${achievement.title} familiar=$id")
     }
 
     private fun activeProfile() = PetRegistry.getById(settings.selectedPetId)
