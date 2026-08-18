@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 import com.mikazuki.pocketfamiliar.model.PetSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,6 +28,7 @@ class PetSettingsRepository(private val context: Context) {
         val SLEEP_ENABLED = booleanPreferencesKey("sleep_enabled")
         val AUTO_START = booleanPreferencesKey("auto_start_on_boot")
         val SELECTED_PET_ID = stringPreferencesKey("selected_pet_id")
+        val SELECTED_THEME_ID = stringPreferencesKey("selected_theme_id")
     }
 
     val settingsFlow: Flow<PetSettings> = context.dataStore.data.map { prefs ->
@@ -36,6 +38,7 @@ class PetSettingsRepository(private val context: Context) {
             sleepEnabled = prefs[Keys.SLEEP_ENABLED] ?: true,
             autoStartOnBoot = prefs[Keys.AUTO_START] ?: false,
             selectedPetId = prefs[Keys.SELECTED_PET_ID] ?: "default",
+            selectedThemeId = prefs[Keys.SELECTED_THEME_ID] ?: FamiliarThemeCatalog.DEFAULT_THEME_ID,
         )
     }
 
@@ -48,4 +51,6 @@ class PetSettingsRepository(private val context: Context) {
     suspend fun setAutoStartOnBoot(value: Boolean) = context.dataStore.edit { it[Keys.AUTO_START] = value }
 
     suspend fun setSelectedPetId(value: String) = context.dataStore.edit { it[Keys.SELECTED_PET_ID] = value }
+
+    suspend fun setSelectedThemeId(value: String) = context.dataStore.edit { it[Keys.SELECTED_THEME_ID] = value }
 }
