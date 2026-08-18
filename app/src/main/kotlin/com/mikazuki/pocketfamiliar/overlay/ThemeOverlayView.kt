@@ -5,10 +5,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.SystemClock
 import android.view.View
+import com.mikazuki.pocketfamiliar.data.PetSettingsRepository
 import com.mikazuki.pocketfamiliar.model.FamiliarTheme
 import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 import com.mikazuki.pocketfamiliar.model.ThemeVisual
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -19,7 +27,10 @@ import kotlin.math.sin
  */
 class ThemeOverlayView(context: Context) : View(context) {
     private var theme: FamiliarTheme = FamiliarThemeCatalog.getById(FamiliarThemeCatalog.DEFAULT_THEME_ID)
+    private var animationStartMs = SystemClock.uptimeMillis()
     private var elapsedSeconds = 0f
+    private var scope: CoroutineScope? = null
+    private var settingsJob: Job? = null
 
     private val softPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -28,10 +39,30 @@ class ThemeOverlayView(context: Context) : View(context) {
     }
     private val petalPath = Path()
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        animationStartMs = SystemClock.uptimeMillis()
+        val newScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        scope = newScope
+        settingsJob = newScope.launch {
+            PetSettingsRepository(context.applicationContext).settingsFlow.collect { settings ->
+                setTheme(FamiliarThemeCatalog.getById(settings.selectedThemeId))
+            }
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        settingsJob?.cancel()
+        settingsJob = null
+        scope?.cancel()
+        scope = null
+        super.onDetachedFromWindow()
+    }
+
     fun setTheme(newTheme: FamiliarTheme) {
         if (newTheme.id == theme.id) return
         theme = newTheme
-        elapsedSeconds = 0f
+        animationStartMs = SystemClock.uptimeMillis()
         invalidate()
     }
 
@@ -43,6 +74,7 @@ class ThemeOverlayView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        elapsedSeconds = (SystemClock.uptimeMillis() - animationStartMs) / 1000f
         when (theme.visual) {
             ThemeVisual.NONE -> Unit
             ThemeVisual.SAKURA_DRIFT -> drawSakura(canvas)
@@ -52,6 +84,7 @@ class ThemeOverlayView(context: Context) : View(context) {
             ThemeVisual.MOON_DUST -> drawMoonDust(canvas)
             ThemeVisual.BLOOM_GARDEN -> drawBloomGarden(canvas)
         }
+        if (theme.visual != ThemeVisual.NONE) postInvalidateOnAnimation()
     }
 
     private fun drawSakura(canvas: Canvas) {
