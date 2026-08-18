@@ -97,11 +97,7 @@ class PetOverlayManager(
     fun applyState(state: PetState) { petView?.applyState(state) }
     fun setProfile(profile: PetProfile) { petView?.setProfile(profile) }
     fun setTheme(theme: FamiliarTheme) { themeView?.setTheme(theme) }
-
-    fun tick(deltaSeconds: Float) {
-        petView?.tick()
-        themeView?.tick(deltaSeconds)
-    }
+    fun tick() { petView?.tick() }
 
     fun updatePetSize(petScale: Float) {
         val params = layoutParams ?: return
