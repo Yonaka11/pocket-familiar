@@ -17,6 +17,8 @@ import com.mikazuki.pocketfamiliar.model.FamiliarGiftCatalog
 import com.mikazuki.pocketfamiliar.model.FamiliarProgress
 import com.mikazuki.pocketfamiliar.model.FamiliarReward
 import com.mikazuki.pocketfamiliar.model.FamiliarRewardEngine
+import com.mikazuki.pocketfamiliar.model.FamiliarTheme
+import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.model.PetSettings
 import com.mikazuki.pocketfamiliar.service.PetOverlayService
@@ -40,6 +42,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val batteryState: StateFlow<BatteryState> = batteryMonitor.batteryState
     val giftCatalog: List<FamiliarGift> = FamiliarGiftCatalog.all
+    val themeCatalog: List<FamiliarTheme> = FamiliarThemeCatalog.all
 
     private val _hasOverlayPermission = MutableStateFlow(checkOverlayPermission())
     val hasOverlayPermission: StateFlow<Boolean> = _hasOverlayPermission.asStateFlow()
@@ -116,6 +119,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             "${profile.displayName} enjoyed ${gift.displayName}."
         }
+    }
+
+    fun selectTheme(theme: FamiliarTheme) {
+        if (!FamiliarThemeCatalog.isUnlocked(theme, _progress.value, _achievementCount.value)) return
+        viewModelScope.launch { repository.setSelectedThemeId(theme.id) }
     }
 
     fun clearGiftMessage() {
