@@ -126,6 +126,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { repository.setSelectedThemeId(theme.id) }
     }
 
+    fun setDebugThemeEnabled(themeId: String, enabled: Boolean) = viewModelScope.launch {
+        repository.setDebugThemeEnabled(themeId, enabled)
+    }
+
+    fun clearDebugThemes() = viewModelScope.launch {
+        repository.clearDebugThemes()
+    }
+
     fun clearGiftMessage() {
         _giftMessage.value = null
     }
