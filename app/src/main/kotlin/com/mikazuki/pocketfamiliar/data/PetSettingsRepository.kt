@@ -7,7 +7,9 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 import com.mikazuki.pocketfamiliar.model.PetSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,6 +29,8 @@ class PetSettingsRepository(private val context: Context) {
         val SLEEP_ENABLED = booleanPreferencesKey("sleep_enabled")
         val AUTO_START = booleanPreferencesKey("auto_start_on_boot")
         val SELECTED_PET_ID = stringPreferencesKey("selected_pet_id")
+        val SELECTED_THEME_ID = stringPreferencesKey("selected_theme_id")
+        val DEBUG_THEME_IDS = stringSetPreferencesKey("debug_theme_ids")
     }
 
     val settingsFlow: Flow<PetSettings> = context.dataStore.data.map { prefs ->
@@ -36,6 +40,8 @@ class PetSettingsRepository(private val context: Context) {
             sleepEnabled = prefs[Keys.SLEEP_ENABLED] ?: true,
             autoStartOnBoot = prefs[Keys.AUTO_START] ?: false,
             selectedPetId = prefs[Keys.SELECTED_PET_ID] ?: "default",
+            selectedThemeId = prefs[Keys.SELECTED_THEME_ID] ?: FamiliarThemeCatalog.DEFAULT_THEME_ID,
+            debugThemeIds = prefs[Keys.DEBUG_THEME_IDS]?.toSet() ?: emptySet(),
         )
     }
 
@@ -48,4 +54,16 @@ class PetSettingsRepository(private val context: Context) {
     suspend fun setAutoStartOnBoot(value: Boolean) = context.dataStore.edit { it[Keys.AUTO_START] = value }
 
     suspend fun setSelectedPetId(value: String) = context.dataStore.edit { it[Keys.SELECTED_PET_ID] = value }
+
+    suspend fun setSelectedThemeId(value: String) = context.dataStore.edit { it[Keys.SELECTED_THEME_ID] = value }
+
+    suspend fun setDebugThemeEnabled(themeId: String, enabled: Boolean) = context.dataStore.edit { prefs ->
+        val current = prefs[Keys.DEBUG_THEME_IDS]?.toMutableSet() ?: mutableSetOf()
+        if (enabled) current += themeId else current -= themeId
+        prefs[Keys.DEBUG_THEME_IDS] = current
+    }
+
+    suspend fun clearDebugThemes() = context.dataStore.edit { prefs ->
+        prefs[Keys.DEBUG_THEME_IDS] = emptySet()
+    }
 }

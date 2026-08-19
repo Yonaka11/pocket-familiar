@@ -40,7 +40,9 @@ data class FamiliarProgress(
     val bestAirTimeMs: Long = 0L,
     val unlockedAchievements: Set<String> = emptySet(),
 ) {
+    /** Bond progression is the familiar's primary level. */
     val level: Int get() = levelForXp(bondXp)
+    val bondLevel: Int get() = level
     val playLevel: Int get() = levelForXp(playXp)
 
     companion object {

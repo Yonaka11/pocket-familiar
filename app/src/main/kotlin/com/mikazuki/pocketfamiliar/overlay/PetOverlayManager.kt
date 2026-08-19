@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.WindowManager
+import com.mikazuki.pocketfamiliar.model.FamiliarTheme
 import com.mikazuki.pocketfamiliar.model.PetProfile
 import com.mikazuki.pocketfamiliar.model.TouchInteraction
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
@@ -31,6 +32,7 @@ class PetOverlayManager(
     private val onTouchInteraction: (TouchInteraction) -> Unit,
 ) {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private var themeView: ThemeOverlayView? = null
     private var petView: PetView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
     private var isAdded = false
@@ -52,21 +54,31 @@ class PetOverlayManager(
         val sizePx = scaleToPx(petScale)
         val params = buildLayoutParams(sizePx, startX, startY)
         val view = PetView(context)
+        val theme = ThemeOverlayView(context)
         view.setOnTouchListener { _, event -> handleTouch(event) }
         try {
+            windowManager.addView(theme, buildThemeLayoutParams())
             windowManager.addView(view, params)
+            themeView = theme
             petView = view
             layoutParams = params
             isAdded = true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to add overlay view", e)
+            try { windowManager.removeView(theme) } catch (_: Exception) { }
+            try { windowManager.removeView(view) } catch (_: Exception) { }
         }
     }
 
     fun remove() {
         if (!isAdded) return
-        val view = petView ?: return
-        try { windowManager.removeView(view) } catch (e: Exception) { Log.e(TAG, "Failed to remove overlay view", e) }
+        themeView?.let { view ->
+            try { windowManager.removeView(view) } catch (e: Exception) { Log.e(TAG, "Failed to remove theme overlay", e) }
+        }
+        petView?.let { view ->
+            try { windowManager.removeView(view) } catch (e: Exception) { Log.e(TAG, "Failed to remove pet overlay", e) }
+        }
+        themeView = null
         petView = null
         layoutParams = null
         isAdded = false
@@ -84,6 +96,7 @@ class PetOverlayManager(
 
     fun applyState(state: PetState) { petView?.applyState(state) }
     fun setProfile(profile: PetProfile) { petView?.setProfile(profile) }
+    fun setTheme(theme: FamiliarTheme) { themeView?.setTheme(theme) }
     fun tick() { petView?.tick() }
 
     fun updatePetSize(petScale: Float) {
@@ -201,5 +214,19 @@ class PetOverlayManager(
         gravity = Gravity.TOP or Gravity.START
         this.x = x
         this.y = y
+    }
+
+    private fun buildThemeLayoutParams(): WindowManager.LayoutParams = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+        PixelFormat.TRANSLUCENT,
+    ).apply {
+        gravity = Gravity.TOP or Gravity.START
     }
 }

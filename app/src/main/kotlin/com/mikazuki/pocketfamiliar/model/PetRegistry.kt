@@ -9,7 +9,15 @@ import com.mikazuki.pocketfamiliar.pet.physics.FamiliarPhysicsProfile
 object PetRegistry {
 
     val all: List<PetProfile> by lazy {
-        listOf(familiar(), moonwing(), shinobuKocho(), shinobuOshino())
+        listOf(
+            familiar(),
+            moonwing(),
+            emi(),
+            kaelani(),
+            mira(),
+            shinobuKocho(),
+            shinobuOshino(),
+        )
     }
 
     fun getById(id: String): PetProfile = all.find { it.id == id } ?: all.first()
@@ -55,6 +63,95 @@ object PetRegistry {
         ),
         physics = FamiliarPhysicsProfile(mass = 0.55f, gravityScale = 0.78f, airDrag = 0.82f, restitution = 0.30f),
     )
+
+    /**
+     * EMK are now selectable runtime familiars. Their day artwork is used for
+     * the collection avatar while the current overlay prototype uses the night
+     * spirit artwork as a static fallback for every behavior until dedicated
+     * production animation atlases are ready.
+     */
+    private fun emi() = staticSpiritProfile(
+        id = "emi",
+        displayName = "Emi",
+        description = "Playful tech-royal attendant · Sparkborn Trickster at night.",
+        previewResId = R.drawable.emi_avatar,
+        spiritResId = R.drawable.emi_night,
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.PLAY, FamiliarInterest.MUSIC),
+            favoriteTouch = setOf(TouchInteraction.BOOP, TouchInteraction.DOUBLE_TAP, TouchInteraction.JUGGLE, TouchInteraction.CATCH),
+        ),
+        physics = FamiliarPhysicsProfile(mass = 0.72f, gravityScale = 0.90f, airDrag = 0.72f, restitution = 0.42f),
+    )
+
+    private fun kaelani() = staticSpiritProfile(
+        id = "kaelani",
+        displayName = "Kaelani",
+        description = "Graceful bloom attendant · floral moon spirit at night.",
+        previewResId = R.drawable.kaelani_avatar,
+        spiritResId = R.drawable.kaelani_night,
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.MUSIC, FamiliarInterest.NIGHT, FamiliarInterest.PLAY),
+            favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.TAP),
+            lessPreferredTouch = setOf(TouchInteraction.JUGGLE),
+        ),
+        physics = FamiliarPhysicsProfile(mass = 0.68f, gravityScale = 0.82f, airDrag = 0.80f, restitution = 0.30f),
+    )
+
+    private fun mira() = staticSpiritProfile(
+        id = "mira",
+        displayName = "Mira",
+        description = "Cozy scholar attendant · dreambound night spirit.",
+        previewResId = R.drawable.mira_avatar,
+        spiritResId = R.drawable.mira_night,
+        preferences = FamiliarPreferences(
+            favoriteInterests = setOf(FamiliarInterest.SLEEP, FamiliarInterest.FOOD, FamiliarInterest.READING),
+            favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.TAP),
+            lessPreferredTouch = setOf(TouchInteraction.JUGGLE),
+        ),
+        physics = FamiliarPhysicsProfile(mass = 0.90f, gravityScale = 1.0f, airDrag = 0.65f, restitution = 0.28f),
+    )
+
+    private fun staticSpiritProfile(
+        id: String,
+        displayName: String,
+        description: String,
+        previewResId: Int,
+        spiritResId: Int,
+        preferences: FamiliarPreferences,
+        physics: FamiliarPhysicsProfile,
+    ): PetProfile {
+        val idle = PetAnimation(resourceFrames(spiritResId), 600)
+        val move = PetAnimation(resourceFrames(spiritResId), 180)
+        val quick = PetAnimation(resourceFrames(spiritResId), 120)
+        val sleep = PetAnimation(resourceFrames(spiritResId), 1200)
+        return PetProfile(
+            id = id,
+            displayName = displayName,
+            description = description,
+            previewResId = previewResId,
+            idleAnim = idle,
+            walkAnim = move,
+            runAnim = quick,
+            sleepAnim = sleep,
+            fallAnim = quick,
+            climbAnim = move,
+            jumpAnim = quick,
+            holdAnim = PetAnimation(resourceFrames(spiritResId), 180),
+            throwAnim = quick,
+            hardLandAnim = quick,
+            recoverAnim = idle,
+            eatAnim = idle,
+            groomAnim = idle,
+            happyAnim = idle,
+            musicAnim = move,
+            stepAnim = quick,
+            chargingAnim = sleep,
+            lowBatteryAnim = sleep,
+            deepSleepAnim = sleep,
+            preferences = preferences,
+            physics = physics,
+        )
+    }
 
     private fun shinobuKocho() = PetProfile(
         id = "shinobu_kocho",

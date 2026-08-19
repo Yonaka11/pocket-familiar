@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Marker resource for the first runtime EMK art pass. -->
+    <string name="emk_runtime_art_status">Day avatars + night spirit prototypes</string>
+</resources>

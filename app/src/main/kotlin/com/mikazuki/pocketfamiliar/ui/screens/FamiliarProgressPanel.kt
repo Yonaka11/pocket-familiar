@@ -19,14 +19,18 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
+import com.mikazuki.pocketfamiliar.model.ThemeVisual
 
 @Composable
 fun FamiliarProgressPanel(vm: HomeViewModel) {
     val progress by vm.progress.collectAsStateWithLifecycle()
+    val settings by vm.settings.collectAsStateWithLifecycle()
     val hasActivityPermission by vm.hasActivityPermission.collectAsStateWithLifecycle()
     val achievementCount by vm.achievementCount.collectAsStateWithLifecycle()
     val giftMessage by vm.giftMessage.collectAsStateWithLifecycle()
@@ -83,6 +87,65 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(message, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
                     OutlinedButton(onClick = vm::clearGiftMessage) { Text("OK") }
+                }
+            }
+
+            Text("Theme Rewards", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Unlock screen atmospheres, frames, and auras through Bond, Familiar levels, and achievements.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(vm.themeCatalog, key = { it.id }) { theme ->
+                    val unlocked = FamiliarThemeCatalog.isUnlocked(theme, progress, achievementCount)
+                    val selected = settings.selectedThemeId == theme.id
+                    OutlinedButton(
+                        onClick = { vm.selectTheme(theme) },
+                        enabled = unlocked,
+                        modifier = Modifier.widthIn(min = 148.dp),
+                    ) {
+                        Column {
+                            Text(if (selected) "✓ ${theme.displayName}" else theme.displayName)
+                            Text(
+                                if (unlocked) theme.category.name.lowercase().replaceFirstChar { it.uppercase() }
+                                else "Unlock: ${FamiliarThemeCatalog.unlockLabel(theme)}",
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        }
+                    }
+                }
+            }
+
+            Text("Debug Overlay Lab", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Testing only: bypasses unlocks and lets effects stack so every layer can be checked independently.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            vm.themeCatalog.filter { it.visual != ThemeVisual.NONE }.forEach { theme ->
+                val enabled = theme.id in settings.debugThemeIds
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(theme.displayName, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            if (enabled) "Debug overlay ON" else theme.category.name.lowercase().replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    OutlinedButton(onClick = { vm.setDebugThemeEnabled(theme.id, !enabled) }) {
+                        Text(if (enabled) "Turn off" else "Turn on")
+                    }
+                }
+            }
+            if (settings.debugThemeIds.isNotEmpty()) {
+                OutlinedButton(onClick = vm::clearDebugThemes) {
+                    Text("Turn off all debug overlays")
                 }
             }
         }
