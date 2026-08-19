@@ -64,18 +64,13 @@ object PetRegistry {
         physics = FamiliarPhysicsProfile(mass = 0.55f, gravityScale = 0.78f, airDrag = 0.82f, restitution = 0.30f),
     )
 
-    /**
-     * EMK are now selectable runtime familiars. Their day artwork is used for
-     * the collection avatar while the current overlay prototype uses the night
-     * spirit artwork as a static fallback for every behavior until dedicated
-     * production animation atlases are ready.
-     */
-    private fun emi() = staticSpiritProfile(
+    /** EMK use true 4x4 pixel atlases for their live overlay animations. */
+    private fun emi() = pixelAtlasProfile(
         id = "emi",
         displayName = "Emi",
-        description = "Playful tech-royal attendant · Sparkborn Trickster at night.",
+        description = "Playful tech-royal attendant · kinetic pixel familiar.",
         previewResId = R.drawable.emi_avatar,
-        spiritResId = R.drawable.emi_night,
+        atlasResId = R.drawable.emi_runtime_pixel_atlas,
         preferences = FamiliarPreferences(
             favoriteInterests = setOf(FamiliarInterest.PLAY, FamiliarInterest.MUSIC),
             favoriteTouch = setOf(TouchInteraction.BOOP, TouchInteraction.DOUBLE_TAP, TouchInteraction.JUGGLE, TouchInteraction.CATCH),
@@ -83,12 +78,12 @@ object PetRegistry {
         physics = FamiliarPhysicsProfile(mass = 0.72f, gravityScale = 0.90f, airDrag = 0.72f, restitution = 0.42f),
     )
 
-    private fun kaelani() = staticSpiritProfile(
+    private fun kaelani() = pixelAtlasProfile(
         id = "kaelani",
         displayName = "Kaelani",
-        description = "Graceful bloom attendant · floral moon spirit at night.",
+        description = "Graceful bloom attendant · flowing pixel familiar.",
         previewResId = R.drawable.kaelani_avatar,
-        spiritResId = R.drawable.kaelani_night,
+        atlasResId = R.drawable.kaelani_runtime_pixel_atlas,
         preferences = FamiliarPreferences(
             favoriteInterests = setOf(FamiliarInterest.MUSIC, FamiliarInterest.NIGHT, FamiliarInterest.PLAY),
             favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.TAP),
@@ -97,12 +92,12 @@ object PetRegistry {
         physics = FamiliarPhysicsProfile(mass = 0.68f, gravityScale = 0.82f, airDrag = 0.80f, restitution = 0.30f),
     )
 
-    private fun mira() = staticSpiritProfile(
+    private fun mira() = pixelAtlasProfile(
         id = "mira",
         displayName = "Mira",
-        description = "Cozy scholar attendant · dreambound night spirit.",
+        description = "Cozy scholar attendant · bookish pixel familiar.",
         previewResId = R.drawable.mira_avatar,
-        spiritResId = R.drawable.mira_night,
+        atlasResId = R.drawable.mira_runtime_pixel_atlas,
         preferences = FamiliarPreferences(
             favoriteInterests = setOf(FamiliarInterest.SLEEP, FamiliarInterest.FOOD, FamiliarInterest.READING),
             favoriteTouch = setOf(TouchInteraction.PET, TouchInteraction.TAP),
@@ -111,40 +106,49 @@ object PetRegistry {
         physics = FamiliarPhysicsProfile(mass = 0.90f, gravityScale = 1.0f, airDrag = 0.65f, restitution = 0.28f),
     )
 
-    private fun staticSpiritProfile(
+    private fun pixelAtlasProfile(
         id: String,
         displayName: String,
         description: String,
         previewResId: Int,
-        spiritResId: Int,
+        atlasResId: Int,
         preferences: FamiliarPreferences,
         physics: FamiliarPhysicsProfile,
     ): PetProfile {
-        val idle = PetAnimation(resourceFrames(spiritResId), 600)
-        val move = PetAnimation(resourceFrames(spiritResId), 180)
-        val quick = PetAnimation(resourceFrames(spiritResId), 120)
-        val sleep = PetAnimation(resourceFrames(spiritResId), 1200)
+        fun anim(duration: Long, vararg frames: Int) = PetAnimation(
+            atlasFrames(atlasResId, *frames, columns = 4, rows = 4),
+            duration,
+        )
+
+        val idle = anim(420, 0, 1)
+        val walk = anim(155, 2, 3)
+        val run = anim(105, 4, 5, 6, 7)
+        val airborne = anim(120, 8, 9)
+        val sleep = anim(1100, 10, 11)
+        val held = anim(180, 12, 13)
+        val happy = anim(220, 14, 15)
+
         return PetProfile(
             id = id,
             displayName = displayName,
             description = description,
             previewResId = previewResId,
             idleAnim = idle,
-            walkAnim = move,
-            runAnim = quick,
+            walkAnim = walk,
+            runAnim = run,
             sleepAnim = sleep,
-            fallAnim = quick,
-            climbAnim = move,
-            jumpAnim = quick,
-            holdAnim = PetAnimation(resourceFrames(spiritResId), 180),
-            throwAnim = quick,
-            hardLandAnim = quick,
+            fallAnim = airborne,
+            climbAnim = walk,
+            jumpAnim = airborne,
+            holdAnim = held,
+            throwAnim = airborne,
+            hardLandAnim = held,
             recoverAnim = idle,
-            eatAnim = idle,
-            groomAnim = idle,
-            happyAnim = idle,
-            musicAnim = move,
-            stepAnim = quick,
+            eatAnim = happy,
+            groomAnim = happy,
+            happyAnim = happy,
+            musicAnim = happy,
+            stepAnim = run,
             chargingAnim = sleep,
             lowBatteryAnim = sleep,
             deepSleepAnim = sleep,
