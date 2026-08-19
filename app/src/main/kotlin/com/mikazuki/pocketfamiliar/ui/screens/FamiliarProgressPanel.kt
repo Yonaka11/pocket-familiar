@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -120,7 +119,7 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
 
             Text("Debug Overlay Lab", style = MaterialTheme.typography.titleSmall)
             Text(
-                "Testing only: bypasses unlocks and lets effects stack so each layer can be checked independently.",
+                "Testing only: bypasses unlocks and lets effects stack so every layer can be checked independently.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -134,15 +133,14 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(theme.displayName, style = MaterialTheme.typography.bodyMedium)
                         Text(
-                            theme.category.name.lowercase().replaceFirstChar { it.uppercase() },
+                            if (enabled) "Debug overlay ON" else theme.category.name.lowercase().replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    Switch(
-                        checked = enabled,
-                        onCheckedChange = { checked -> vm.setDebugThemeEnabled(theme.id, checked) },
-                    )
+                    OutlinedButton(onClick = { vm.setDebugThemeEnabled(theme.id, !enabled) }) {
+                        Text(if (enabled) "Turn off" else "Turn on")
+                    }
                 }
             }
             if (settings.debugThemeIds.isNotEmpty()) {
