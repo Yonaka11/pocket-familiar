@@ -16,14 +16,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
+import com.mikazuki.pocketfamiliar.model.ThemeVisual
 
 @Composable
 fun FamiliarProgressPanel(vm: HomeViewModel) {
@@ -112,6 +115,39 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
                             )
                         }
                     }
+                }
+            }
+
+            Text("Debug Overlay Lab", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Testing only: bypasses unlocks and lets effects stack so each layer can be checked independently.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            vm.themeCatalog.filter { it.visual != ThemeVisual.NONE }.forEach { theme ->
+                val enabled = theme.id in settings.debugThemeIds
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(theme.displayName, style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            theme.category.name.lowercase().replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(
+                        checked = enabled,
+                        onCheckedChange = { checked -> vm.setDebugThemeEnabled(theme.id, checked) },
+                    )
+                }
+            }
+            if (settings.debugThemeIds.isNotEmpty()) {
+                OutlinedButton(onClick = vm::clearDebugThemes) {
+                    Text("Turn off all debug overlays")
                 }
             }
         }
