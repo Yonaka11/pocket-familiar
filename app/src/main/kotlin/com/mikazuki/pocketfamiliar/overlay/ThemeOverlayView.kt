@@ -74,11 +74,8 @@ class ThemeOverlayView(context: Context) : View(context) {
 
         val activeThemes = buildList {
             if (primaryTheme.visual != ThemeVisual.NONE) add(primaryTheme)
-            debugThemes.forEach { debug ->
-                if (none { it.id == debug.id }) add(debug)
-            }
+            debugThemes.forEach { debug -> if (none { it.id == debug.id }) add(debug) }
         }
-
         activeThemes.forEach { drawTheme(canvas, it.visual) }
         if (activeThemes.isNotEmpty()) postInvalidateOnAnimation()
     }
