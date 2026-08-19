@@ -24,9 +24,13 @@ import kotlin.math.sin
 /**
  * Lightweight, click-through visual layer behind the familiar.
  * Effects are drawn procedurally so theme rewards add almost no APK weight.
+ *
+ * The earned theme is rendered normally. Debug themes may be stacked on top so
+ * individual effects can be tested without changing unlock state.
  */
 class ThemeOverlayView(context: Context) : View(context) {
-    private var theme: FamiliarTheme = FamiliarThemeCatalog.getById(FamiliarThemeCatalog.DEFAULT_THEME_ID)
+    private var primaryTheme: FamiliarTheme = FamiliarThemeCatalog.getById(FamiliarThemeCatalog.DEFAULT_THEME_ID)
+    private var debugThemes: List<FamiliarTheme> = emptyList()
     private var animationStartMs = SystemClock.uptimeMillis()
     private var elapsedSeconds = 0f
     private var scope: CoroutineScope? = null
@@ -46,7 +50,12 @@ class ThemeOverlayView(context: Context) : View(context) {
         scope = newScope
         settingsJob = newScope.launch {
             PetSettingsRepository(context.applicationContext).settingsFlow.collect { settings ->
-                setTheme(FamiliarThemeCatalog.getById(settings.selectedThemeId))
+                primaryTheme = FamiliarThemeCatalog.getById(settings.selectedThemeId)
+                debugThemes = FamiliarThemeCatalog.all.filter { theme ->
+                    theme.visual != ThemeVisual.NONE && theme.id in settings.debugThemeIds
+                }
+                animationStartMs = SystemClock.uptimeMillis()
+                invalidate()
             }
         }
     }
@@ -59,23 +68,23 @@ class ThemeOverlayView(context: Context) : View(context) {
         super.onDetachedFromWindow()
     }
 
-    fun setTheme(newTheme: FamiliarTheme) {
-        if (newTheme.id == theme.id) return
-        theme = newTheme
-        animationStartMs = SystemClock.uptimeMillis()
-        invalidate()
-    }
-
-    fun tick(deltaSeconds: Float) {
-        if (theme.visual == ThemeVisual.NONE) return
-        elapsedSeconds += deltaSeconds
-        invalidate()
-    }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         elapsedSeconds = (SystemClock.uptimeMillis() - animationStartMs) / 1000f
-        when (theme.visual) {
+
+        val activeThemes = buildList {
+            if (primaryTheme.visual != ThemeVisual.NONE) add(primaryTheme)
+            debugThemes.forEach { debug ->
+                if (none { it.id == debug.id }) add(debug)
+            }
+        }
+
+        activeThemes.forEach { drawTheme(canvas, it.visual) }
+        if (activeThemes.isNotEmpty()) postInvalidateOnAnimation()
+    }
+
+    private fun drawTheme(canvas: Canvas, visual: ThemeVisual) {
+        when (visual) {
             ThemeVisual.NONE -> Unit
             ThemeVisual.SAKURA_DRIFT -> drawSakura(canvas)
             ThemeVisual.NEON_TECH_FRAME -> drawTechFrame(canvas)
@@ -84,7 +93,6 @@ class ThemeOverlayView(context: Context) : View(context) {
             ThemeVisual.MOON_DUST -> drawMoonDust(canvas)
             ThemeVisual.BLOOM_GARDEN -> drawBloomGarden(canvas)
         }
-        if (theme.visual != ThemeVisual.NONE) postInvalidateOnAnimation()
     }
 
     private fun drawSakura(canvas: Canvas) {
