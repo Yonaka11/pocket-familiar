@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -139,11 +140,40 @@ class PetView(context: Context) : View(context) {
                 currentDrawable = null
                 currentAtlasFrame = frame
                 currentAtlasBitmap = atlasCache.getOrPut(frame.resId) {
-                    requireNotNull(BitmapFactory.decodeResource(resources, frame.resId)) {
-                        "Unable to decode sprite atlas resource ${frame.resId}"
-                    }
+                    decodeAtlasBitmap(frame.resId)
                 }
             }
+        }
+    }
+
+    /**
+     * Some Android builds fail to decode packaged WebP drawables through
+     * BitmapFactory.decodeResource even though the resource itself is valid.
+     * Try the normal bitmap path first, then the raw stream, then let Android's
+     * Drawable stack decode it and rasterize the result as a final fallback.
+     */
+    private fun decodeAtlasBitmap(resId: Int): Bitmap {
+        BitmapFactory.decodeResource(resources, resId)?.let { return it }
+
+        runCatching {
+            resources.openRawResource(resId).use { stream ->
+                BitmapFactory.decodeStream(stream)
+            }
+        }.getOrNull()?.let { return it }
+
+        val drawable = ContextCompat.getDrawable(context, resId)
+            ?: throw IllegalArgumentException("Unable to load sprite atlas resource $resId")
+
+        if (drawable is BitmapDrawable && drawable.bitmap != null) {
+            return drawable.bitmap
+        }
+
+        val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 1
+        val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 1
+        return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmap ->
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, width, height)
+            drawable.draw(canvas)
         }
     }
 }
