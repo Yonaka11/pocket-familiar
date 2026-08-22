@@ -1,6 +1,7 @@
 package com.mikazuki.pocketfamiliar.pet.behavior
 
 import android.util.Log
+import com.mikazuki.pocketfamiliar.model.FamiliarBehaviorProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -13,6 +14,7 @@ class PetStateMachine(
     private val scope: CoroutineScope,
     private val onStateChanged: (PetState) -> Unit,
     private val isSleepEnabled: () -> Boolean,
+    private val behaviorProfile: () -> FamiliarBehaviorProfile = { FamiliarBehaviorProfile() },
 ) {
     var currentState: PetState = PetState.Idle
         private set
@@ -61,17 +63,34 @@ class PetStateMachine(
     }
 
     private fun scheduleFromIdle(): Job = scope.launch {
-        delay(Random.nextLong(1_500, 4_000))
-        val r = Random.nextFloat()
+        val behavior = behaviorProfile()
+        delay(Random.nextLong(behavior.idleDelayMs.first, behavior.idleDelayMs.last + 1))
+
+        val sleep = if (isSleepEnabled()) behavior.sleepWeight.coerceAtLeast(0f) else 0f
+        val eat = behavior.eatWeight.coerceAtLeast(0f)
+        val groom = behavior.groomWeight.coerceAtLeast(0f)
+        val happy = behavior.happyWeight.coerceAtLeast(0f)
+        val walk = behavior.walkWeight.coerceAtLeast(0f)
+        val run = behavior.runWeight.coerceAtLeast(0f)
+        val total = sleep + eat + groom + happy + walk + run
+        if (total <= 0f) {
+            transitionTo(PetState.Idle)
+            return@launch
+        }
+
+        var cursor = Random.nextFloat() * total
+        fun take(weight: Float): Boolean {
+            cursor -= weight
+            return cursor <= 0f
+        }
+
         val next = when {
-            isSleepEnabled() && r < 0.10f -> PetState.Sleep
-            r < 0.17f -> PetState.Eating
-            r < 0.24f -> PetState.Grooming
-            r < 0.30f -> PetState.Happy
-            r < 0.52f -> PetState.WalkLeft
-            r < 0.74f -> PetState.WalkRight
-            r < 0.87f -> PetState.RunLeft
-            else -> PetState.RunRight
+            take(sleep) -> PetState.Sleep
+            take(eat) -> PetState.Eating
+            take(groom) -> PetState.Grooming
+            take(happy) -> PetState.Happy
+            take(walk) -> if (Random.nextBoolean()) PetState.WalkLeft else PetState.WalkRight
+            else -> if (Random.nextBoolean()) PetState.RunLeft else PetState.RunRight
         }
         transitionTo(next)
     }

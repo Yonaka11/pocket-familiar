@@ -71,6 +71,8 @@ fun HomeScreen(vm: HomeViewModel = viewModel()) {
     val settings by vm.settings.collectAsStateWithLifecycle()
     val battery by vm.batteryState.collectAsStateWithLifecycle()
     val hasPermission by vm.hasOverlayPermission.collectAsStateWithLifecycle()
+    val supportsForms = settings.selectedPetId in setOf("emi", "kaelani", "mira")
+    val runtimeProfile = PetRegistry.getRuntimeProfile(settings.selectedPetId, supportsForms && settings.useFamiliarForm)
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -141,6 +143,42 @@ fun HomeScreen(vm: HomeViewModel = viewModel()) {
             }
         }
 
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Character Form", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Box(
+                        modifier = Modifier.size(64.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(runtimeProfile.previewResId),
+                            contentDescription = runtimeProfile.displayName,
+                            modifier = Modifier.size(56.dp),
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(if (settings.useFamiliarForm && supportsForms) "Familiar form" else "Attendant form", fontWeight = FontWeight.SemiBold)
+                        Text(
+                            if (supportsForms) "Manual selection only. It never changes based on time of day."
+                            else "This character currently has one runtime form.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(
+                        checked = supportsForms && settings.useFamiliarForm,
+                        onCheckedChange = vm::setUseFamiliarForm,
+                        enabled = supportsForms,
+                    )
+                }
+            }
+        }
+
         FamiliarProgressPanel(vm)
 
         Card(
@@ -155,10 +193,7 @@ fun HomeScreen(vm: HomeViewModel = viewModel()) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(
-                    imageVector = if (hasPermission) Icons.Default.Check else Icons.Default.Error,
-                    contentDescription = null,
-                )
+                Icon(imageVector = if (hasPermission) Icons.Default.Check else Icons.Default.Error, contentDescription = null)
                 Text(
                     text = if (hasPermission) stringResource(R.string.label_overlay_permission_granted)
                     else stringResource(R.string.label_overlay_permission_denied),
@@ -208,6 +243,27 @@ fun HomeScreen(vm: HomeViewModel = viewModel()) {
         }
 
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Character Lab", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    "Force any runtime state immediately to check frame slicing, scale, familiar-form motion and reactions without waiting for autonomous behavior.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    listOf("IDLE", "WALK", "RUN", "JUMP", "FALL", "HELD", "SLEEP", "HAPPY", "SPECIAL", "GROOM", "EAT").forEach { state ->
+                        OutlinedButton(onClick = { vm.debugState(state) }, enabled = hasPermission) {
+                            Text(state.lowercase().replaceFirstChar { it.uppercase() })
+                        }
+                    }
+                }
+            }
+        }
+
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
             Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -227,6 +283,18 @@ fun HomeScreen(vm: HomeViewModel = viewModel()) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+            }
+        }
+
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text("Beta Target", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                Text("✓ Stable overlay and decoder fallbacks", style = MaterialTheme.typography.bodySmall)
+                Text("✓ EMK 4×4 attendant animation mapping", style = MaterialTheme.typography.bodySmall)
+                Text("✓ Manual, animated familiar forms", style = MaterialTheme.typography.bodySmall)
+                Text("✓ Character-specific autonomous behavior and touch reactions", style = MaterialTheme.typography.bodySmall)
+                Text("✓ Persistent Bond / Play XP, Charms, gifts, themes and achievements", style = MaterialTheme.typography.bodySmall)
+                Text("Next gate: device soak test with zero crashes and clean sprite cropping.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 

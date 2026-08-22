@@ -45,6 +45,26 @@ data class FamiliarProgress(
     val bondLevel: Int get() = level
     val playLevel: Int get() = levelForXp(playXp)
 
+    /**
+     * Story memories are earned from three different play styles instead of a
+     * separate grind: relationship, play mastery, and lived experiences.
+     */
+    val signatureMemories: Int get() = listOf(
+        bondLevel >= 5,
+        playLevel >= 5,
+        giftsGiven >= 3 || unlockedAchievements.size >= 3,
+    ).count { it }
+
+    val ascendedSpiritUnlocked: Boolean get() =
+        bondLevel >= 10 && playLevel >= 10 && signatureMemories >= 3
+
+    val nextMemoryHint: String get() = when {
+        bondLevel < 5 -> "Reach Bond Lv 5"
+        playLevel < 5 -> "Reach Play Lv 5"
+        giftsGiven < 3 && unlockedAchievements.size < 3 -> "Give 3 gifts or earn 3 achievements"
+        else -> "All signature memories recovered"
+    }
+
     companion object {
         fun levelForXp(xp: Int): Int {
             var level = 1

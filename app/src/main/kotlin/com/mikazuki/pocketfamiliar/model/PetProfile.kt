@@ -4,6 +4,17 @@ import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
 import com.mikazuki.pocketfamiliar.pet.behavior.PetState
 import com.mikazuki.pocketfamiliar.pet.physics.FamiliarPhysicsProfile
 
+/** Weighted autonomous personality used while choosing the next idle behavior. */
+data class FamiliarBehaviorProfile(
+    val sleepWeight: Float = 0.10f,
+    val eatWeight: Float = 0.07f,
+    val groomWeight: Float = 0.07f,
+    val happyWeight: Float = 0.06f,
+    val walkWeight: Float = 0.44f,
+    val runWeight: Float = 0.26f,
+    val idleDelayMs: LongRange = 1_500L..4_000L,
+)
+
 /** Defines one selectable familiar, its animations, preferences, and physical feel. */
 data class PetProfile(
     val id: String,
@@ -31,6 +42,9 @@ data class PetProfile(
     val deepSleepAnim: PetAnimation = sleepAnim,
     val preferences: FamiliarPreferences = FamiliarPreferences(),
     val physics: FamiliarPhysicsProfile = FamiliarPhysicsProfile(),
+    val behavior: FamiliarBehaviorProfile = FamiliarBehaviorProfile(),
+    /** Enables state-aware bob/squash/lean motion for a single-frame familiar-form sprite. */
+    val proceduralMotion: Boolean = false,
 ) {
     fun animationForState(state: PetState): PetAnimation = when (state) {
         is PetState.Idle -> idleAnim
