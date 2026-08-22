@@ -57,6 +57,8 @@ private const val AIR_TIME_REWARD_SECONDS = 3f
 private const val ORBIT_ACHIEVEMENT_SECONDS = 5f
 
 const val ACTION_STOP_SERVICE = "com.mikazuki.pocketfamiliar.STOP"
+const val ACTION_DEBUG_STATE = "com.mikazuki.pocketfamiliar.DEBUG_STATE"
+const val EXTRA_DEBUG_STATE = "debug_state"
 
 class PetOverlayService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -98,6 +100,7 @@ class PetOverlayService : Service() {
             scope = serviceScope,
             onStateChanged = ::onPetStateChanged,
             isSleepEnabled = { settings.sleepEnabled },
+            behaviorProfile = { activeProfile().behavior },
         )
 
         overlayManager = PetOverlayManager(
@@ -114,6 +117,8 @@ class PetOverlayService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
+        val requestedDebugState = intent?.takeIf { it.action == ACTION_DEBUG_STATE }
+            ?.getStringExtra(EXTRA_DEBUG_STATE)
 
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -127,7 +132,11 @@ class PetOverlayService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
-        if (isOverlayRunning) return START_STICKY
+
+        if (isOverlayRunning) {
+            requestedDebugState?.let(::forceDebugState)
+            return START_STICKY
+        }
 
         batteryMonitor.register()
         stepTracker.register()
@@ -136,10 +145,12 @@ class PetOverlayService : Service() {
         serviceScope.launch {
             settings = settingsRepository.settingsFlow.first()
             startOverlay()
+            requestedDebugState?.let(::forceDebugState)
 
             settingsRepository.settingsFlow.collect { newSettings ->
                 val sizeChanged = newSettings.petSize != settings.petSize
-                val profileChanged = newSettings.selectedPetId != settings.selectedPetId
+                val profileChanged = newSettings.selectedPetId != settings.selectedPetId ||
+                    newSettings.useFamiliarForm != settings.useFamiliarForm
                 settings = newSettings
 
                 if (sizeChanged) {
@@ -148,11 +159,12 @@ class PetOverlayService : Service() {
                     physics.petHeight = overlayManager.petSizePx
                 }
                 if (profileChanged) {
-                    val profile = PetRegistry.getById(newSettings.selectedPetId)
+                    val profile = PetRegistry.getRuntimeProfile(newSettings.selectedPetId, newSettings.useFamiliarForm)
                     overlayManager.setProfile(profile)
                     physics.profile = profile.physics
                     currentJuggleCombo = 0
                     pendingRewardSteps = 0
+                    stateMachine.forceState(PetState.Idle)
                 }
             }
         }
@@ -177,7 +189,7 @@ class PetOverlayService : Service() {
         val sw = overlayManager.getScreenWidth()
         val sh = overlayManager.getScreenHeight()
         val nb = overlayManager.getNavBarHeightPx()
-        val profile = PetRegistry.getById(settings.selectedPetId)
+        val profile = activeProfile()
 
         overlayManager.create(settings.petSize, sw / 2, sh / 4)
         overlayManager.setProfile(profile)
@@ -224,9 +236,7 @@ class PetOverlayService : Service() {
 
     private fun onPetStateChanged(state: PetState) {
         overlayManager.applyState(state)
-        if (state is PetState.Jumping) {
-            physics.launchFromEdge(fromLeftWall = physics.x <= 1f)
-        }
+        if (state is PetState.Jumping) physics.launchFromEdge(fromLeftWall = physics.x <= 1f)
     }
 
     private fun onDragStarted(startX: Float, startY: Float) {
@@ -242,19 +252,12 @@ class PetOverlayService : Service() {
             rewardTouch(TouchInteraction.JUGGLE, currentJuggleCombo)
             unlockAchievement(FamiliarAchievements.NICE_CATCH)
 
-            val softCatch = catchSpeed <= SOFT_CATCH_SPEED_PX_S
-            if (softCatch) {
+            if (catchSpeed <= SOFT_CATCH_SPEED_PX_S) {
                 rewardTouch(TouchInteraction.SOFT_CATCH, currentJuggleCombo)
                 gameplayRepository.incrementCounter(activeProfile().id, "soft_catches")
             }
-
-            if (airTimeSeconds >= AIR_TIME_REWARD_SECONDS) {
-                rewardTouch(TouchInteraction.AIR_TIME, currentJuggleCombo)
-            }
-            if (airTimeSeconds >= ORBIT_ACHIEVEMENT_SECONDS) {
-                unlockAchievement(FamiliarAchievements.ORBIT_ACHIEVED)
-            }
-
+            if (airTimeSeconds >= AIR_TIME_REWARD_SECONDS) rewardTouch(TouchInteraction.AIR_TIME, currentJuggleCombo)
+            if (airTimeSeconds >= ORBIT_ACHIEVEMENT_SECONDS) unlockAchievement(FamiliarAchievements.ORBIT_ACHIEVED)
             if (wallBounces >= 2) {
                 rewardTouch(TouchInteraction.TRICK_THROW, currentJuggleCombo)
                 unlockAchievement(FamiliarAchievements.DOUBLE_BOUNCE)
@@ -263,7 +266,6 @@ class PetOverlayService : Service() {
 
             gameplayRepository.incrementCounter(activeProfile().id, "catches")
             progressRepository.recordJuggle(activeProfile().id, currentJuggleCombo)
-
             if (currentJuggleCombo >= 5) unlockAchievement(FamiliarAchievements.COMBO_FIVE)
             if (currentJuggleCombo >= 10) unlockAchievement(FamiliarAchievements.COMBO_TEN)
         } else {
@@ -291,7 +293,26 @@ class PetOverlayService : Service() {
             if (count >= 25) unlockAchievement(FamiliarAchievements.BOOP_MASTER)
         }
 
-        stateMachine.forceState(PetState.Happy)
+        // The same input now reads differently by personality instead of every pet
+        // snapping to the same generic reaction.
+        stateMachine.forceState(reactionForTouch(activeProfile().id, interaction))
+    }
+
+    private fun reactionForTouch(id: String, interaction: TouchInteraction): PetState = when (id) {
+        "emi" -> when (interaction) {
+            TouchInteraction.BOOP, TouchInteraction.DOUBLE_TAP, TouchInteraction.TICKLE -> PetState.Happy
+            else -> PetState.Music
+        }
+        "kaelani" -> when (interaction) {
+            TouchInteraction.PET, TouchInteraction.TAP -> PetState.Grooming
+            else -> PetState.Happy
+        }
+        "mira" -> when (interaction) {
+            TouchInteraction.PET -> PetState.Grooming
+            TouchInteraction.TAP, TouchInteraction.DOUBLE_TAP -> PetState.Happy
+            else -> PetState.Idle
+        }
+        else -> PetState.Happy
     }
 
     private fun onDragReleased(releaseVelocityX: Float, releaseVelocityY: Float) {
@@ -319,7 +340,6 @@ class PetOverlayService : Service() {
         val profile = activeProfile()
         progressRepository.addSteps(profile.id, delta)
         pendingRewardSteps += delta
-
         val chunks = pendingRewardSteps / STEP_REWARD_CHUNK
         if (chunks <= 0) return
 
@@ -331,7 +351,6 @@ class PetOverlayService : Service() {
         if (stateMachine.currentState is PetState.Idle || stateMachine.currentState is PetState.WalkLeft || stateMachine.currentState is PetState.WalkRight) {
             stateMachine.forceState(PetState.StepActivity)
         }
-
         Log.d(TAG, "steps=$rewardedSteps charms=${progress.charms} bond=${progress.bondXp} bonus=${reward.preferenceBonusApplied}")
     }
 
@@ -339,26 +358,35 @@ class PetOverlayService : Service() {
         val profile = activeProfile()
         val reward = FamiliarRewardEngine.rewardForInteraction(interaction, profile.preferences, combo)
         val progress = progressRepository.addReward(profile.id, reward)
-        Log.d(
-            TAG,
-            "interaction=$interaction combo=$combo bond=${progress.bondXp} play=${progress.playXp} level=${progress.level} playLevel=${progress.playLevel} bonus=${reward.preferenceBonusApplied}",
-        )
+        Log.d(TAG, "interaction=$interaction combo=$combo bond=${progress.bondXp} play=${progress.playXp} level=${progress.level} playLevel=${progress.playLevel} bonus=${reward.preferenceBonusApplied}")
     }
 
     private fun unlockAchievement(achievement: FamiliarAchievement) {
         val id = activeProfile().id
         if (!gameplayRepository.unlockAchievement(id, achievement.id)) return
-        progressRepository.addReward(
-            id,
-            FamiliarReward(
-                bondXp = achievement.bonusBondXp,
-                playXp = achievement.bonusPlayXp,
-            ),
-        )
+        progressRepository.addReward(id, FamiliarReward(bondXp = achievement.bonusBondXp, playXp = achievement.bonusPlayXp))
         Log.d(TAG, "achievement=${achievement.title} familiar=$id")
     }
 
-    private fun activeProfile() = PetRegistry.getById(settings.selectedPetId)
+    private fun activeProfile() = PetRegistry.getRuntimeProfile(settings.selectedPetId, settings.useFamiliarForm)
+
+    private fun forceDebugState(name: String) {
+        val state = when (name.uppercase()) {
+            "IDLE" -> PetState.Idle
+            "WALK" -> PetState.WalkRight
+            "RUN" -> PetState.RunRight
+            "JUMP" -> PetState.Jumping
+            "FALL" -> PetState.Falling
+            "HELD" -> PetState.Held
+            "SLEEP" -> PetState.Sleep
+            "HAPPY" -> PetState.Happy
+            "SPECIAL" -> PetState.Music
+            "GROOM" -> PetState.Grooming
+            "EAT" -> PetState.Eating
+            else -> return
+        }
+        stateMachine.forceState(state)
+    }
 
     private fun handleForcedTransition(t: ForcedTransition) {
         when (t) {
@@ -370,10 +398,8 @@ class PetOverlayService : Service() {
             ForcedTransition.Land -> {
                 currentJuggleCombo = 0
                 val landingState = when (physics.lastImpactSeverity) {
-                    ImpactSeverity.HARD,
-                    ImpactSeverity.CATASTROPHIC -> PetState.HardLanding
-                    ImpactSeverity.SOFT,
-                    ImpactSeverity.NORMAL -> PetState.Idle
+                    ImpactSeverity.HARD, ImpactSeverity.CATASTROPHIC -> PetState.HardLanding
+                    ImpactSeverity.SOFT, ImpactSeverity.NORMAL -> PetState.Idle
                 }
                 stateMachine.forceState(landingState)
             }
@@ -381,19 +407,11 @@ class PetOverlayService : Service() {
     }
 
     private fun updateScreenDimensions() {
-        physics.onScreenSizeChanged(
-            overlayManager.getScreenWidth(),
-            overlayManager.getScreenHeight(),
-            overlayManager.getNavBarHeightPx(),
-        )
+        physics.onScreenSizeChanged(overlayManager.getScreenWidth(), overlayManager.getScreenHeight(), overlayManager.getNavBarHeightPx())
     }
 
     private fun createNotificationChannel() {
-        val ch = NotificationChannel(
-            CHANNEL_ID,
-            getString(R.string.notification_channel_name),
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
+        val ch = NotificationChannel(CHANNEL_ID, getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW).apply {
             description = getString(R.string.notification_channel_description)
             setShowBadge(false)
             enableVibration(false)
@@ -403,16 +421,12 @@ class PetOverlayService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        val open = PendingIntent.getActivity(
-            this, 0, Intent(this, MainActivity::class.java),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
+        val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val stop = PendingIntent.getService(
             this, 1,
             Intent(this, PetOverlayService::class.java).apply { action = ACTION_STOP_SERVICE },
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(getString(R.string.notification_title))
