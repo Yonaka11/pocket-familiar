@@ -24,6 +24,9 @@ import com.mikazuki.pocketfamiliar.model.PetSettings
 import com.mikazuki.pocketfamiliar.service.ACTION_DEBUG_STATE
 import com.mikazuki.pocketfamiliar.service.EXTRA_DEBUG_STATE
 import com.mikazuki.pocketfamiliar.service.PetOverlayService
+import com.mikazuki.pocketfamiliar.story.data.StoryProgressRepository
+import com.mikazuki.pocketfamiliar.story.model.StoryEpisode
+import com.mikazuki.pocketfamiliar.story.model.StoryProgress
 import com.mikazuki.pocketfamiliar.util.BatteryMonitor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,10 +40,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = PetSettingsRepository(application)
     private val progressRepository = FamiliarProgressRepository(application)
     private val gameplayRepository = FamiliarGameplayRepository(application)
+    private val storyRepository = StoryProgressRepository(application)
     private val batteryMonitor = BatteryMonitor(application)
 
     val settings: StateFlow<PetSettings> = repository.settingsFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PetSettings())
+
+    val storyProgress: StateFlow<StoryProgress> = storyRepository.progressFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StoryProgress())
 
     val batteryState: StateFlow<BatteryState> = batteryMonitor.batteryState
     val giftCatalog: List<FamiliarGift> = FamiliarGiftCatalog.all
@@ -60,6 +67,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _giftMessage = MutableStateFlow<String?>(null)
     val giftMessage: StateFlow<String?> = _giftMessage.asStateFlow()
+
+    private val _storyMessage = MutableStateFlow<String?>(null)
+    val storyMessage: StateFlow<String?> = _storyMessage.asStateFlow()
 
     init {
         batteryMonitor.register()
@@ -107,6 +117,22 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         else context.startService(intent)
     }
 
+    fun completeStoryEpisode(episode: StoryEpisode) {
+        viewModelScope.launch {
+            val firstCompletion = storyRepository.completeEpisode(episode.id, episode.memoryRewardId)
+            if (firstCompletion) {
+                val id = settings.value.selectedPetId
+                _progress.value = progressRepository.addReward(
+                    id,
+                    FamiliarReward(bondXp = 25, charms = 10),
+                )
+                _storyMessage.value = "${episode.memoryRewardTitle} recovered · +25 Bond XP · +10 Charms"
+            } else {
+                _storyMessage.value = "${episode.title} replay complete."
+            }
+        }
+    }
+
     fun redeemGift(gift: FamiliarGift) {
         val id = settings.value.selectedPetId
         val profile = PetRegistry.getById(id)
@@ -138,6 +164,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun clearDebugThemes() = viewModelScope.launch { repository.clearDebugThemes() }
     fun clearGiftMessage() { _giftMessage.value = null }
+    fun clearStoryMessage() { _storyMessage.value = null }
 
     private fun refreshProgress(id: String) {
         _progress.value = progressRepository.load(id)
