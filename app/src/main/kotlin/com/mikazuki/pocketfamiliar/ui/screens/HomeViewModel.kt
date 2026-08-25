@@ -21,6 +21,8 @@ import com.mikazuki.pocketfamiliar.model.FamiliarTheme
 import com.mikazuki.pocketfamiliar.model.FamiliarThemeCatalog
 import com.mikazuki.pocketfamiliar.model.PetRegistry
 import com.mikazuki.pocketfamiliar.model.PetSettings
+import com.mikazuki.pocketfamiliar.service.ACTION_DEBUG_STATE
+import com.mikazuki.pocketfamiliar.service.EXTRA_DEBUG_STATE
 import com.mikazuki.pocketfamiliar.service.PetOverlayService
 import com.mikazuki.pocketfamiliar.util.BatteryMonitor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,9 +64,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     init {
         batteryMonitor.register()
         viewModelScope.launch {
-            repository.settingsFlow.collect { value ->
-                refreshProgress(value.selectedPetId)
-            }
+            repository.settingsFlow.collect { value -> refreshProgress(value.selectedPetId) }
         }
     }
 
@@ -87,18 +87,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
             getApplication<Application>().checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
 
-    fun startPet() {
-        val context = getApplication<Application>()
-        val intent = Intent(context, PetOverlayService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
-    }
+    fun startPet() = sendServiceIntent(Intent(getApplication(), PetOverlayService::class.java))
 
     fun stopPet() {
         getApplication<Application>().stopService(Intent(getApplication(), PetOverlayService::class.java))
+    }
+
+    fun debugState(stateName: String) {
+        val intent = Intent(getApplication(), PetOverlayService::class.java).apply {
+            action = ACTION_DEBUG_STATE
+            putExtra(EXTRA_DEBUG_STATE, stateName)
+        }
+        sendServiceIntent(intent)
+    }
+
+    private fun sendServiceIntent(intent: Intent) {
+        val context = getApplication<Application>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(intent)
+        else context.startService(intent)
     }
 
     fun redeemGift(gift: FamiliarGift) {
@@ -130,13 +136,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         repository.setDebugThemeEnabled(themeId, enabled)
     }
 
-    fun clearDebugThemes() = viewModelScope.launch {
-        repository.clearDebugThemes()
-    }
-
-    fun clearGiftMessage() {
-        _giftMessage.value = null
-    }
+    fun clearDebugThemes() = viewModelScope.launch { repository.clearDebugThemes() }
+    fun clearGiftMessage() { _giftMessage.value = null }
 
     private fun refreshProgress(id: String) {
         _progress.value = progressRepository.load(id)
@@ -148,4 +149,5 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun setSleepEnabled(value: Boolean) = viewModelScope.launch { repository.setSleepEnabled(value) }
     fun setAutoStartOnBoot(value: Boolean) = viewModelScope.launch { repository.setAutoStartOnBoot(value) }
     fun setSelectedPetId(id: String) = viewModelScope.launch { repository.setSelectedPetId(id) }
+    fun setUseFamiliarForm(value: Boolean) = viewModelScope.launch { repository.setUseFamiliarForm(value) }
 }

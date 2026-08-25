@@ -56,6 +56,14 @@ fun FamiliarProgressPanel(vm: HomeViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            Text("Signature Memories ${progress.signatureMemories}/3", style = MaterialTheme.typography.titleSmall)
+            Text(
+                if (progress.ascendedSpiritUnlocked) "Ascended spirit milestone unlocked."
+                else "Next memory: ${progress.nextMemoryHint}. Ascension target: Bond 10 + Play 10 + all 3 memories.",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (progress.ascendedSpiritUnlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
             if (!hasActivityPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 Button(onClick = { permissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION) }) {
                     Text("Enable step rewards")

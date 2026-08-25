@@ -4,8 +4,8 @@ package com.mikazuki.pocketfamiliar.pet.animation
  * One renderable animation frame.
  *
  * [Resource] keeps the existing one-drawable-per-frame path used by the built-in
- * familiars. [Atlas] lets character packs keep many 64x64 frames inside one
- * compact bitmap while still selecting individual frames at runtime.
+ * familiars. [Atlas] lets character packs keep many frames inside one compact
+ * bitmap while still selecting individual frames at runtime.
  */
 sealed interface PetFrame {
     data class Resource(val resId: Int) : PetFrame
@@ -43,8 +43,20 @@ fun resourceFrames(vararg resIds: Int): List<PetFrame> =
     resIds.map(PetFrame::Resource)
 
 /**
- * Convenience helper for a 4x3 sprite atlas. The supplied indices are read
- * left-to-right, top-to-bottom.
+ * Convenience helper for sprite atlases. Indices are read left-to-right,
+ * top-to-bottom. Defaults preserve the original 4x3 atlas layout while newer
+ * packs may provide a different grid, such as EMK's 4x4 runtime atlases.
  */
-fun atlasFrames(atlasResId: Int, vararg indices: Int): List<PetFrame> =
-    indices.map { PetFrame.Atlas(atlasResId, it) }
+fun atlasFrames(
+    atlasResId: Int,
+    vararg indices: Int,
+    columns: Int = 4,
+    rows: Int = 3,
+): List<PetFrame> {
+    require(columns > 0 && rows > 0) { "Atlas grid must be at least 1x1." }
+    val maxFrames = columns * rows
+    require(indices.all { it in 0 until maxFrames }) {
+        "Atlas frame index must be inside a ${columns}x${rows} grid."
+    }
+    return indices.map { PetFrame.Atlas(atlasResId, it, columns, rows) }
+}
