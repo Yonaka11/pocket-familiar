@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.mikazuki.pocketfamiliar.ui.screens.HomeScreen
+import com.mikazuki.pocketfamiliar.story.ui.PocketFamiliarStoryHost
 import com.mikazuki.pocketfamiliar.ui.theme.PocketFamiliarTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .safeContentPadding(),
                 ) {
-                    HomeScreen()
+                    PocketFamiliarStoryHost()
                 }
             }
         }
