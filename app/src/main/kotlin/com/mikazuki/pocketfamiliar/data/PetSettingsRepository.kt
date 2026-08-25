@@ -16,11 +16,7 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "pet_settings")
 
-/**
- * Single source of truth for user-controlled settings, backed by DataStore.
- *
- * All writes are suspending; reads are exposed as [Flow] for reactive updates.
- */
+/** Single source of truth for user-controlled settings, backed by DataStore. */
 class PetSettingsRepository(private val context: Context) {
 
     private object Keys {
@@ -29,6 +25,7 @@ class PetSettingsRepository(private val context: Context) {
         val SLEEP_ENABLED = booleanPreferencesKey("sleep_enabled")
         val AUTO_START = booleanPreferencesKey("auto_start_on_boot")
         val SELECTED_PET_ID = stringPreferencesKey("selected_pet_id")
+        val USE_FAMILIAR_FORM = booleanPreferencesKey("use_familiar_form")
         val SELECTED_THEME_ID = stringPreferencesKey("selected_theme_id")
         val DEBUG_THEME_IDS = stringSetPreferencesKey("debug_theme_ids")
     }
@@ -40,21 +37,18 @@ class PetSettingsRepository(private val context: Context) {
             sleepEnabled = prefs[Keys.SLEEP_ENABLED] ?: true,
             autoStartOnBoot = prefs[Keys.AUTO_START] ?: false,
             selectedPetId = prefs[Keys.SELECTED_PET_ID] ?: "default",
+            useFamiliarForm = prefs[Keys.USE_FAMILIAR_FORM] ?: false,
             selectedThemeId = prefs[Keys.SELECTED_THEME_ID] ?: FamiliarThemeCatalog.DEFAULT_THEME_ID,
             debugThemeIds = prefs[Keys.DEBUG_THEME_IDS]?.toSet() ?: emptySet(),
         )
     }
 
     suspend fun setPetSize(value: Float) = context.dataStore.edit { it[Keys.PET_SIZE] = value }
-
     suspend fun setMovementSpeed(value: Float) = context.dataStore.edit { it[Keys.MOVEMENT_SPEED] = value }
-
     suspend fun setSleepEnabled(value: Boolean) = context.dataStore.edit { it[Keys.SLEEP_ENABLED] = value }
-
     suspend fun setAutoStartOnBoot(value: Boolean) = context.dataStore.edit { it[Keys.AUTO_START] = value }
-
     suspend fun setSelectedPetId(value: String) = context.dataStore.edit { it[Keys.SELECTED_PET_ID] = value }
-
+    suspend fun setUseFamiliarForm(value: Boolean) = context.dataStore.edit { it[Keys.USE_FAMILIAR_FORM] = value }
     suspend fun setSelectedThemeId(value: String) = context.dataStore.edit { it[Keys.SELECTED_THEME_ID] = value }
 
     suspend fun setDebugThemeEnabled(themeId: String, enabled: Boolean) = context.dataStore.edit { prefs ->
