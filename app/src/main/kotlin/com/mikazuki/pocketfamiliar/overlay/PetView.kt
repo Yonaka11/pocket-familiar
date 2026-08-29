@@ -22,7 +22,7 @@ import kotlin.math.sin
 
 private const val TAG = "PetView"
 
-/** Renders atlas sprites plus procedural motion for single-frame familiar forms. */
+/** Renders atlas/strip sprites plus procedural motion for single-frame familiar forms. */
 class PetView(context: Context) : View(context) {
 
     private var profile: PetProfile = PetRegistry.all.first()
@@ -53,19 +53,23 @@ class PetView(context: Context) : View(context) {
         currentAtlasBitmap = null
         currentFrameIndex = 0
         usingAtlasFallback = false
-        loadAnimationForCurrentState()
+        loadAnimationForCurrentState(forceRestart = true)
         invalidate()
     }
 
     fun applyState(state: PetState) {
+        val stateChanged = state != currentState
         currentState = state
-        loadAnimationForCurrentState()
+        // One-shot reactions/specials must replay when Character Lab or touch input
+        // forces the same state again. Looping locomotion keeps its current cycle.
+        val shouldReplayOneShot = currentAnimation?.loop == false
+        loadAnimationForCurrentState(forceRestart = stateChanged || shouldReplayOneShot)
     }
 
-    private fun loadAnimationForCurrentState() {
+    private fun loadAnimationForCurrentState(forceRestart: Boolean = false) {
         val newAnim = profile.animationForState(currentState)
         val newFlip = profile.isFlippedForState(currentState)
-        if (newAnim != currentAnimation || newFlip != flipped) {
+        if (forceRestart || newAnim != currentAnimation || newFlip != flipped) {
             currentAnimation = newAnim
             currentFrameIndex = 0
             lastFrameTimeMs = System.currentTimeMillis()
@@ -80,12 +84,18 @@ class PetView(context: Context) : View(context) {
         val now = System.currentTimeMillis()
         if (now - lastFrameTimeMs >= anim.frameDurationMs) {
             lastFrameTimeMs = now
-            currentFrameIndex = if (anim.loop) {
+            val nextFrame = if (anim.loop) {
                 (currentFrameIndex + 1) % anim.frames.size
             } else {
                 (currentFrameIndex + 1).coerceAtMost(anim.frames.size - 1)
             }
-            loadCurrentFrame()
+            if (nextFrame != currentFrameIndex) {
+                currentFrameIndex = nextFrame
+                loadCurrentFrame()
+                // Critical: changing an atlas cell does not mutate the View by
+                // itself. Explicitly redraw so the user actually sees the frame.
+                invalidate()
+            }
         }
         if (profile.proceduralMotion || usingAtlasFallback) invalidate()
     }
@@ -124,7 +134,7 @@ class PetView(context: Context) : View(context) {
         canvas.restore()
     }
 
-    /** Gives static art readable idle/walk/run/reaction animation. */
+    /** Gives static familiar-form art readable idle/walk/run/reaction animation. */
     private fun applyProceduralMotion(canvas: Canvas, w: Float, h: Float) {
         val t = SystemClock.uptimeMillis() / 1000f
         val cx = w / 2f
@@ -197,7 +207,7 @@ class PetView(context: Context) : View(context) {
                 val decoded = runCatching {
                     atlasCache.getOrPut(frame.resId) { decodeAtlasBitmap(frame.resId) }
                 }.onFailure { error ->
-                    Log.e(TAG, "Atlas decode failed for ${profile.id} resource ${frame.resId}; using preview fallback", error)
+                    Log.e(TAG, "Atlas/strip decode failed for ${profile.id} resource ${frame.resId}; using preview fallback", error)
                 }.getOrNull()
 
                 if (decoded == null) {
@@ -213,18 +223,14 @@ class PetView(context: Context) : View(context) {
         }
     }
 
-    /**
-     * A bad or truncated art asset must never take down the overlay service.
-     * Fall back to the character preview and keep state-aware procedural motion
-     * until a valid atlas is packaged in a later build.
-     */
+    /** A bad art asset must never take down the overlay service. */
     private fun usePreviewFallback(failedResId: Int) {
         usingAtlasFallback = true
         currentAtlasFrame = null
         currentAtlasBitmap = null
         currentDrawable = ContextCompat.getDrawable(context, profile.previewResId)
             ?: ContextCompat.getDrawable(context, PetRegistry.all.first().previewResId)
-        Log.w(TAG, "Using preview fallback for ${profile.id}; failed atlas resource=$failedResId")
+        Log.w(TAG, "Using preview fallback for ${profile.id}; failed sprite resource=$failedResId")
     }
 
     private fun decodeAtlasBitmap(resId: Int): Bitmap {
@@ -234,7 +240,7 @@ class PetView(context: Context) : View(context) {
         }.getOrNull()?.let { return it }
 
         val drawable = ContextCompat.getDrawable(context, resId)
-            ?: throw IllegalArgumentException("Unable to load sprite atlas resource $resId")
+            ?: throw IllegalArgumentException("Unable to load sprite resource $resId")
         if (drawable is BitmapDrawable && drawable.bitmap != null) return drawable.bitmap
 
         val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 1
