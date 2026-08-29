@@ -1,115 +1,99 @@
 package com.mikazuki.pocketfamiliar.model
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
-import com.mikazuki.pocketfamiliar.pet.animation.atlasFrames
+import com.mikazuki.pocketfamiliar.pet.animation.stripFrames
 
 /**
- * Runtime bridge for the clean EMK Runtime V2 character atlases.
+ * Runtime bridge for the clean EMK animation-strip packs.
  *
- * Each character owns one transparent 4x7 production atlas. Frames were isolated
- * individually from the locked character boards before assembly, so animation
- * cells never rely on broad poster slicing that can clip hair, effects, or limbs.
- *
- * Atlas rows:
- * 0 = idle / blink (4)
- * 1 = walk (4)
- * 2 = run (4)
- * 3 = jump / land (4)
- * 4 = signature special (4)
- * 5 = reaction / recover (3 useful frames; fourth cell is padding)
- * 6 = sleep / rest (2 useful frames; remaining cells are padding)
+ * A character only upgrades to V3 when every required strip exists AND can be
+ * decoded with the expected horizontal frame count. A present-but-corrupt file
+ * therefore cannot silently replace the legacy runtime again.
  */
 object EmkRuntimeV2 {
-
     private var appContext: Context? = null
 
     fun initialize(context: Context) {
         appContext = context.applicationContext
     }
 
+    enum class RuntimeArtStatus { V3_STRIPS, LEGACY_FALLBACK }
+
+    private data class Action(
+        val suffix: String,
+        val frames: Int,
+        val frameMs: Long,
+        val loop: Boolean = true,
+    )
+
     private data class CharacterSpec(
-        val atlasResourceName: String,
-        val idleMs: Long,
-        val walkMs: Long,
-        val runMs: Long,
-        val jumpLandMs: Long,
-        val specialMs: Long,
-        val reactionMs: Long,
-        val sleepMs: Long,
+        val idle: Action,
+        val walk: Action,
+        val run: Action,
+        val jumpLand: Action,
+        val special: Action,
+        val reaction: Action,
+        val sleep: Action,
     )
 
     private val specs = mapOf(
         "emi" to CharacterSpec(
-            atlasResourceName = "emi_runtime_v2_atlas",
-            idleMs = 300,
-            walkMs = 145,
-            runMs = 95,
-            jumpLandMs = 120,
-            specialMs = 140,
-            reactionMs = 180,
-            sleepMs = 720,
+            Action("idle", 4, 300),
+            Action("walk", 4, 145),
+            Action("run", 4, 95),
+            Action("jump_land", 4, 120, false),
+            Action("special", 4, 140, false),
+            Action("recover", 3, 180, false),
+            Action("sleep", 2, 720),
         ),
         "kaelani" to CharacterSpec(
-            atlasResourceName = "kaelani_runtime_v2_atlas",
-            idleMs = 360,
-            walkMs = 165,
-            runMs = 112,
-            jumpLandMs = 135,
-            specialMs = 175,
-            reactionMs = 260,
-            sleepMs = 760,
+            Action("idle", 4, 360),
+            Action("walk", 4, 165),
+            Action("run", 4, 112),
+            Action("jump_land", 4, 135, false),
+            Action("special", 4, 175, false),
+            Action("happy", 3, 260, false),
+            Action("sleep", 2, 760),
         ),
         "mira" to CharacterSpec(
-            atlasResourceName = "mira_runtime_v2_atlas",
-            idleMs = 380,
-            walkMs = 172,
-            runMs = 118,
-            jumpLandMs = 138,
-            specialMs = 180,
-            reactionMs = 275,
-            sleepMs = 800,
+            Action("idle", 4, 380),
+            Action("walk", 4, 172),
+            Action("run", 4, 118),
+            Action("jump_land", 4, 138, false),
+            Action("special", 4, 180, false),
+            Action("happy", 3, 275, false),
+            Action("sleep", 2, 800),
         ),
     )
 
-    /** Returns null unless the character's clean Runtime V2 atlas is packaged. */
+    fun runtimeArtStatus(id: String): RuntimeArtStatus =
+        if (resolvePack(id) != null) RuntimeArtStatus.V3_STRIPS else RuntimeArtStatus.LEGACY_FALLBACK
+
     fun profileOrNull(base: PetProfile): PetProfile? {
-        val context = appContext ?: return null
-        val spec = specs[base.id] ?: return null
-        val resources = context.resources
+        val pack = resolvePack(base.id) ?: return null
+        val spec = specs.getValue(base.id)
 
-        @Suppress("DEPRECATION")
-        val atlasResId = resources.getIdentifier(
-            spec.atlasResourceName,
-            "drawable",
-            context.packageName,
-        )
-        if (atlasResId == 0) return null
-
-        fun anim(duration: Long, loop: Boolean = true, vararg frames: Int) = PetAnimation(
-            frames = atlasFrames(
-                atlasResId,
-                *frames,
-                columns = 4,
-                rows = 7,
-            ),
-            frameDurationMs = duration,
-            loop = loop,
+        fun anim(action: Action, resId: Int) = PetAnimation(
+            frames = stripFrames(resId, action.frames),
+            frameDurationMs = action.frameMs,
+            loop = action.loop,
         )
 
-        val idle = anim(spec.idleMs, true, 0, 1, 2, 3)
-        val walk = anim(spec.walkMs, true, 4, 5, 6, 7)
-        val run = anim(spec.runMs, true, 8, 9, 10, 11)
-        val jumpLand = anim(spec.jumpLandMs, false, 12, 13, 14, 15)
-        val special = anim(spec.specialMs, false, 16, 17, 18, 19)
-        val reaction = anim(spec.reactionMs, false, 20, 21, 22)
-        val sleep = anim(spec.sleepMs, true, 24, 25)
+        val idle = anim(spec.idle, pack.getValue(spec.idle.suffix))
+        val walk = anim(spec.walk, pack.getValue(spec.walk.suffix))
+        val run = anim(spec.run, pack.getValue(spec.run.suffix))
+        val jumpLand = anim(spec.jumpLand, pack.getValue(spec.jumpLand.suffix))
+        val special = anim(spec.special, pack.getValue(spec.special.suffix))
+        val reaction = anim(spec.reaction, pack.getValue(spec.reaction.suffix))
+        val sleep = anim(spec.sleep, pack.getValue(spec.sleep.suffix))
 
         return base.copy(
             description = when (base.id) {
-                "emi" -> "Tech-royal attendant · clean multi-frame Runtime V2."
-                "kaelani" -> "Bloom attendant · clean multi-frame Runtime V2."
-                "mira" -> "Red-haired scholar attendant · clean multi-frame Runtime V2."
+                "emi" -> "Tech-royal attendant · multi-frame Runtime V3."
+                "kaelani" -> "Bloom attendant · multi-frame Runtime V3."
+                "mira" -> "Red-haired scholar attendant · multi-frame Runtime V3."
                 else -> base.description
             },
             idleAnim = idle,
@@ -133,5 +117,38 @@ object EmkRuntimeV2 {
             deepSleepAnim = sleep,
             proceduralMotion = false,
         )
+    }
+
+    private fun resolvePack(id: String): Map<String, Int>? {
+        val context = appContext ?: return null
+        val spec = specs[id] ?: return null
+        val actions = listOf(spec.idle, spec.walk, spec.run, spec.jumpLand, spec.special, spec.reaction, spec.sleep)
+        val result = linkedMapOf<String, Int>()
+
+        for (action in actions) {
+            @Suppress("DEPRECATION")
+            val resId = context.resources.getIdentifier(
+                "${id}_anim_${action.suffix}",
+                "drawable",
+                context.packageName,
+            )
+            if (resId == 0 || !validStrip(resId, action.frames)) return null
+            result[action.suffix] = resId
+        }
+        return result
+    }
+
+    /** Validate bounds without allocating the bitmap. */
+    private fun validStrip(resId: Int, frameCount: Int): Boolean {
+        val context = appContext ?: return false
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        return runCatching {
+            context.resources.openRawResource(resId).use { stream ->
+                BitmapFactory.decodeStream(stream, null, options)
+            }
+            val width = options.outWidth
+            val height = options.outHeight
+            width > 0 && height > 0 && width % frameCount == 0 && width / frameCount == height
+        }.getOrDefault(false)
     }
 }
