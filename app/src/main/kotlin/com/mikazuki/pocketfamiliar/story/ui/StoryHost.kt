@@ -27,8 +27,8 @@ import com.mikazuki.pocketfamiliar.ui.screens.HomeScreen
 import com.mikazuki.pocketfamiliar.ui.screens.HomeViewModel
 
 /**
- * Root story surface. Normal familiar management remains visible until a story
- * episode is launched, then the kinetic-manga player temporarily owns the app.
+ * Root story surface. Story playback is intentionally isolated from the overlay
+ * service so an art/overlay failure cannot take the narrative screen down with it.
  */
 @Composable
 fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
@@ -54,7 +54,12 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
             episode = episode,
             onComplete = {
                 vm.completeStoryEpisode(episode)
-                if (hasOverlayPermission) vm.debugState("SPECIAL")
+                // Only ask the live overlay to react when the story's focus
+                // character is actually the selected familiar. The story itself
+                // never depends on the overlay service being alive.
+                if (hasOverlayPermission && settings.selectedPetId == episode.focusFamiliarId) {
+                    runCatching { vm.debugState("SPECIAL") }
+                }
                 storyActive = false
             },
             onExit = { storyActive = false },
@@ -72,7 +77,8 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
 
         ExtendedFloatingActionButton(
             onClick = {
-                if (hasOverlayPermission) vm.debugState("SPECIAL")
+                // Do not start/restart PetOverlayService simply because the user
+                // opened a story. This was a fragile coupling in Story Engine V1.
                 storyActive = true
             },
             modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
