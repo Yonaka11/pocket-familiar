@@ -7,6 +7,7 @@ enum class StoryAccent {
     BLOOM,
     SCHOLAR,
     CELESTIAL,
+    UNKNOWN,
 }
 
 enum class StoryTransition {
@@ -26,12 +27,21 @@ enum class StoryInteractionType {
     TRACE_GLYPH,
 }
 
+enum class StoryPanelTreatment {
+    STANDARD,
+    COMIC_INK,
+    GLITCHED,
+    SILHOUETTE,
+}
+
 data class StoryEpisode(
     val id: String,
     val title: String,
     val subtitle: String,
     val memoryRewardId: String,
     val memoryRewardTitle: String,
+    /** Story rewards can belong to a specific attendant even if another familiar is selected. */
+    val focusFamiliarId: String? = null,
     val beats: List<StoryBeat>,
 )
 
@@ -46,6 +56,7 @@ sealed interface StoryBeat {
         val accent: StoryAccent = StoryAccent.CELESTIAL,
         val transition: StoryTransition = StoryTransition.CUT,
         val cameraZoom: Float = 1.0f,
+        val treatment: StoryPanelTreatment = StoryPanelTreatment.COMIC_INK,
     ) : StoryBeat
 
     data class Dialogue(
@@ -54,6 +65,17 @@ sealed interface StoryBeat {
         val text: String,
         val accent: StoryAccent,
         val transition: StoryTransition = StoryTransition.FADE,
+        val thought: Boolean = false,
+    ) : StoryBeat
+
+    /** Procedural ink-and-halftone panel used for Seraphi / unknown presences. */
+    data class InkShadow(
+        override val id: String,
+        val caption: String? = null,
+        val accent: StoryAccent = StoryAccent.UNKNOWN,
+        val transition: StoryTransition = StoryTransition.GLITCH,
+        val halo: Boolean = false,
+        val looming: Boolean = false,
     ) : StoryBeat
 
     data class Flash(
