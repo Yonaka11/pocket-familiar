@@ -8,13 +8,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,19 +33,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mikazuki.pocketfamiliar.R
 import com.mikazuki.pocketfamiliar.story.model.StoryEpisode
 import kotlin.math.abs
 
 /**
- * Episode 0 presentation pass based on the approved three-page storyboard.
- * It deliberately uses crash-safe bitmap decoding rather than painterResource:
- * a missing/corrupt panel falls back to halftone art instead of killing the app.
+ * Episode 0 motion-comic player.
+ *
+ * The approved storyboard panels are the actual presentation now, rather than
+ * being packaged but ignored while avatars and placeholder UI recreate them.
+ * Panel 10 keeps the interactive static-clearing beat. Panel 16 is intentionally
+ * generated in-app because the source pack has no story_ep0_16 asset.
  */
 @Composable
 fun StoryboardStoryPlayer(
@@ -53,38 +56,45 @@ fun StoryboardStoryPlayer(
     onExit: () -> Unit,
 ) {
     var page by remember(episode.id) { mutableIntStateOf(0) }
-    var staticCleared by remember { mutableStateOf(false) }
-    val cast = storyCast(selectedFamiliarId)
+    var staticCleared by remember(episode.id) { mutableStateOf(false) }
 
     BackHandler {
         if (page > 0) page-- else onExit()
     }
 
-    Box(Modifier.fillMaxSize().background(Color(0xFF07090D))) {
-        HalftoneBackdrop(cast.accent)
+    Box(Modifier.fillMaxSize().background(Color(0xFF06080D))) {
         Column(
-            Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 18.dp),
+            Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("POCKET FAMILIAR", color = Color.White, fontWeight = FontWeight.Black)
-                    Text("EPISODE 0 · THE SIGNAL", color = cast.accent, style = MaterialTheme.typography.labelMedium)
+                    Text("EPISODE 0 · THE SIGNAL", color = Color(0xFFFFD34E), style = MaterialTheme.typography.labelMedium)
                 }
                 Text("${page + 1} / 3", color = Color.White.copy(alpha = .55f))
             }
 
-            val pageModifier = Modifier.weight(1f)
-            when (page) {
-                0 -> OpeningPage(cast, pageModifier)
-                1 -> ContactPage(cast, staticCleared, pageModifier) { staticCleared = true }
-                else -> AftermathPage(cast, pageModifier)
+            val range = when (page) {
+                0 -> 1..6
+                1 -> 7..12
+                else -> 13..18
             }
 
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            Column(
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                range.forEach { index ->
+                    when (index) {
+                        10 -> InteractiveStaticPanel(staticCleared) { staticCleared = true }
+                        16 -> MemoryFragmentPanel()
+                        else -> StoryPanel(index)
+                    }
+                }
+            }
+
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (page > 0) {
                     Button(onClick = { page-- }, modifier = Modifier.weight(1f)) { Text("Back") }
                 }
@@ -99,7 +109,13 @@ fun StoryboardStoryPlayer(
                     enabled = page != 1 || staticCleared,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(if (page == 2) "Return to familiar" else if (page == 1 && !staticCleared) "Clear the static" else "Continue")
+                    Text(
+                        when {
+                            page == 1 && !staticCleared -> "Clear the static"
+                            page == 2 -> "Return to familiar"
+                            else -> "Continue"
+                        },
+                    )
                 }
             }
         }
@@ -107,188 +123,110 @@ fun StoryboardStoryPlayer(
 }
 
 @Composable
-private fun OpeningPage(cast: StoryCast, modifier: Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SafeStoryImage(cast.avatarRes, Modifier.weight(1f))
-                Column(Modifier.weight(1.5f)) {
-                    Text("Pocket Familiar · ACTIVE", color = cast.accent, fontWeight = FontWeight.Bold)
-                    Text("Your familiar stops mid-motion.", color = Color.White.copy(alpha=.75f))
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.8f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("...Wait.")
-        }
-        MangaPanel(Modifier.weight(1.15f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble(cast.warning)
-        }
-        MangaPanel(Modifier.weight(.7f), cast.accent) {
-            Text("THE INTERFACE TEARS OPEN", color = cast.accent, fontWeight = FontWeight.Black)
-            Canvas(Modifier.fillMaxSize()) {
-                repeat(16) { i ->
-                    val y = size.height * i / 16f
-                    drawLine(cast.accent.copy(alpha=.35f), androidx.compose.ui.geometry.Offset(0f,y), androidx.compose.ui.geometry.Offset(size.width,y-30f), strokeWidth=if(i%3==0) 6f else 2f)
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.95f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Did you see that?")
-        }
+private fun StoryPanel(index: Int) {
+    val context = LocalContext.current
+    val resId = remember(index) {
+        context.resources.getIdentifier(
+            "story_ep0_${index.toString().padStart(2, '0')}",
+            "drawable",
+            context.packageName,
+        )
     }
+    SafeStoryboardImage(resId, index)
 }
 
 @Composable
-private fun ContactPage(cast: StoryCast, cleared: Boolean, modifier: Modifier, onClear: () -> Unit) {
-    var drag by remember { mutableFloatStateOf(0f) }
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(.72f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("No...")
-        }
-        MangaPanel(Modifier.weight(1.15f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("SIGNAL // FRAGMENTED", color = Color.White.copy(alpha=.75f), modifier = Modifier.align(Alignment.BottomStart))
-        }
-        MangaPanel(Modifier.weight(.8f), Color(0xFFB8A6FF)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            SpeechBubble("Find me.")
-        }
-        MangaPanel(
-            Modifier.weight(1f).pointerInput(cleared) {
-                if (!cleared) detectDragGestures { change, amount ->
-                    change.consume()
-                    drag = (drag + abs(amount.x) + abs(amount.y)).coerceAtMost(1800f)
-                    if (drag >= 1400f) onClear()
-                }
-            },
-            cast.accent,
-        ) {
-            Text(if (cleared) "SIGNAL STABLE" else "DRAG ACROSS THE STATIC", color = Color.White, fontWeight = FontWeight.Bold)
-            Canvas(Modifier.fillMaxSize()) {
-                val a = if (cleared) .08f else (.48f * (1f - drag / 1800f)).coerceAtLeast(.10f)
-                repeat(28) { i ->
-                    val y = i * size.height / 28f
-                    drawLine(Color.White.copy(alpha=a), androidx.compose.ui.geometry.Offset(0f,y), androidx.compose.ui.geometry.Offset(size.width,y + if(i%2==0) 42f else -24f), strokeWidth=if(i%4==0) 5f else 2f)
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.8f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Hold on!")
-        }
+private fun InteractiveStaticPanel(cleared: Boolean, onClear: () -> Unit) {
+    var dragDistance by remember { mutableFloatStateOf(0f) }
+    val context = LocalContext.current
+    val resId = remember {
+        context.resources.getIdentifier("story_ep0_10", "drawable", context.packageName)
     }
-}
 
-@Composable
-private fun AftermathPage(cast: StoryCast, modifier: Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(1f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("The static clears. The figure breaks into light.", color = Color.White, modifier = Modifier.align(Alignment.BottomStart))
-        }
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble(cast.aftermath)
-        }
-        MangaPanel(Modifier.weight(.72f), cast.accent) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("SIGNAL FRAGMENT 00", color = cast.accent, fontWeight = FontWeight.Black)
-                Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineSmall)
-            }
-        }
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Did you hear that too?")
-        }
-        MangaPanel(Modifier.weight(1.05f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("Everything looks normal... until it isn't.", color = Color.White, fontStyle = FontStyle.Italic, modifier = Modifier.align(Alignment.BottomCenter))
-        }
-    }
-}
-
-@Composable
-private fun MangaPanel(modifier: Modifier, accent: Color, content: @Composable BoxScope.() -> Unit) {
     Box(
-        modifier
+        Modifier
             .fillMaxWidth()
+            .height(220.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xFF10131A))
-            .padding(10.dp),
+            .pointerInput(cleared) {
+                if (!cleared) {
+                    detectDragGestures { change, amount ->
+                        change.consume()
+                        dragDistance = (dragDistance + abs(amount.x) + abs(amount.y)).coerceAtMost(1800f)
+                        if (dragDistance >= 1200f) onClear()
+                    }
+                }
+            },
+    ) {
+        SafeStoryboardImage(resId, 10, Modifier.fillMaxSize())
+        if (!cleared) {
+            Canvas(Modifier.fillMaxSize()) {
+                val remaining = (1f - dragDistance / 1800f).coerceIn(.08f, 1f)
+                repeat(28) { i ->
+                    val y = size.height * i / 28f
+                    drawLine(
+                        Color.White.copy(alpha = .42f * remaining),
+                        androidx.compose.ui.geometry.Offset(0f, y),
+                        androidx.compose.ui.geometry.Offset(size.width, y + if (i % 2 == 0) 32f else -20f),
+                        strokeWidth = if (i % 4 == 0) 5f else 2f,
+                    )
+                }
+            }
+            Text(
+                "DRAG TO CLEAR THE STATIC",
+                color = Color.White,
+                fontWeight = FontWeight.Black,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(12.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun MemoryFragmentPanel() {
+    Box(
+        Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFF11131B)),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            val step = 16f
-            var y = 0f
-            while (y < size.height) {
-                var x = 0f
-                while (x < size.width) {
-                    if (((x + y) / step).toInt() % 3 == 0) drawCircle(accent.copy(alpha=.08f), 1.8f, androidx.compose.ui.geometry.Offset(x,y))
-                    x += step
-                }
-                y += step
+            repeat(40) { i ->
+                val x = (i * 71f) % size.width
+                val y = (i * 109f) % size.height
+                drawCircle(Color(0xFFFFD34E).copy(alpha = .13f), if (i % 5 == 0) 4f else 2f, androidx.compose.ui.geometry.Offset(x, y))
             }
         }
-        content()
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("SIGNAL FRAGMENT 00", color = Color(0xFFFFD34E), fontWeight = FontWeight.Black)
+            Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+        }
     }
 }
 
 @Composable
-private fun BoxScope.SpeechBubble(text: String) {
-    Box(
-        Modifier
-            .align(Alignment.TopStart)
-            .fillMaxWidth(.58f)
-            .clip(RoundedCornerShape(50))
-            .background(Color.White)
-            .padding(horizontal = 18.dp, vertical = 12.dp),
-    ) {
-        Text(text, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-@Composable
-private fun SafeStoryImage(resId: Int, modifier: Modifier = Modifier) {
+private fun SafeStoryboardImage(resId: Int, index: Int, modifier: Modifier = Modifier.fillMaxWidth().height(220.dp)) {
     val context = LocalContext.current
     val bitmap = remember(resId) {
-        runCatching { BitmapFactory.decodeResource(context.resources, resId)?.asImageBitmap() }.getOrNull()
+        if (resId == 0) null else runCatching {
+            context.resources.openRawResource(resId).use { stream ->
+                BitmapFactory.decodeStream(stream)?.asImageBitmap()
+            }
+        }.getOrNull()
     }
-    if (bitmap != null) {
-        Image(bitmap = bitmap, contentDescription = null, modifier = modifier)
-    } else {
-        Box(modifier.background(Color(0xFF171923)), contentAlignment = Alignment.Center) {
-            Text("ART SIGNAL LOST", color = Color.White.copy(alpha=.45f), style = MaterialTheme.typography.labelSmall)
+
+    Box(
+        modifier.clip(RoundedCornerShape(12.dp)).background(Color(0xFF10131A)),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = "Episode 0 panel $index",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+        } else {
+            Text("ART SIGNAL LOST · PANEL $index", color = Color.White.copy(alpha = .5f))
         }
     }
-}
-
-@Composable
-private fun HalftoneBackdrop(accent: Color) {
-    Canvas(Modifier.fillMaxSize()) {
-        drawRect(Color(0xFF07090D))
-        repeat(50) { i ->
-            val x = (i * 79f) % size.width
-            val y = (i * 131f) % size.height
-            drawCircle(accent.copy(alpha=.08f), if (i % 5 == 0) 4f else 2f, androidx.compose.ui.geometry.Offset(x,y))
-        }
-    }
-}
-
-private data class StoryCast(
-    val name: String,
-    val avatarRes: Int,
-    val accent: Color,
-    val warning: String,
-    val aftermath: String,
-)
-
-private fun storyCast(id: String): StoryCast = when (id) {
-    "kaelani" -> StoryCast("Kaelani", R.drawable.kaelani_avatar, Color(0xFF39C6A6), "Something is blooming where nothing should be.", "I remember that light... but not where I saw it.")
-    "mira" -> StoryCast("Mira", R.drawable.mira_avatar, Color(0xFFC46B8C), "No. That line wasn't there before.", "I know that pattern. I don't remember learning it.")
-    else -> StoryCast("Emi", R.drawable.emi_avatar, Color(0xFFFFD400), "Don't touch that.", "She was here...")
 }
