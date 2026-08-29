@@ -5,17 +5,15 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -76,10 +74,11 @@ fun StoryboardStoryPlayer(
                 Text("${page + 1} / 3", color = Color.White.copy(alpha = .55f))
             }
 
+            val pageModifier = Modifier.weight(1f)
             when (page) {
-                0 -> OpeningPage(cast)
-                1 -> ContactPage(cast, staticCleared) { staticCleared = true }
-                else -> AftermathPage(cast)
+                0 -> OpeningPage(cast, pageModifier)
+                1 -> ContactPage(cast, staticCleared, pageModifier) { staticCleared = true }
+                else -> AftermathPage(cast, pageModifier)
             }
 
             Row(
@@ -108,8 +107,8 @@ fun StoryboardStoryPlayer(
 }
 
 @Composable
-private fun OpeningPage(cast: StoryCast) {
-    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+private fun OpeningPage(cast: StoryCast, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         MangaPanel(Modifier.weight(.9f), cast.accent) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SafeStoryImage(cast.avatarRes, Modifier.weight(1f))
@@ -120,8 +119,8 @@ private fun OpeningPage(cast: StoryCast) {
             }
         }
         MangaPanel(Modifier.weight(.8f), cast.accent) {
-            SpeechBubble("...Wait.")
             SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
+            SpeechBubble("...Wait.")
         }
         MangaPanel(Modifier.weight(1.15f), cast.accent) {
             SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
@@ -144,9 +143,9 @@ private fun OpeningPage(cast: StoryCast) {
 }
 
 @Composable
-private fun ContactPage(cast: StoryCast, cleared: Boolean, onClear: () -> Unit) {
+private fun ContactPage(cast: StoryCast, cleared: Boolean, modifier: Modifier, onClear: () -> Unit) {
     var drag by remember { mutableFloatStateOf(0f) }
-    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         MangaPanel(Modifier.weight(.72f), cast.accent) {
             SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
             SpeechBubble("No...")
@@ -186,8 +185,8 @@ private fun ContactPage(cast: StoryCast, cleared: Boolean, onClear: () -> Unit) 
 }
 
 @Composable
-private fun AftermathPage(cast: StoryCast) {
-    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+private fun AftermathPage(cast: StoryCast, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         MangaPanel(Modifier.weight(1f), Color(0xFF9B82E8)) {
             SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
             Text("The static clears. The figure breaks into light.", color = Color.White, modifier = Modifier.align(Alignment.BottomStart))
@@ -197,8 +196,10 @@ private fun AftermathPage(cast: StoryCast) {
             SpeechBubble(cast.aftermath)
         }
         MangaPanel(Modifier.weight(.72f), cast.accent) {
-            Text("SIGNAL FRAGMENT 00", color = cast.accent, fontWeight = FontWeight.Black)
-            Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("SIGNAL FRAGMENT 00", color = cast.accent, fontWeight = FontWeight.Black)
+                Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            }
         }
         MangaPanel(Modifier.weight(.9f), cast.accent) {
             SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
@@ -238,7 +239,7 @@ private fun MangaPanel(modifier: Modifier, accent: Color, content: @Composable B
 }
 
 @Composable
-private fun SpeechBubble(text: String) {
+private fun BoxScope.SpeechBubble(text: String) {
     Box(
         Modifier
             .align(Alignment.TopStart)
