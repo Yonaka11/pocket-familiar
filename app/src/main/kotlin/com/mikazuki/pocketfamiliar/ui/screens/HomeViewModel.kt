@@ -121,12 +121,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val firstCompletion = storyRepository.completeEpisode(episode.id, episode.memoryRewardId)
             if (firstCompletion) {
-                val id = settings.value.selectedPetId
-                _progress.value = progressRepository.addReward(
-                    id,
-                    FamiliarReward(bondXp = 25, charms = 10),
-                )
-                _storyMessage.value = "${episode.memoryRewardTitle} recovered · +25 Bond XP · +10 Charms"
+                val rewardFamiliarId = episode.focusFamiliarId ?: settings.value.selectedPetId
+                val reward = FamiliarReward(bondXp = 25, charms = 10)
+                val updated = progressRepository.addReward(rewardFamiliarId, reward)
+                if (settings.value.selectedPetId == rewardFamiliarId) {
+                    _progress.value = updated
+                }
+                _storyMessage.value = "${episode.memoryRewardTitle} recovered · +25 Bond XP · +10 Charms for ${PetRegistry.getById(rewardFamiliarId).displayName}"
             } else {
                 _storyMessage.value = "${episode.title} replay complete."
             }
