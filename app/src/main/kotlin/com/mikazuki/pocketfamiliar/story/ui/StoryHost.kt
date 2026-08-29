@@ -37,6 +37,7 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
 
     var storyActive by rememberSaveable { mutableStateOf(false) }
     val episode = remember(settings.selectedPetId) { StoryCatalog.signalEpisode(settings.selectedPetId) }
+    val storyCastId = episode.focusFamiliarId ?: settings.selectedPetId
 
     LaunchedEffect(storyMessage) {
         val message = storyMessage ?: return@LaunchedEffect
@@ -47,7 +48,7 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
     if (storyActive) {
         StoryboardStoryPlayer(
             episode = episode,
-            selectedFamiliarId = settings.selectedPetId,
+            selectedFamiliarId = storyCastId,
             onComplete = {
                 vm.completeStoryEpisode(episode)
                 if (hasOverlayPermission && settings.selectedPetId == episode.focusFamiliarId) {
