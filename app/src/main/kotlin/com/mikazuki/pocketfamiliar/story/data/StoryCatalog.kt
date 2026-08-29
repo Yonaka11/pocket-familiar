@@ -5,134 +5,181 @@ import com.mikazuki.pocketfamiliar.story.model.StoryAccent
 import com.mikazuki.pocketfamiliar.story.model.StoryBeat
 import com.mikazuki.pocketfamiliar.story.model.StoryEpisode
 import com.mikazuki.pocketfamiliar.story.model.StoryInteractionType
+import com.mikazuki.pocketfamiliar.story.model.StoryPanelTreatment
 import com.mikazuki.pocketfamiliar.story.model.StoryTransition
 
+/**
+ * Canon story timeline.
+ *
+ * Episode 0 follows the supplied 18-panel storyboard exactly in narrative order.
+ * The current build renders those shots with reusable Compose comic treatments so
+ * the story remains crash-safe even before final panel illustrations are bundled.
+ */
 object StoryCatalog {
 
     const val SIGNAL_EPISODE_ID = "episode_00_the_signal"
     const val SIGNAL_MEMORY_ID = "memory_signal_fragment_00"
 
     fun signalEpisode(selectedFamiliarId: String): StoryEpisode {
-        val cast = when (selectedFamiliarId) {
-            "kaelani" -> CastFlavor(
-                name = "Kaelani",
-                imageResId = R.drawable.kaelani_avatar,
-                spiritResId = R.drawable.kaelani_night,
-                accent = StoryAccent.BLOOM,
-                opening = "Something is blooming where nothing should be.",
-                ending = "I remember that light... but I don't remember from where.",
-            )
-            "mira" -> CastFlavor(
-                name = "Mira",
-                imageResId = R.drawable.mira_avatar,
-                spiritResId = R.drawable.mira_night,
-                accent = StoryAccent.SCHOLAR,
-                opening = "No. That line wasn't there before.",
-                ending = "I know that pattern. I just don't remember learning it.",
-            )
-            else -> CastFlavor(
-                name = "Emi",
-                imageResId = R.drawable.emi_avatar,
-                spiritResId = R.drawable.emi_night,
-                accent = StoryAccent.ELECTRIC,
-                opening = "Wait. Don't touch that.",
-                ending = "That wasn't supposed to happen.",
-            )
+        val returningFromAnotherFamiliar = selectedFamiliarId !in setOf("emi", "default")
+        val subtitle = if (returningFromAnotherFamiliar) {
+            "Recovered perspective: Emi · something is moving behind the interface."
+        } else {
+            "Something is moving behind the interface."
         }
 
         return StoryEpisode(
             id = SIGNAL_EPISODE_ID,
             title = "Episode 0 · The Signal",
-            subtitle = "Something is moving behind the interface.",
+            subtitle = subtitle,
             memoryRewardId = SIGNAL_MEMORY_ID,
             memoryRewardTitle = "Signal Fragment 00",
+            focusFamiliarId = "emi",
             beats = listOf(
-                StoryBeat.Flash("signal_boot_flash", StoryAccent.CELESTIAL, 140L),
+                // Storyboard 01 — Pocket Familiar overlay active.
                 StoryBeat.Panel(
-                    id = "familiar_stops",
-                    imageResId = cast.imageResId,
-                    caption = "${cast.name} stops mid-motion and stares past the edge of the screen.",
-                    accent = cast.accent,
-                    transition = StoryTransition.GLITCH,
-                    cameraZoom = 1.08f,
+                    id = "sb01_overlay_active",
+                    imageResId = R.drawable.emi_avatar,
+                    caption = "Pocket Familiar is active. Emi wanders at the edge of the screen.",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.FADE,
+                    cameraZoom = 1.02f,
+                    treatment = StoryPanelTreatment.COMIC_INK,
                 ),
+                // Storyboard 02 — Emi senses something.
                 StoryBeat.Dialogue(
-                    id = "opening_warning",
-                    speaker = cast.name,
-                    text = cast.opening,
-                    accent = cast.accent,
+                    id = "sb02_wait",
+                    speaker = "Emi",
+                    text = "...Wait.",
+                    accent = StoryAccent.ELECTRIC,
                     transition = StoryTransition.SLIDE_UP,
                 ),
+                // Storyboard 03 — close-up warning.
                 StoryBeat.Panel(
-                    id = "signal_crawls",
-                    imageResId = cast.spiritResId,
-                    caption = "A thread of light crawls behind the interface instead of across it.",
-                    accent = cast.accent,
-                    transition = StoryTransition.SLIDE_LEFT,
-                    cameraZoom = 1.16f,
+                    id = "sb03_dont_touch",
+                    imageResId = R.drawable.emi_avatar,
+                    caption = "Don't touch that.",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.GLITCH,
+                    cameraZoom = 1.24f,
+                    treatment = StoryPanelTreatment.GLITCHED,
                 ),
+                // Storyboard 04 — energy crawls behind the UI.
+                StoryBeat.Flash("sb04_interface_tear", StoryAccent.ELECTRIC, 115L),
+                // Storyboard 05.
                 StoryBeat.Dialogue(
-                    id = "did_you_see_that",
-                    speaker = cast.name,
-                    text = "...did you see that?",
-                    accent = cast.accent,
-                    transition = StoryTransition.FADE,
+                    id = "sb05_did_you_see",
+                    speaker = "Emi",
+                    text = "Did you see that?",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.SLIDE_LEFT,
                 ),
-                StoryBeat.Flash("seraphi_flash", StoryAccent.CELESTIAL, 100L),
-                StoryBeat.Panel(
-                    id = "seraphi_fragment",
-                    imageResId = R.drawable.seraphi_launcher_foreground,
-                    caption = "For less than a second, a broken halo resolves inside the static.",
+                // Storyboard 06 — first Seraphi intrusion.
+                StoryBeat.InkShadow(
+                    id = "sb06_seraphi_static",
+                    caption = "A presence resolves inside the static.",
+                    accent = StoryAccent.CELESTIAL,
+                    transition = StoryTransition.GLITCH,
+                    halo = true,
+                ),
+                // Storyboard 07.
+                StoryBeat.Dialogue(
+                    id = "sb07_no",
+                    speaker = "Emi",
+                    text = "No...",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.GLITCH,
+                ),
+                // Storyboard 08 — halo forms from the broken signal.
+                StoryBeat.InkShadow(
+                    id = "sb08_seraphi_forms",
+                    caption = "The signal gathers into the outline of a woman. Her halo will not stay whole.",
                     accent = StoryAccent.CELESTIAL,
                     transition = StoryTransition.WHITE_FLASH,
-                    cameraZoom = 1.24f,
+                    halo = true,
                 ),
+                // Storyboard 09.
                 StoryBeat.Dialogue(
-                    id = "seraphi_voice",
+                    id = "sb09_find_me",
                     speaker = "???",
                     text = "Find me.",
                     accent = StoryAccent.CELESTIAL,
                     transition = StoryTransition.CUT,
                 ),
+                // Storyboard 10 — tactile clearing interaction.
                 StoryBeat.Interaction(
-                    id = "clear_static",
+                    id = "sb10_clear_static",
                     type = StoryInteractionType.CLEAR_STATIC,
-                    prompt = "Drag across the static to stabilize the signal.",
-                    completionText = "The interference breaks apart. Something underneath notices you.",
-                    accent = cast.accent,
+                    prompt = "Drag across the tear. Clear the static before the signal collapses.",
+                    completionText = "The interference splits open. Something underneath notices you.",
+                    accent = StoryAccent.CELESTIAL,
                 ),
-                StoryBeat.Panel(
-                    id = "aftershock",
-                    imageResId = cast.imageResId,
-                    caption = "The signal collapses. ${cast.name} keeps staring at the place where it was.",
-                    accent = cast.accent,
-                    transition = StoryTransition.GLITCH,
-                    cameraZoom = 1.04f,
-                ),
+                // Storyboard 11.
                 StoryBeat.Dialogue(
-                    id = "ending_reaction",
-                    speaker = cast.name,
-                    text = cast.ending,
-                    accent = cast.accent,
+                    id = "sb11_hold_on",
+                    speaker = "Emi",
+                    text = "Hold on!",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.GLITCH,
+                ),
+                // Storyboard 12 — the other presence.
+                StoryBeat.InkShadow(
+                    id = "sb12_unknown_presence",
+                    caption = "...who are you?",
+                    accent = StoryAccent.UNKNOWN,
+                    transition = StoryTransition.CUT,
+                    looming = true,
+                ),
+                // Storyboard 13 — static clears; Seraphi remains only as fragments.
+                StoryBeat.InkShadow(
+                    id = "sb13_seraphi_fades",
+                    caption = "The static clears. Seraphi breaks apart into violet fragments.",
+                    accent = StoryAccent.CELESTIAL,
+                    transition = StoryTransition.WHITE_FLASH,
+                    halo = true,
+                ),
+                // Storyboard 14.
+                StoryBeat.Dialogue(
+                    id = "sb14_she_was_here",
+                    speaker = "Emi",
+                    text = "She was here...",
+                    accent = StoryAccent.ELECTRIC,
                     transition = StoryTransition.FADE,
                 ),
+                // Storyboard 15 — normal UI returns, residue remains.
+                StoryBeat.Panel(
+                    id = "sb15_interface_returns",
+                    imageResId = R.drawable.emi_avatar,
+                    caption = "Everything looks normal again. Almost.",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.SLIDE_UP,
+                    treatment = StoryPanelTreatment.COMIC_INK,
+                ),
+                // Storyboard 16.
                 StoryBeat.MemoryUnlock(
-                    id = "memory_unlock",
+                    id = "sb16_memory_unlock",
                     title = "Signal Fragment 00",
-                    description = "A voice behind the screen called out through a damaged halo.",
-                    accent = StoryAccent.CELESTIAL,
+                    description = "A voice behind the screen called through a broken halo.",
+                    accent = StoryAccent.ELECTRIC,
+                ),
+                // Storyboard 17.
+                StoryBeat.Dialogue(
+                    id = "sb17_hear_that",
+                    speaker = "Emi",
+                    text = "Did you hear that too?",
+                    accent = StoryAccent.ELECTRIC,
+                    transition = StoryTransition.FADE,
+                ),
+                // Storyboard 18 — hook. The shadow was not Seraphi.
+                StoryBeat.InkShadow(
+                    id = "sb18_hook",
+                    caption = "The quiet doesn't last.",
+                    accent = StoryAccent.UNKNOWN,
+                    transition = StoryTransition.GLITCH,
+                    looming = true,
                 ),
                 StoryBeat.End("signal_end", 700L),
             ),
         )
     }
-
-    private data class CastFlavor(
-        val name: String,
-        val imageResId: Int,
-        val spiritResId: Int,
-        val accent: StoryAccent,
-        val opening: String,
-        val ending: String,
-    )
 }
