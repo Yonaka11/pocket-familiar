@@ -1,36 +1,9 @@
 #!/usr/bin/env python3
-"""Assemble clean EMK Runtime V2 atlases from individually authored frames.
+"""Build per-action EMK runtime strips from individually authored transparent frames.
 
-This intentionally DOES NOT crop frames from the presentation/character boards.
-Those boards are reference art only. Runtime animation frames must be exported as
-standalone transparent PNGs first so hair, limbs, effects, and neighboring poses
-cannot be clipped or mirrored by poster slicing.
-
-Expected input layout:
-
-art_source/runtime_frames/
-  emi/
-    idle/00.png ... 03.png
-    walk/00.png ... 03.png
-    run/00.png ... 03.png
-    jump_land/00.png ... 03.png
-    special/00.png ... 03.png
-    recover/00.png ... 02.png
-    sleep/00.png ... 01.png
-  kaelani/
-    ... same, but reaction folder is happy/
-  mira/
-    ... same, but reaction folder is happy/
-
-Outputs:
-  app/src/main/res/drawable-nodpi/emi_runtime_v2_atlas.png
-  app/src/main/res/drawable-nodpi/kaelani_runtime_v2_atlas.png
-  app/src/main/res/drawable-nodpi/mira_runtime_v2_atlas.png
-
-Atlas contract: 4 columns x 7 rows, 256x256 cells.
-Rows are idle, walk, run, jump/land, special, reaction, sleep.
-Short rows repeat their last valid frame only as padding; runtime never addresses
-those padding cells.
+Presentation boards are reference art only. This exporter deliberately refuses to
+crop them. Runtime frames live under art_source/runtime_frames and are assembled
+into one horizontal PNG per action, matching EmkRuntimeV2's strip contract.
 """
 
 from __future__ import annotations
@@ -42,54 +15,23 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "art_source" / "runtime_frames"
 OUTPUT = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
-
-CELL = 256
-COLS = 4
-ROWS = 7
+CELL = 80
 
 CHARACTERS = {
-    "emi": [
-        ("idle", 4),
-        ("walk", 4),
-        ("run", 4),
-        ("jump_land", 4),
-        ("special", 4),
-        ("recover", 3),
-        ("sleep", 2),
-    ],
-    "kaelani": [
-        ("idle", 4),
-        ("walk", 4),
-        ("run", 4),
-        ("jump_land", 4),
-        ("special", 4),
-        ("happy", 3),
-        ("sleep", 2),
-    ],
-    "mira": [
-        ("idle", 4),
-        ("walk", 4),
-        ("run", 4),
-        ("jump_land", 4),
-        ("special", 4),
-        ("happy", 3),
-        ("sleep", 2),
-    ],
+    "emi": [("idle", 4), ("walk", 4), ("run", 4), ("jump_land", 4), ("special", 4), ("recover", 3), ("sleep", 2)],
+    "kaelani": [("idle", 4), ("walk", 4), ("run", 4), ("jump_land", 4), ("special", 4), ("happy", 3), ("sleep", 2)],
+    "mira": [("idle", 4), ("walk", 4), ("run", 4), ("jump_land", 4), ("special", 4), ("happy", 3), ("sleep", 2)],
 }
 
 
-def alpha_bounds(image: Image.Image) -> tuple[int, int, int, int] | None:
-    return image.getchannel("A").getbbox()
-
-
-def normalize_frame(path: Path) -> Image.Image:
+def normalize(path: Path) -> Image.Image:
     image = Image.open(path).convert("RGBA")
-    bounds = alpha_bounds(image)
+    bounds = image.getchannel("A").getbbox()
     if bounds is None:
         raise ValueError(f"Frame has no visible pixels: {path}")
     image = image.crop(bounds)
 
-    max_size = CELL - 16
+    max_size = CELL - 4
     scale = min(max_size / image.width, max_size / image.height, 1.0)
     if scale < 1.0:
         image = image.resize(
@@ -99,50 +41,38 @@ def normalize_frame(path: Path) -> Image.Image:
     return image
 
 
-def load_action_frames(character: str, action: str, count: int) -> list[Image.Image]:
+def action_strip(character: str, action: str, count: int) -> Path:
     folder = SOURCE / character / action
-    paths = [folder / f"{index:02d}.png" for index in range(count)]
-    missing = [path for path in paths if not path.exists()]
+    paths = [folder / f"{i:02d}.png" for i in range(count)]
+    missing = [p for p in paths if not p.exists()]
     if missing:
-        names = "\n".join(f"  - {path.relative_to(ROOT)}" for path in missing)
-        raise FileNotFoundError(f"Missing clean runtime frames:\n{names}")
-    return [normalize_frame(path) for path in paths]
+        raise FileNotFoundError("Missing clean frames:\n" + "\n".join(f"  - {p.relative_to(ROOT)}" for p in missing))
 
-
-def build_character(character: str) -> Path:
-    atlas = Image.new("RGBA", (COLS * CELL, ROWS * CELL), (0, 0, 0, 0))
-
-    for row, (action, count) in enumerate(CHARACTERS[character]):
-        frames = load_action_frames(character, action, count)
-        padded = frames + [frames[-1]] * (COLS - len(frames))
-
-        for column, frame in enumerate(padded[:COLS]):
-            x = column * CELL + (CELL - frame.width) // 2
-            # Bottom-align so feet share a stable baseline between frames.
-            y = row * CELL + CELL - frame.height - 6
-            atlas.alpha_composite(frame, (x, y))
+    strip = Image.new("RGBA", (CELL * count, CELL), (0, 0, 0, 0))
+    for index, path in enumerate(paths):
+        frame = normalize(path)
+        x = index * CELL + (CELL - frame.width) // 2
+        y = CELL - frame.height - 2
+        strip.alpha_composite(frame, (x, y))
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    destination = OUTPUT / f"{character}_runtime_v2_atlas.png"
-    atlas.save(destination, "PNG", optimize=True)
+    destination = OUTPUT / f"{character}_anim_{action}.png"
+    strip.save(destination, "PNG", optimize=True)
     return destination
 
 
 def main() -> int:
     try:
-        for character in CHARACTERS:
-            path = build_character(character)
-            print(f"wrote {path.relative_to(ROOT)}")
-    except (FileNotFoundError, ValueError) as error:
-        print(error, file=sys.stderr)
-        print(
-            "\nDo not fall back to cropping the showcase boards. Export the missing "
-            "pose as a standalone transparent frame instead.",
-            file=sys.stderr,
-        )
+        for character, actions in CHARACTERS.items():
+            for action, count in actions:
+                path = action_strip(character, action, count)
+                print(f"wrote {path.relative_to(ROOT)}")
+    except (FileNotFoundError, ValueError) as exc:
+        print(exc, file=sys.stderr)
+        print("Do not fall back to slicing showcase boards. Author the missing frame instead.", file=sys.stderr)
         return 2
 
-    print("\nEMK Runtime V2 clean-atlas export complete.")
+    print("EMK per-action runtime strip export complete.")
     return 0
 
 
