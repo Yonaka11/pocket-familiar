@@ -1,15 +1,21 @@
 {
   "character": "kaelani",
-  "visualDirection": "serious-cute mature pixel art; long dark curls; teal, bronze and earthy-gold bloom-mage styling",
-  "atlasContract": {"columns": 4, "rows": 7},
+  "visualDirection": "serious-cute mature pixel art; warm bronze skin; long dark curls; teal, bronze and earthy-gold bloom-mage styling",
+  "cell": {"width": 200, "height": 200},
+  "format": "horizontal_strips",
   "animations": {
-    "idle": {"row": 0, "frames": [0,1,2,3], "frameMs": 360},
-    "walk": {"row": 1, "frames": [4,5,6,7], "frameMs": 165},
-    "run": {"row": 2, "frames": [8,9,10,11], "frameMs": 112},
-    "jump_land": {"row": 3, "frames": [12,13,14,15], "frameMs": 135, "loop": false},
-    "special": {"row": 4, "frames": [16,17,18,19], "frameMs": 175},
-    "happy_gentle": {"row": 5, "frames": [20,21,22,23], "frameMs": 260},
-    "sleep_rest": {"row": 6, "frames": [24,25,26,27], "frameMs": 760}
+    "idle": {"resource": "kaelani_anim_idle", "frames": 4, "frameMs": 360, "loop": true},
+    "walk": {"resource": "kaelani_anim_walk", "frames": 4, "frameMs": 165, "loop": true},
+    "run": {"resource": "kaelani_anim_run", "frames": 4, "frameMs": 112, "loop": true},
+    "jump_land": {"resource": "kaelani_anim_jump_land", "frames": 4, "frameMs": 135, "loop": false},
+    "special": {"resource": "kaelani_anim_special", "frames": 4, "frameMs": 175, "loop": false},
+    "happy": {"resource": "kaelani_anim_happy", "frames": 3, "frameMs": 260, "loop": false},
+    "sleep": {"resource": "kaelani_anim_sleep", "frames": 2, "frameMs": 760, "loop": true}
   },
-  "notes": "Movement should flow through hair, sleeves and skirt with overlap and follow-through. Petals lag behind the body rather than appearing as a static aura. Keep her graceful rather than bouncy."
+  "motionRules": [
+    "Movement flows through curls, sleeves, skirt panels and jewelry with overlap and follow-through.",
+    "Petals lag behind the body and bloom outward over several frames instead of appearing as a static aura.",
+    "Keep Kaelani graceful and grounded rather than bouncy or childlike.",
+    "Landing uses a soft compression and hair/skirt settle frame before returning to idle."
+  ]
 }
