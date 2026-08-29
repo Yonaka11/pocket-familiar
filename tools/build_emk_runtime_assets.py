@@ -1,213 +1,148 @@
 #!/usr/bin/env python3
-"""Build Pocket Familiar runtime art from the locked EMK reference sheets.
+"""Assemble clean EMK Runtime V2 atlases from individually authored frames.
 
-Expected source files (not committed by this script):
-  art_source/emi_character_sheet.png
-  art_source/kaelani_character_sheet.png
-  art_source/mira_character_sheet.png
-  art_source/episode0_storyboard_page1.png
-  art_source/episode0_storyboard_page2.png
-  art_source/episode0_storyboard_page3.png
+This intentionally DOES NOT crop frames from the presentation/character boards.
+Those boards are reference art only. Runtime animation frames must be exported as
+standalone transparent PNGs first so hair, limbs, effects, and neighboring poses
+cannot be clipped or mirrored by poster slicing.
+
+Expected input layout:
+
+art_source/runtime_frames/
+  emi/
+    idle/00.png ... 03.png
+    walk/00.png ... 03.png
+    run/00.png ... 03.png
+    jump_land/00.png ... 03.png
+    special/00.png ... 03.png
+    recover/00.png ... 02.png
+    sleep/00.png ... 01.png
+  kaelani/
+    ... same, but reaction folder is happy/
+  mira/
+    ... same, but reaction folder is happy/
 
 Outputs:
-  app/src/main/res/drawable-nodpi/{emi,kaelani,mira}_anim_*.webp
-  app/src/main/res/drawable-nodpi/story_ep0_01.webp ... story_ep0_18.webp
+  app/src/main/res/drawable-nodpi/emi_runtime_v2_atlas.png
+  app/src/main/res/drawable-nodpi/kaelani_runtime_v2_atlas.png
+  app/src/main/res/drawable-nodpi/mira_runtime_v2_atlas.png
 
-Install dependencies:
-  python -m pip install pillow numpy
-
-The crop map is intentionally versioned with the app so the same visual source can
-be re-exported deterministically instead of hand-cutting sprite files each time.
+Atlas contract: 4 columns x 7 rows, 256x256 cells.
+Rows are idle, walk, run, jump/land, special, reaction, sleep.
+Short rows repeat their last valid frame only as padding; runtime never addresses
+those padding cells.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 import sys
-
-import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "art_source"
+SOURCE = ROOT / "art_source" / "runtime_frames"
 OUTPUT = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
-CELL = 200
 
-CHARACTER_SHEETS = {
-    "emi": SOURCE / "emi_character_sheet.png",
-    "kaelani": SOURCE / "kaelani_character_sheet.png",
-    "mira": SOURCE / "mira_character_sheet.png",
-}
+CELL = 256
+COLS = 4
+ROWS = 7
 
-# centers, y1, y2, left bound, right bound
-ANIMATION_CROPS = {
-    "emi": {
-        "idle": ([1090, 1180, 1275, 1370], 82, 205, 1045, 1435),
-        "walk": ([65, 165, 265, 365], 265, 410, 15, 415),
-        "run": ([520, 620, 720, 825], 265, 410, 465, 880),
-        "jump_land": ([995, 1090, 1190, 1300], 265, 415, 940, 1375),
-        "special": ([65, 205, 345, 500], 500, 680, 5, 580),
-        "recover": ([670, 805, 910], 510, 680, 620, 965),
-        "sleep": ([1040, 1220], 520, 680, 970, 1330),
-    },
-    "kaelani": {
-        "idle": ([1090, 1185, 1280, 1370], 60, 195, 1040, 1435),
-        "walk": ([70, 170, 275, 370], 230, 380, 10, 415),
-        "run": ([520, 625, 730, 835], 230, 390, 465, 895),
-        "jump_land": ([970, 1080, 1200, 1340], 220, 395, 910, 1410),
-        "special": ([70, 235, 410, 560], 445, 620, 10, 635),
-        "happy": ([750, 850, 950], 445, 615, 700, 1005),
-        "sleep": ([1095, 1260], 440, 620, 1030, 1370),
-    },
-    "mira": {
-        "idle": ([1140, 1220, 1300, 1380], 65, 195, 1090, 1435),
-        "walk": ([65, 165, 265, 365], 280, 420, 10, 415),
-        "run": ([485, 590, 695, 800], 280, 425, 430, 845),
-        "jump_land": ([955, 1050, 1135, 1235], 280, 425, 905, 1285),
-        "special": ([75, 235, 410, 580], 495, 655, 10, 660),
-        "happy": ([770, 895, 1000], 490, 655, 710, 1045),
-        "sleep": ([1135, 1300], 490, 655, 1060, 1405),
-    },
-}
-
-STORY_PAGES = {
-    1: SOURCE / "episode0_storyboard_page1.png",
-    2: SOURCE / "episode0_storyboard_page2.png",
-    3: SOURCE / "episode0_storyboard_page3.png",
-}
-
-# x1, y1, x2, y2. Panels are numbered in playback order.
-STORY_PANEL_CROPS = {
-    1: [
-        (178, 14, 920, 266),
-        (178, 279, 920, 524),
-        (178, 535, 920, 790),
-        (178, 800, 920, 1016),
-        (178, 1027, 920, 1316),
-        (178, 1327, 920, 1640),
+CHARACTERS = {
+    "emi": [
+        ("idle", 4),
+        ("walk", 4),
+        ("run", 4),
+        ("jump_land", 4),
+        ("special", 4),
+        ("recover", 3),
+        ("sleep", 2),
     ],
-    2: [
-        (166, 12, 920, 280),
-        (166, 291, 920, 553),
-        (166, 563, 920, 786),
-        (166, 795, 920, 1029),
-        (166, 1038, 920, 1310),
-        (166, 1319, 920, 1626),
+    "kaelani": [
+        ("idle", 4),
+        ("walk", 4),
+        ("run", 4),
+        ("jump_land", 4),
+        ("special", 4),
+        ("happy", 3),
+        ("sleep", 2),
     ],
-    3: [
-        (177, 12, 914, 273),
-        (177, 283, 914, 570),
-        (177, 578, 914, 797),
-        (177, 805, 914, 988),
-        (177, 997, 914, 1214),
-        (177, 1222, 914, 1545),
+    "mira": [
+        ("idle", 4),
+        ("walk", 4),
+        ("run", 4),
+        ("jump_land", 4),
+        ("special", 4),
+        ("happy", 3),
+        ("sleep", 2),
     ],
 }
 
 
-def _bounds(centers: list[int], left: int, right: int) -> list[int]:
-    return [left] + [int((a + b) / 2) for a, b in zip(centers, centers[1:])] + [right]
+def alpha_bounds(image: Image.Image) -> tuple[int, int, int, int] | None:
+    return image.getchannel("A").getbbox()
 
 
-def _color_key(crop: Image.Image) -> Image.Image:
-    """Remove the dark navy showcase background while preserving black line art."""
-    rgb = np.array(crop.convert("RGB"), dtype=np.float32)
-    corners = np.concatenate(
-        [
-            rgb[:6, :6].reshape(-1, 3),
-            rgb[:6, -6:].reshape(-1, 3),
-            rgb[-6:, :6].reshape(-1, 3),
-            rgb[-6:, -6:].reshape(-1, 3),
-        ]
-    )
-    background = np.median(corners, axis=0)
-    distance = np.linalg.norm(rgb - background, axis=2)
-    red, green, blue = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
+def normalize_frame(path: Path) -> Image.Image:
+    image = Image.open(path).convert("RGBA")
+    bounds = alpha_bounds(image)
+    if bounds is None:
+        raise ValueError(f"Frame has no visible pixels: {path}")
+    image = image.crop(bounds)
 
-    alpha = np.clip((distance - 5.0) * 22.0, 0, 255).astype(np.uint8)
-    # Keep genuine black outlines/shadows. The source background is navy, not true black.
-    alpha[(red < 4) & (green < 4) & (blue < 5)] = 255
-    alpha[distance > 18] = 255
-
-    rgba = np.dstack([rgb.astype(np.uint8), alpha])
-    return Image.fromarray(rgba, "RGBA")
-
-
-def _trim_alpha(image: Image.Image, pad: int = 3) -> Image.Image:
-    box = image.getchannel("A").getbbox()
-    if not box:
-        return image
-    left, top, right, bottom = box
-    return image.crop(
-        (
-            max(0, left - pad),
-            max(0, top - pad),
-            min(image.width, right + pad),
-            min(image.height, bottom + pad),
+    max_size = CELL - 16
+    scale = min(max_size / image.width, max_size / image.height, 1.0)
+    if scale < 1.0:
+        image = image.resize(
+            (max(1, round(image.width * scale)), max(1, round(image.height * scale))),
+            Image.Resampling.NEAREST,
         )
-    )
+    return image
 
 
-def build_animation_strips() -> None:
-    for character, source_path in CHARACTER_SHEETS.items():
-        if not source_path.exists():
-            raise FileNotFoundError(source_path)
-        source = Image.open(source_path).convert("RGBA")
-
-        for action, (centers, y1, y2, left, right) in ANIMATION_CROPS[character].items():
-            boundaries = _bounds(centers, left, right)
-            frames: list[Image.Image] = []
-
-            for index in range(len(centers)):
-                crop = source.crop((boundaries[index], y1, boundaries[index + 1], y2))
-                frames.append(_trim_alpha(_color_key(crop)))
-
-            strip = Image.new("RGBA", (CELL * len(frames), CELL), (0, 0, 0, 0))
-            for index, frame in enumerate(frames):
-                scale = min((CELL - 10) / frame.width, (CELL - 10) / frame.height, 1.0)
-                if scale < 1.0:
-                    frame = frame.resize(
-                        (max(1, int(frame.width * scale)), max(1, int(frame.height * scale))),
-                        Image.Resampling.NEAREST,
-                    )
-                x = index * CELL + (CELL - frame.width) // 2
-                y = CELL - frame.height - 3
-                strip.alpha_composite(frame, (x, y))
-
-            destination = OUTPUT / f"{character}_anim_{action}.webp"
-            strip.save(destination, "WEBP", quality=100, method=6, exact=True)
-            print(f"wrote {destination.relative_to(ROOT)} ({len(frames)} frames)")
+def load_action_frames(character: str, action: str, count: int) -> list[Image.Image]:
+    folder = SOURCE / character / action
+    paths = [folder / f"{index:02d}.png" for index in range(count)]
+    missing = [path for path in paths if not path.exists()]
+    if missing:
+        names = "\n".join(f"  - {path.relative_to(ROOT)}" for path in missing)
+        raise FileNotFoundError(f"Missing clean runtime frames:\n{names}")
+    return [normalize_frame(path) for path in paths]
 
 
-def build_story_panels() -> None:
-    panel = 1
-    for page_number in (1, 2, 3):
-        source_path = STORY_PAGES[page_number]
-        if not source_path.exists():
-            raise FileNotFoundError(source_path)
-        source = Image.open(source_path).convert("RGB")
+def build_character(character: str) -> Path:
+    atlas = Image.new("RGBA", (COLS * CELL, ROWS * CELL), (0, 0, 0, 0))
 
-        for crop_box in STORY_PANEL_CROPS[page_number]:
-            image = source.crop(crop_box)
-            destination = OUTPUT / f"story_ep0_{panel:02d}.webp"
-            image.save(destination, "WEBP", quality=82, method=6)
-            print(f"wrote {destination.relative_to(ROOT)}")
-            panel += 1
+    for row, (action, count) in enumerate(CHARACTERS[character]):
+        frames = load_action_frames(character, action, count)
+        padded = frames + [frames[-1]] * (COLS - len(frames))
+
+        for column, frame in enumerate(padded[:COLS]):
+            x = column * CELL + (CELL - frame.width) // 2
+            # Bottom-align so feet share a stable baseline between frames.
+            y = row * CELL + CELL - frame.height - 6
+            atlas.alpha_composite(frame, (x, y))
+
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    destination = OUTPUT / f"{character}_runtime_v2_atlas.png"
+    atlas.save(destination, "PNG", optimize=True)
+    return destination
 
 
 def main() -> int:
-    OUTPUT.mkdir(parents=True, exist_ok=True)
-    missing = [path for path in [*CHARACTER_SHEETS.values(), *STORY_PAGES.values()] if not path.exists()]
-    if missing:
-        print("Missing locked source art:", file=sys.stderr)
-        for path in missing:
-            print(f"  - {path.relative_to(ROOT)}", file=sys.stderr)
-        print("\nCopy the six supplied reference images into art_source/ and rerun.", file=sys.stderr)
+    try:
+        for character in CHARACTERS:
+            path = build_character(character)
+            print(f"wrote {path.relative_to(ROOT)}")
+    except (FileNotFoundError, ValueError) as error:
+        print(error, file=sys.stderr)
+        print(
+            "\nDo not fall back to cropping the showcase boards. Export the missing "
+            "pose as a standalone transparent frame instead.",
+            file=sys.stderr,
+        )
         return 2
 
-    build_animation_strips()
-    build_story_panels()
-    print("\nRuntime V2 art export complete.")
+    print("\nEMK Runtime V2 clean-atlas export complete.")
     return 0
 
 

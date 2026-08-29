@@ -2,15 +2,23 @@ package com.mikazuki.pocketfamiliar.model
 
 import android.content.Context
 import com.mikazuki.pocketfamiliar.pet.animation.PetAnimation
-import com.mikazuki.pocketfamiliar.pet.animation.stripFrames
+import com.mikazuki.pocketfamiliar.pet.animation.atlasFrames
 
 /**
- * Runtime bridge for the new individual EMK animation strips.
+ * Runtime bridge for the clean EMK Runtime V2 character atlases.
  *
- * Resource names are resolved dynamically so the code remains buildable before
- * the final binary art is copied into drawable-nodpi. Once a complete V2 pack is
- * packaged, the same app build path automatically upgrades that attendant from
- * the legacy 4x4 atlas to genuine multi-frame action strips.
+ * Each character owns one transparent 4x7 production atlas. Frames were isolated
+ * individually from the locked character boards before assembly, so animation
+ * cells never rely on broad poster slicing that can clip hair, effects, or limbs.
+ *
+ * Atlas rows:
+ * 0 = idle / blink (4)
+ * 1 = walk (4)
+ * 2 = run (4)
+ * 3 = jump / land (4)
+ * 4 = signature special (4)
+ * 5 = reaction / recover (3 useful frames; fourth cell is padding)
+ * 6 = sleep / rest (2 useful frames; remaining cells are padding)
  */
 object EmkRuntimeV2 {
 
@@ -20,86 +28,88 @@ object EmkRuntimeV2 {
         appContext = context.applicationContext
     }
 
-    private data class StripSpec(
-        val resourceName: String,
-        val frames: Int,
-        val frameMs: Long,
-        val loop: Boolean = true,
-    )
-
     private data class CharacterSpec(
-        val idle: StripSpec,
-        val walk: StripSpec,
-        val run: StripSpec,
-        val jumpLand: StripSpec,
-        val special: StripSpec,
-        val reaction: StripSpec,
-        val sleep: StripSpec,
+        val atlasResourceName: String,
+        val idleMs: Long,
+        val walkMs: Long,
+        val runMs: Long,
+        val jumpLandMs: Long,
+        val specialMs: Long,
+        val reactionMs: Long,
+        val sleepMs: Long,
     )
 
     private val specs = mapOf(
         "emi" to CharacterSpec(
-            idle = StripSpec("emi_anim_idle", 4, 300),
-            walk = StripSpec("emi_anim_walk", 4, 145),
-            run = StripSpec("emi_anim_run", 4, 95),
-            jumpLand = StripSpec("emi_anim_jump_land", 4, 120, loop = false),
-            special = StripSpec("emi_anim_special", 4, 140, loop = false),
-            reaction = StripSpec("emi_anim_recover", 3, 180, loop = false),
-            sleep = StripSpec("emi_anim_sleep", 2, 720),
+            atlasResourceName = "emi_runtime_v2_atlas",
+            idleMs = 300,
+            walkMs = 145,
+            runMs = 95,
+            jumpLandMs = 120,
+            specialMs = 140,
+            reactionMs = 180,
+            sleepMs = 720,
         ),
         "kaelani" to CharacterSpec(
-            idle = StripSpec("kaelani_anim_idle", 4, 360),
-            walk = StripSpec("kaelani_anim_walk", 4, 165),
-            run = StripSpec("kaelani_anim_run", 4, 112),
-            jumpLand = StripSpec("kaelani_anim_jump_land", 4, 135, loop = false),
-            special = StripSpec("kaelani_anim_special", 4, 175, loop = false),
-            reaction = StripSpec("kaelani_anim_happy", 3, 260, loop = false),
-            sleep = StripSpec("kaelani_anim_sleep", 2, 760),
+            atlasResourceName = "kaelani_runtime_v2_atlas",
+            idleMs = 360,
+            walkMs = 165,
+            runMs = 112,
+            jumpLandMs = 135,
+            specialMs = 175,
+            reactionMs = 260,
+            sleepMs = 760,
         ),
         "mira" to CharacterSpec(
-            idle = StripSpec("mira_anim_idle", 4, 380),
-            walk = StripSpec("mira_anim_walk", 4, 172),
-            run = StripSpec("mira_anim_run", 4, 118),
-            jumpLand = StripSpec("mira_anim_jump_land", 4, 138, loop = false),
-            special = StripSpec("mira_anim_special", 4, 180, loop = false),
-            reaction = StripSpec("mira_anim_happy", 3, 275, loop = false),
-            sleep = StripSpec("mira_anim_sleep", 2, 800),
+            atlasResourceName = "mira_runtime_v2_atlas",
+            idleMs = 380,
+            walkMs = 172,
+            runMs = 118,
+            jumpLandMs = 138,
+            specialMs = 180,
+            reactionMs = 275,
+            sleepMs = 800,
         ),
     )
 
-    /** Returns null unless the character has a complete packaged Runtime V2 strip set. */
+    /** Returns null unless the character's clean Runtime V2 atlas is packaged. */
     fun profileOrNull(base: PetProfile): PetProfile? {
         val context = appContext ?: return null
         val spec = specs[base.id] ?: return null
         val resources = context.resources
-        val packageName = context.packageName
 
-        fun resolve(strip: StripSpec): PetAnimation? {
-            @Suppress("DEPRECATION")
-            val resId = resources.getIdentifier(strip.resourceName, "drawable", packageName)
-            if (resId == 0) return null
-            return PetAnimation(
-                frames = stripFrames(resId, strip.frames),
-                frameDurationMs = strip.frameMs,
-                loop = strip.loop,
-            )
-        }
+        @Suppress("DEPRECATION")
+        val atlasResId = resources.getIdentifier(
+            spec.atlasResourceName,
+            "drawable",
+            context.packageName,
+        )
+        if (atlasResId == 0) return null
 
-        // All-or-nothing activation prevents a half-copied asset export from
-        // leaving a character with missing walk/sleep/special states.
-        val idle = resolve(spec.idle) ?: return null
-        val walk = resolve(spec.walk) ?: return null
-        val run = resolve(spec.run) ?: return null
-        val jumpLand = resolve(spec.jumpLand) ?: return null
-        val special = resolve(spec.special) ?: return null
-        val reaction = resolve(spec.reaction) ?: return null
-        val sleep = resolve(spec.sleep) ?: return null
+        fun anim(duration: Long, loop: Boolean = true, vararg frames: Int) = PetAnimation(
+            frames = atlasFrames(
+                atlasResId,
+                *frames,
+                columns = 4,
+                rows = 7,
+            ),
+            frameDurationMs = duration,
+            loop = loop,
+        )
+
+        val idle = anim(spec.idleMs, true, 0, 1, 2, 3)
+        val walk = anim(spec.walkMs, true, 4, 5, 6, 7)
+        val run = anim(spec.runMs, true, 8, 9, 10, 11)
+        val jumpLand = anim(spec.jumpLandMs, false, 12, 13, 14, 15)
+        val special = anim(spec.specialMs, false, 16, 17, 18, 19)
+        val reaction = anim(spec.reactionMs, false, 20, 21, 22)
+        val sleep = anim(spec.sleepMs, true, 24, 25)
 
         return base.copy(
             description = when (base.id) {
-                "emi" -> "Tech-royal attendant · multi-frame Runtime V2."
-                "kaelani" -> "Bloom attendant · multi-frame Runtime V2."
-                "mira" -> "Red-haired scholar attendant · multi-frame Runtime V2."
+                "emi" -> "Tech-royal attendant · clean multi-frame Runtime V2."
+                "kaelani" -> "Bloom attendant · clean multi-frame Runtime V2."
+                "mira" -> "Red-haired scholar attendant · clean multi-frame Runtime V2."
                 else -> base.description
             },
             idleAnim = idle,
