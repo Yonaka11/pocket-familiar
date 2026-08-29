@@ -60,3 +60,22 @@ fun atlasFrames(
     }
     return indices.map { PetFrame.Atlas(atlasResId, it, columns, rows) }
 }
+
+/**
+ * Frames from a one-row horizontal sprite strip.
+ *
+ * EMK Runtime V2 deliberately stores each action in a separate strip so walk,
+ * run, jump/land, sleep and signature moves can have different frame counts
+ * without wasting cells or forcing all behavior into a tiny universal atlas.
+ */
+fun stripFrames(stripResId: Int, frameCount: Int): List<PetFrame> {
+    require(frameCount > 0) { "Sprite strip must contain at least one frame." }
+    return (0 until frameCount).map { index ->
+        PetFrame.Atlas(
+            resId = stripResId,
+            frameIndex = index,
+            columns = frameCount,
+            rows = 1,
+        )
+    }
+}
