@@ -1,0 +1,21 @@
+{
+  "character": "emi",
+  "visualDirection": "serious-cute mature pixel art; tech-royal; amber eyes; black hair with electric-yellow underlayer; cobalt, chrome and gold accents",
+  "cell": {"width": 200, "height": 200},
+  "format": "horizontal_strips",
+  "animations": {
+    "idle": {"resource": "emi_anim_idle", "frames": 4, "frameMs": 300, "loop": true},
+    "walk": {"resource": "emi_anim_walk", "frames": 4, "frameMs": 145, "loop": true},
+    "run": {"resource": "emi_anim_run", "frames": 4, "frameMs": 95, "loop": true},
+    "jump_land": {"resource": "emi_anim_jump_land", "frames": 4, "frameMs": 120, "loop": false},
+    "special": {"resource": "emi_anim_special", "frames": 4, "frameMs": 140, "loop": false},
+    "recover": {"resource": "emi_anim_recover", "frames": 3, "frameMs": 180, "loop": false},
+    "sleep": {"resource": "emi_anim_sleep", "frames": 2, "frameMs": 720, "loop": true}
+  },
+  "motionRules": [
+    "Every locomotion state must use actual pose-to-pose transition frames; never translate one still image to fake walking or running.",
+    "Hair tips, yellow underlayer, belts and electric effects overlap/follow through one frame after the torso.",
+    "Jump/land includes anticipation, airborne silhouette, impact compression and recovery.",
+    "Electric effects trail the body instead of moving as a rigid sticker."
+  ]
+}

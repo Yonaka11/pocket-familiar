@@ -1,0 +1,21 @@
+{
+  "character": "mira",
+  "visualDirection": "serious-cute mature pixel art; red hair; glasses; muted teal, charcoal, burgundy and antique-brass scholar styling",
+  "cell": {"width": 200, "height": 200},
+  "format": "horizontal_strips",
+  "animations": {
+    "idle": {"resource": "mira_anim_idle", "frames": 4, "frameMs": 380, "loop": true},
+    "walk": {"resource": "mira_anim_walk", "frames": 4, "frameMs": 172, "loop": true},
+    "run": {"resource": "mira_anim_run", "frames": 4, "frameMs": 118, "loop": true},
+    "jump_land": {"resource": "mira_anim_jump_land", "frames": 4, "frameMs": 138, "loop": false},
+    "special": {"resource": "mira_anim_special", "frames": 4, "frameMs": 180, "loop": false},
+    "happy": {"resource": "mira_anim_happy", "frames": 3, "frameMs": 275, "loop": false},
+    "sleep": {"resource": "mira_anim_sleep", "frames": 2, "frameMs": 800, "loop": true}
+  },
+  "motionRules": [
+    "Mira is always a redhead.",
+    "Her motion is restrained and readable; hair, coat hem, glasses and loose pages settle after the torso.",
+    "Special animation progresses through book opening, rune formation, page orbit and resolve instead of popping into one pose.",
+    "Run animation feels hurried but not slapstick or childlike."
+  ]
+}

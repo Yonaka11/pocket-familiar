@@ -24,11 +24,16 @@ object PetRegistry {
 
     /**
      * EMK form choice is manual. There is deliberately no clock/day-night switch.
-     * Familiar form currently animates the existing spirit artwork procedurally
-     * until dedicated spirit atlases are drawn.
+     * Attendant form automatically uses the new individual Runtime V2 strips when
+     * the complete character pack is packaged; otherwise it safely falls back to
+     * the existing 4x4 atlas. Familiar form continues using the spirit fallback
+     * until dedicated familiar-form animation strips are drawn.
      */
     fun getRuntimeProfile(id: String, useFamiliarForm: Boolean): PetProfile {
-        if (!useFamiliarForm) return getById(id)
+        if (!useFamiliarForm) {
+            val base = getById(id)
+            return EmkRuntimeV2.profileOrNull(base) ?: base
+        }
         return when (id) {
             "emi" -> staticFamiliarProfile(emi(), R.drawable.emi_night, "Sparkborn Trickster")
             "kaelani" -> staticFamiliarProfile(kaelani(), R.drawable.kaelani_night, "Bloom Spirit")
@@ -97,7 +102,7 @@ object PetRegistry {
         idleDelayMs = 2_200L..5_500L,
     )
 
-    /** EMK attendant forms use the production 4x4 pixel atlases. */
+    /** EMK attendant forms use the legacy 4x4 atlas as the V2 fallback. */
     private fun emi() = pixelAtlasProfile(
         id = "emi",
         displayName = "Emi",
@@ -157,7 +162,7 @@ object PetRegistry {
             duration,
         )
 
-        // Atlas contract: row 1 idle/orientation, row 2 walk, row 3 run, row 4 specials.
+        // Legacy atlas contract: row 1 idle/orientation, row 2 walk, row 3 run, row 4 specials.
         val idle = anim(420, 0, 1)
         val walk = anim(155, 4, 5, 6, 7)
         val run = anim(105, 8, 9, 10, 11)

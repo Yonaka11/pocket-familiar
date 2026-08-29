@@ -2,10 +2,12 @@ package com.mikazuki.pocketfamiliar
 
 import android.app.Application
 import android.content.Context
+import com.mikazuki.pocketfamiliar.model.EmkRuntimeV2
 
 class PocketFamiliarApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        EmkRuntimeV2.initialize(this)
         installCrashReporter()
     }
 

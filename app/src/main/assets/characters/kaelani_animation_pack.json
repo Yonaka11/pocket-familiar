@@ -1,0 +1,21 @@
+{
+  "character": "kaelani",
+  "visualDirection": "serious-cute mature pixel art; warm bronze skin; long dark curls; teal, bronze and earthy-gold bloom-mage styling",
+  "cell": {"width": 200, "height": 200},
+  "format": "horizontal_strips",
+  "animations": {
+    "idle": {"resource": "kaelani_anim_idle", "frames": 4, "frameMs": 360, "loop": true},
+    "walk": {"resource": "kaelani_anim_walk", "frames": 4, "frameMs": 165, "loop": true},
+    "run": {"resource": "kaelani_anim_run", "frames": 4, "frameMs": 112, "loop": true},
+    "jump_land": {"resource": "kaelani_anim_jump_land", "frames": 4, "frameMs": 135, "loop": false},
+    "special": {"resource": "kaelani_anim_special", "frames": 4, "frameMs": 175, "loop": false},
+    "happy": {"resource": "kaelani_anim_happy", "frames": 3, "frameMs": 260, "loop": false},
+    "sleep": {"resource": "kaelani_anim_sleep", "frames": 2, "frameMs": 760, "loop": true}
+  },
+  "motionRules": [
+    "Movement flows through curls, sleeves, skirt panels and jewelry with overlap and follow-through.",
+    "Petals lag behind the body and bloom outward over several frames instead of appearing as a static aura.",
+    "Keep Kaelani graceful and grounded rather than bouncy or childlike.",
+    "Landing uses a soft compression and hair/skirt settle frame before returning to idle."
+  ]
+}
