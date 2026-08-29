@@ -2,13 +2,14 @@ package com.mikazuki.pocketfamiliar.story.ui
 
 import android.graphics.BitmapFactory
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,9 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,9 +44,12 @@ import com.mikazuki.pocketfamiliar.story.model.StoryEpisode
 import kotlin.math.abs
 
 /**
- * Episode 0 presentation pass based on the approved three-page storyboard.
- * It deliberately uses crash-safe bitmap decoding rather than painterResource:
- * a missing/corrupt panel falls back to halftone art instead of killing the app.
+ * Episode 0 plays the approved manga storyboard art directly.
+ *
+ * The bundled storyboard panels are the source of truth instead of recreating
+ * them from avatar placeholders. Panel 10 remains interactive, panel 16 is the
+ * generated Memory Fragment reward card, and every bitmap load is guarded so a
+ * damaged panel shows a fallback rather than crashing story playback.
  */
 @Composable
 fun StoryboardStoryPlayer(
@@ -52,54 +58,101 @@ fun StoryboardStoryPlayer(
     onComplete: () -> Unit,
     onExit: () -> Unit,
 ) {
-    var page by remember(episode.id) { mutableIntStateOf(0) }
-    var staticCleared by remember { mutableStateOf(false) }
-    val cast = storyCast(selectedFamiliarId)
+    @Suppress("UNUSED_VARIABLE")
+    val perspective = selectedFamiliarId // Episode 0 is canonically Emi's perspective.
+    var panel by remember(episode.id) { mutableIntStateOf(1) }
+    var staticCleared by remember(episode.id) { mutableStateOf(false) }
+    val panelScale = remember(panel) { Animatable(1.045f) }
 
-    BackHandler {
-        if (page > 0) page-- else onExit()
+    LaunchedEffect(panel) {
+        panelScale.snapTo(1.045f)
+        panelScale.animateTo(1f, animationSpec = tween(1_200))
     }
 
-    Box(Modifier.fillMaxSize().background(Color(0xFF07090D))) {
-        HalftoneBackdrop(cast.accent)
+    BackHandler {
+        if (panel > 1) panel-- else onExit()
+    }
+
+    Box(Modifier.fillMaxSize().background(Color(0xFF05070B))) {
+        HalftoneBackdrop()
         Column(
             Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("POCKET FAMILIAR", color = Color.White, fontWeight = FontWeight.Black)
-                    Text("EPISODE 0 · THE SIGNAL", color = cast.accent, style = MaterialTheme.typography.labelMedium)
+                    Text("EPISODE 0 · THE SIGNAL", color = Color(0xFFFFC928), style = MaterialTheme.typography.labelMedium)
                 }
-                Text("${page + 1} / 3", color = Color.White.copy(alpha = .55f))
+                Text("$panel / 18", color = Color.White.copy(alpha = .55f))
             }
 
-            val pageModifier = Modifier.weight(1f)
-            when (page) {
-                0 -> OpeningPage(cast, pageModifier)
-                1 -> ContactPage(cast, staticCleared, pageModifier) { staticCleared = true }
-                else -> AftermathPage(cast, pageModifier)
-            }
-
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color.Black),
+                contentAlignment = Alignment.Center,
             ) {
-                if (page > 0) {
-                    Button(onClick = { page-- }, modifier = Modifier.weight(1f)) { Text("Back") }
+                if (panel == 16) {
+                    MemoryFragmentPanel()
+                } else {
+                    val resId = storyboardPanelRes(panel)
+                    if (panel == 10) {
+                        InteractiveStaticPanel(
+                            resId = resId,
+                            cleared = staticCleared,
+                            onClear = { staticCleared = true },
+                            modifier = Modifier.fillMaxSize().graphicsLayer {
+                                scaleX = panelScale.value
+                                scaleY = panelScale.value
+                            },
+                        )
+                    } else {
+                        SafeStoryImage(
+                            resId = resId,
+                            modifier = Modifier.fillMaxSize().graphicsLayer {
+                                scaleX = panelScale.value
+                                scaleY = panelScale.value
+                            },
+                        )
+                    }
+                }
+            }
+
+            if (panel == 10 && !staticCleared) {
+                Text(
+                    "Drag across the interference to clear the signal.",
+                    color = Color.White.copy(alpha = .78f),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (panel > 1) {
+                    Button(onClick = { panel-- }, modifier = Modifier.weight(1f)) { Text("Back") }
                 }
                 Button(
                     onClick = {
                         when {
-                            page == 1 && !staticCleared -> Unit
-                            page < 2 -> page++
+                            panel == 10 && !staticCleared -> Unit
+                            panel < 18 -> panel++
                             else -> onComplete()
                         }
                     },
-                    enabled = page != 1 || staticCleared,
+                    enabled = panel != 10 || staticCleared,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(if (page == 2) "Return to familiar" else if (page == 1 && !staticCleared) "Clear the static" else "Continue")
+                    Text(
+                        when {
+                            panel == 18 -> "Return to familiar"
+                            panel == 10 && !staticCleared -> "Clear the static"
+                            else -> "Continue"
+                        }
+                    )
                 }
             }
         }
@@ -107,148 +160,66 @@ fun StoryboardStoryPlayer(
 }
 
 @Composable
-private fun OpeningPage(cast: StoryCast, modifier: Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SafeStoryImage(cast.avatarRes, Modifier.weight(1f))
-                Column(Modifier.weight(1.5f)) {
-                    Text("Pocket Familiar · ACTIVE", color = cast.accent, fontWeight = FontWeight.Bold)
-                    Text("Your familiar stops mid-motion.", color = Color.White.copy(alpha=.75f))
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.8f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("...Wait.")
-        }
-        MangaPanel(Modifier.weight(1.15f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble(cast.warning)
-        }
-        MangaPanel(Modifier.weight(.7f), cast.accent) {
-            Text("THE INTERFACE TEARS OPEN", color = cast.accent, fontWeight = FontWeight.Black)
-            Canvas(Modifier.fillMaxSize()) {
-                repeat(16) { i ->
-                    val y = size.height * i / 16f
-                    drawLine(cast.accent.copy(alpha=.35f), androidx.compose.ui.geometry.Offset(0f,y), androidx.compose.ui.geometry.Offset(size.width,y-30f), strokeWidth=if(i%3==0) 6f else 2f)
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.95f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Did you see that?")
-        }
-    }
-}
-
-@Composable
-private fun ContactPage(cast: StoryCast, cleared: Boolean, modifier: Modifier, onClear: () -> Unit) {
-    var drag by remember { mutableFloatStateOf(0f) }
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(.72f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("No...")
-        }
-        MangaPanel(Modifier.weight(1.15f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("SIGNAL // FRAGMENTED", color = Color.White.copy(alpha=.75f), modifier = Modifier.align(Alignment.BottomStart))
-        }
-        MangaPanel(Modifier.weight(.8f), Color(0xFFB8A6FF)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            SpeechBubble("Find me.")
-        }
-        MangaPanel(
-            Modifier.weight(1f).pointerInput(cleared) {
-                if (!cleared) detectDragGestures { change, amount ->
-                    change.consume()
-                    drag = (drag + abs(amount.x) + abs(amount.y)).coerceAtMost(1800f)
-                    if (drag >= 1400f) onClear()
-                }
-            },
-            cast.accent,
-        ) {
-            Text(if (cleared) "SIGNAL STABLE" else "DRAG ACROSS THE STATIC", color = Color.White, fontWeight = FontWeight.Bold)
-            Canvas(Modifier.fillMaxSize()) {
-                val a = if (cleared) .08f else (.48f * (1f - drag / 1800f)).coerceAtLeast(.10f)
-                repeat(28) { i ->
-                    val y = i * size.height / 28f
-                    drawLine(Color.White.copy(alpha=a), androidx.compose.ui.geometry.Offset(0f,y), androidx.compose.ui.geometry.Offset(size.width,y + if(i%2==0) 42f else -24f), strokeWidth=if(i%4==0) 5f else 2f)
-                }
-            }
-        }
-        MangaPanel(Modifier.weight(.8f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Hold on!")
-        }
-    }
-}
-
-@Composable
-private fun AftermathPage(cast: StoryCast, modifier: Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MangaPanel(Modifier.weight(1f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("The static clears. The figure breaks into light.", color = Color.White, modifier = Modifier.align(Alignment.BottomStart))
-        }
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble(cast.aftermath)
-        }
-        MangaPanel(Modifier.weight(.72f), cast.accent) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("SIGNAL FRAGMENT 00", color = cast.accent, fontWeight = FontWeight.Black)
-                Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineSmall)
-            }
-        }
-        MangaPanel(Modifier.weight(.9f), cast.accent) {
-            SafeStoryImage(cast.avatarRes, Modifier.fillMaxSize())
-            SpeechBubble("Did you hear that too?")
-        }
-        MangaPanel(Modifier.weight(1.05f), Color(0xFF9B82E8)) {
-            SafeStoryImage(R.drawable.seraphi_launcher_foreground, Modifier.fillMaxSize())
-            Text("Everything looks normal... until it isn't.", color = Color.White, fontStyle = FontStyle.Italic, modifier = Modifier.align(Alignment.BottomCenter))
-        }
-    }
-}
-
-@Composable
-private fun MangaPanel(modifier: Modifier, accent: Color, content: @Composable BoxScope.() -> Unit) {
+private fun InteractiveStaticPanel(
+    resId: Int,
+    cleared: Boolean,
+    onClear: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var drag by remember(resId) { mutableFloatStateOf(0f) }
     Box(
-        modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFF10131A))
-            .padding(10.dp),
+        modifier.pointerInput(cleared) {
+            if (!cleared) detectDragGestures { change, amount ->
+                change.consume()
+                drag = (drag + abs(amount.x) + abs(amount.y)).coerceAtMost(1_800f)
+                if (drag >= 1_250f) onClear()
+            }
+        },
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            val step = 16f
-            var y = 0f
-            while (y < size.height) {
-                var x = 0f
-                while (x < size.width) {
-                    if (((x + y) / step).toInt() % 3 == 0) drawCircle(accent.copy(alpha=.08f), 1.8f, androidx.compose.ui.geometry.Offset(x,y))
-                    x += step
+        SafeStoryImage(resId, Modifier.fillMaxSize())
+        if (!cleared) {
+            Canvas(Modifier.fillMaxSize()) {
+                val alpha = (.52f * (1f - drag / 1_800f)).coerceAtLeast(.10f)
+                repeat(32) { i ->
+                    val y = i * size.height / 32f
+                    val shift = if (i % 2 == 0) 34f else -28f
+                    drawLine(
+                        Color.White.copy(alpha = alpha),
+                        androidx.compose.ui.geometry.Offset(0f, y),
+                        androidx.compose.ui.geometry.Offset(size.width, y + shift),
+                        strokeWidth = if (i % 5 == 0) 6f else 2f,
+                    )
                 }
-                y += step
             }
         }
-        content()
     }
 }
 
 @Composable
-private fun BoxScope.SpeechBubble(text: String) {
-    Box(
-        Modifier
-            .align(Alignment.TopStart)
-            .fillMaxWidth(.58f)
-            .clip(RoundedCornerShape(50))
-            .background(Color.White)
-            .padding(horizontal = 18.dp, vertical = 12.dp),
-    ) {
-        Text(text, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
+private fun MemoryFragmentPanel() {
+    Box(Modifier.fillMaxSize().background(Color(0xFF080B12)), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            repeat(80) { i ->
+                val x = (i * 83f) % size.width
+                val y = (i * 137f) % size.height
+                drawCircle(
+                    if (i % 3 == 0) Color(0xFFFFC928).copy(alpha = .18f) else Color(0xFF8A75E8).copy(alpha = .16f),
+                    if (i % 7 == 0) 5f else 2f,
+                    androidx.compose.ui.geometry.Offset(x, y),
+                )
+            }
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("SIGNAL FRAGMENT 00", color = Color(0xFFFFC928), fontWeight = FontWeight.Black)
+            Text("RECOVERED", color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "A voice behind the screen called through a broken halo.",
+                color = Color.White.copy(alpha = .70f),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(.75f),
+            )
+        }
     }
 }
 
@@ -259,36 +230,49 @@ private fun SafeStoryImage(resId: Int, modifier: Modifier = Modifier) {
         runCatching { BitmapFactory.decodeResource(context.resources, resId)?.asImageBitmap() }.getOrNull()
     }
     if (bitmap != null) {
-        Image(bitmap = bitmap, contentDescription = null, modifier = modifier)
+        Image(
+            bitmap = bitmap,
+            contentDescription = null,
+            modifier = modifier,
+            contentScale = ContentScale.Fit,
+        )
     } else {
         Box(modifier.background(Color(0xFF171923)), contentAlignment = Alignment.Center) {
-            Text("ART SIGNAL LOST", color = Color.White.copy(alpha=.45f), style = MaterialTheme.typography.labelSmall)
+            Text("ART SIGNAL LOST", color = Color.White.copy(alpha = .45f), style = MaterialTheme.typography.labelSmall)
         }
     }
+}
+
+private fun storyboardPanelRes(panel: Int): Int = when (panel) {
+    1 -> R.drawable.story_ep0_01
+    2 -> R.drawable.story_ep0_02
+    3 -> R.drawable.story_ep0_03
+    4 -> R.drawable.story_ep0_04
+    5 -> R.drawable.story_ep0_05
+    6 -> R.drawable.story_ep0_06
+    7 -> R.drawable.story_ep0_07
+    8 -> R.drawable.story_ep0_08
+    9 -> R.drawable.story_ep0_09
+    10 -> R.drawable.story_ep0_10
+    11 -> R.drawable.story_ep0_11
+    12 -> R.drawable.story_ep0_12
+    13 -> R.drawable.story_ep0_13
+    14 -> R.drawable.story_ep0_14
+    15 -> R.drawable.story_ep0_15
+    17 -> R.drawable.story_ep0_17
+    18 -> R.drawable.story_ep0_18
+    else -> R.drawable.story_ep0_01
 }
 
 @Composable
-private fun HalftoneBackdrop(accent: Color) {
+private fun HalftoneBackdrop() {
     Canvas(Modifier.fillMaxSize()) {
-        drawRect(Color(0xFF07090D))
-        repeat(50) { i ->
+        drawRect(Color(0xFF05070B))
+        repeat(60) { i ->
             val x = (i * 79f) % size.width
             val y = (i * 131f) % size.height
-            drawCircle(accent.copy(alpha=.08f), if (i % 5 == 0) 4f else 2f, androidx.compose.ui.geometry.Offset(x,y))
+            val color = if (i % 4 == 0) Color(0xFFFFC928) else Color(0xFF6F63D9)
+            drawCircle(color.copy(alpha = .07f), if (i % 5 == 0) 4f else 2f, androidx.compose.ui.geometry.Offset(x, y))
         }
     }
-}
-
-private data class StoryCast(
-    val name: String,
-    val avatarRes: Int,
-    val accent: Color,
-    val warning: String,
-    val aftermath: String,
-)
-
-private fun storyCast(id: String): StoryCast = when (id) {
-    "kaelani" -> StoryCast("Kaelani", R.drawable.kaelani_avatar, Color(0xFF39C6A6), "Something is blooming where nothing should be.", "I remember that light... but not where I saw it.")
-    "mira" -> StoryCast("Mira", R.drawable.mira_avatar, Color(0xFFC46B8C), "No. That line wasn't there before.", "I know that pattern. I don't remember learning it.")
-    else -> StoryCast("Emi", R.drawable.emi_avatar, Color(0xFFFFD400), "Don't touch that.", "She was here...")
 }
