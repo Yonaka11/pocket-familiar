@@ -7,12 +7,18 @@ import com.mikazuki.pocketfamiliar.pet.animation.stripFrames
 /**
  * Runtime bridge for the new individual EMK animation strips.
  *
- * The resources are resolved by name instead of compile-time R references so the
- * branch remains buildable before the final binary art is copied into
- * drawable-nodpi. As soon as the full strip set for a character is present, the
- * runtime automatically upgrades that attendant from the legacy 4x4 atlas to V2.
+ * Resource names are resolved dynamically so the code remains buildable before
+ * the final binary art is copied into drawable-nodpi. Once a complete V2 pack is
+ * packaged, the same app build path automatically upgrades that attendant from
+ * the legacy 4x4 atlas to genuine multi-frame action strips.
  */
 object EmkRuntimeV2 {
+
+    private var appContext: Context? = null
+
+    fun initialize(context: Context) {
+        appContext = context.applicationContext
+    }
 
     private data class StripSpec(
         val resourceName: String,
@@ -61,16 +67,10 @@ object EmkRuntimeV2 {
         ),
     )
 
-    /**
-     * Returns the best available runtime profile.
-     * Familiar-form selection remains manual and continues using the existing
-     * spirit-form fallback until dedicated familiar-form frame packs are ready.
-     */
-    fun profile(context: Context, id: String, useFamiliarForm: Boolean): PetProfile {
-        if (useFamiliarForm) return PetRegistry.getRuntimeProfile(id, true)
-
-        val base = PetRegistry.getById(id)
-        val spec = specs[id] ?: return base
+    /** Returns null unless the character has a complete packaged Runtime V2 strip set. */
+    fun profileOrNull(base: PetProfile): PetProfile? {
+        val context = appContext ?: return null
+        val spec = specs[base.id] ?: return null
         val resources = context.resources
         val packageName = context.packageName
 
@@ -85,18 +85,18 @@ object EmkRuntimeV2 {
             )
         }
 
-        // Upgrade only when the complete required pack exists. A half-copied art
-        // export must never leave the character with missing runtime states.
-        val idle = resolve(spec.idle) ?: return base
-        val walk = resolve(spec.walk) ?: return base
-        val run = resolve(spec.run) ?: return base
-        val jumpLand = resolve(spec.jumpLand) ?: return base
-        val special = resolve(spec.special) ?: return base
-        val reaction = resolve(spec.reaction) ?: return base
-        val sleep = resolve(spec.sleep) ?: return base
+        // All-or-nothing activation prevents a half-copied asset export from
+        // leaving a character with missing walk/sleep/special states.
+        val idle = resolve(spec.idle) ?: return null
+        val walk = resolve(spec.walk) ?: return null
+        val run = resolve(spec.run) ?: return null
+        val jumpLand = resolve(spec.jumpLand) ?: return null
+        val special = resolve(spec.special) ?: return null
+        val reaction = resolve(spec.reaction) ?: return null
+        val sleep = resolve(spec.sleep) ?: return null
 
         return base.copy(
-            description = when (id) {
+            description = when (base.id) {
                 "emi" -> "Tech-royal attendant · multi-frame Runtime V2."
                 "kaelani" -> "Bloom attendant · multi-frame Runtime V2."
                 "mira" -> "Red-haired scholar attendant · multi-frame Runtime V2."
