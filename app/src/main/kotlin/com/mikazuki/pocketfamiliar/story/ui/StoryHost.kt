@@ -26,10 +26,7 @@ import com.mikazuki.pocketfamiliar.story.data.StoryCatalog
 import com.mikazuki.pocketfamiliar.ui.screens.HomeScreen
 import com.mikazuki.pocketfamiliar.ui.screens.HomeViewModel
 
-/**
- * Root story surface. Story playback is intentionally isolated from the overlay
- * service so an art/overlay failure cannot take the narrative screen down with it.
- */
+/** Root story surface. Story playback is isolated from the overlay service. */
 @Composable
 fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
     val settings by vm.settings.collectAsStateWithLifecycle()
@@ -39,9 +36,7 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     var storyActive by rememberSaveable { mutableStateOf(false) }
-    val episode = remember(settings.selectedPetId) {
-        StoryCatalog.signalEpisode(settings.selectedPetId)
-    }
+    val episode = remember(settings.selectedPetId) { StoryCatalog.signalEpisode(settings.selectedPetId) }
 
     LaunchedEffect(storyMessage) {
         val message = storyMessage ?: return@LaunchedEffect
@@ -50,13 +45,11 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
     }
 
     if (storyActive) {
-        StoryPlayer(
+        StoryboardStoryPlayer(
             episode = episode,
+            selectedFamiliarId = settings.selectedPetId,
             onComplete = {
                 vm.completeStoryEpisode(episode)
-                // Only ask the live overlay to react when the story's focus
-                // character is actually the selected familiar. The story itself
-                // never depends on the overlay service being alive.
                 if (hasOverlayPermission && settings.selectedPetId == episode.focusFamiliarId) {
                     runCatching { vm.debugState("SPECIAL") }
                 }
@@ -69,26 +62,12 @@ fun PocketFamiliarStoryHost(vm: HomeViewModel = viewModel()) {
 
     Box(Modifier.fillMaxSize()) {
         HomeScreen(vm)
-
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 92.dp),
-        )
-
+        SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 92.dp))
         ExtendedFloatingActionButton(
-            onClick = {
-                // Do not start/restart PetOverlayService simply because the user
-                // opened a story. This was a fragile coupling in Story Engine V1.
-                storyActive = true
-            },
+            onClick = { storyActive = true },
             modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
             icon = { Icon(Icons.Default.AutoStories, contentDescription = null) },
-            text = {
-                Text(
-                    if (storyProgress.hasCompleted(episode.id)) "Replay · The Signal"
-                    else "Story · The Signal",
-                )
-            },
+            text = { Text(if (storyProgress.hasCompleted(episode.id)) "Replay · The Signal" else "Story · The Signal") },
         )
     }
 }
