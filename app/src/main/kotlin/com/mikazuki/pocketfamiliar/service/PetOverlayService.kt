@@ -231,7 +231,7 @@ class PetOverlayService : Service() {
             transition?.let(::handleForcedTransition)
             overlayManager.updatePosition(physics.x, physics.y)
         }
-        overlayManager.tick(delta)
+        overlayManager.tick()
     }
 
     private fun onPetStateChanged(state: PetState) {

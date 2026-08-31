@@ -1,0 +1,3696 @@
+{
+  "frames": [
+    {
+      "character": "emi",
+      "action": "idle",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/idle/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "dceb0504c8d0f15fa3996aeba5afc08a96523530a67b764ba9bac4b71718130a",
+      "output_rgb_sha256": "dceb0504c8d0f15fa3996aeba5afc08a96523530a67b764ba9bac4b71718130a",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 328526,
+      "cleared_pixels": 328465,
+      "retained_pixels": 64664
+    },
+    {
+      "character": "emi",
+      "action": "idle",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/idle/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e1e6b5a6b14d8f14c8d99cabbf2e5f4833b7d208f192d0bf0104827fcffd0f16",
+      "output_rgb_sha256": "e1e6b5a6b14d8f14c8d99cabbf2e5f4833b7d208f192d0bf0104827fcffd0f16",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 327526,
+      "cleared_pixels": 327461,
+      "retained_pixels": 65668
+    },
+    {
+      "character": "emi",
+      "action": "idle",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/idle/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e0657ae2e7de5d23df23cb13e24477f8c2a10931ffe2c45bb9a0c538486dc6f8",
+      "output_rgb_sha256": "e0657ae2e7de5d23df23cb13e24477f8c2a10931ffe2c45bb9a0c538486dc6f8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 329334,
+      "cleared_pixels": 329319,
+      "retained_pixels": 63810
+    },
+    {
+      "character": "emi",
+      "action": "idle",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/idle/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e9c8da0b72eaed6c0ca29eb2965b9d622ae1595e95be49f0a4058c5a07521539",
+      "output_rgb_sha256": "e9c8da0b72eaed6c0ca29eb2965b9d622ae1595e95be49f0a4058c5a07521539",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 330237,
+      "cleared_pixels": 330174,
+      "retained_pixels": 62955
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "897bf7c2d2a68c2a7b27fc6c57f1f4bb4bf2f61aa4ac0d6a32771baf28db9443",
+      "output_rgb_sha256": "897bf7c2d2a68c2a7b27fc6c57f1f4bb4bf2f61aa4ac0d6a32771baf28db9443",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 194145,
+      "cleared_pixels": 193855,
+      "retained_pixels": 68289
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e635b4350d59b20fc165b6091106f6793990de0a9b96ab1cecdd7b639cf0fd07",
+      "output_rgb_sha256": "e635b4350d59b20fc165b6091106f6793990de0a9b96ab1cecdd7b639cf0fd07",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 202310,
+      "cleared_pixels": 201443,
+      "retained_pixels": 60701
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "011f55da9d3d2cc9b4323d04a5005bfdc77ed00b06503fe95e0bff59fedfe110",
+      "output_rgb_sha256": "011f55da9d3d2cc9b4323d04a5005bfdc77ed00b06503fe95e0bff59fedfe110",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 199127,
+      "cleared_pixels": 198484,
+      "retained_pixels": 63660
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "8de66efcd7d00b399a578a3840dcc44a55732c03568fbfa9f7eff443a3f610b8",
+      "output_rgb_sha256": "8de66efcd7d00b399a578a3840dcc44a55732c03568fbfa9f7eff443a3f610b8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 201498,
+      "cleared_pixels": 200751,
+      "retained_pixels": 61393
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "58b50e854c47b77e7a421e6aeaa18b7e4181ecb072f13d111c8e3b9a07fe59a7",
+      "output_rgb_sha256": "58b50e854c47b77e7a421e6aeaa18b7e4181ecb072f13d111c8e3b9a07fe59a7",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 209316,
+      "cleared_pixels": 208987,
+      "retained_pixels": 53157
+    },
+    {
+      "character": "emi",
+      "action": "walk",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/walk/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "501bff672716fbd1a203738e89d731f27fc0f0b2d3896967d7834259878e6539",
+      "output_rgb_sha256": "501bff672716fbd1a203738e89d731f27fc0f0b2d3896967d7834259878e6539",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 206913,
+      "cleared_pixels": 206186,
+      "retained_pixels": 55958
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "4c5d2740c8af283ed2c87fbd59c2b4269a901c464cbf4c6b212c37fb5b3795db",
+      "output_rgb_sha256": "4c5d2740c8af283ed2c87fbd59c2b4269a901c464cbf4c6b212c37fb5b3795db",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [
+        {
+          "bounds": [
+            11,
+            9,
+            15,
+            13
+          ],
+          "expected_pixels": 11,
+          "reason": "isolated checker-colored component, 116 px from main pose",
+          "excluded_pixels": 11,
+          "rgb_changed": false
+        }
+      ],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 230583,
+      "cleared_pixels": 230318,
+      "retained_pixels": 31826
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "01ad247ef49e4847b3dff25dc155116a2d40cb7fd3d71e6c785202eaceaa38d1",
+      "output_rgb_sha256": "01ad247ef49e4847b3dff25dc155116a2d40cb7fd3d71e6c785202eaceaa38d1",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 232678,
+      "cleared_pixels": 232605,
+      "retained_pixels": 29539
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ae91ef6c94b17292fb34cb34bffd087c7eadcd91811c50ac59a468d991b030a0",
+      "output_rgb_sha256": "ae91ef6c94b17292fb34cb34bffd087c7eadcd91811c50ac59a468d991b030a0",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 230914,
+      "cleared_pixels": 230475,
+      "retained_pixels": 31669
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ba447ac9353702803bd624dbedca3b30dd4f79d52e7ab26b086b1a9566979c52",
+      "output_rgb_sha256": "ba447ac9353702803bd624dbedca3b30dd4f79d52e7ab26b086b1a9566979c52",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          253.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 231690,
+      "cleared_pixels": 231477,
+      "retained_pixels": 30667
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "659796bdbbdfdcf23d3f05c45c4ed9fae52c324c9ad76d415eef0412c083932c",
+      "output_rgb_sha256": "659796bdbbdfdcf23d3f05c45c4ed9fae52c324c9ad76d415eef0412c083932c",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 232198,
+      "cleared_pixels": 231857,
+      "retained_pixels": 30287
+    },
+    {
+      "character": "emi",
+      "action": "run",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/run/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "5382f73bbcb95136eaed40eec5602ea07d4d1bc65541f7e8a4e2c9afac963617",
+      "output_rgb_sha256": "5382f73bbcb95136eaed40eec5602ea07d4d1bc65541f7e8a4e2c9afac963617",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 232755,
+      "cleared_pixels": 232711,
+      "retained_pixels": 29433
+    },
+    {
+      "character": "emi",
+      "action": "jump_land",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/jump_land/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "18501794c24da60501ea1fa8a1c841581c3dd27b5b794ac99e95b42e684a4a9e",
+      "output_rgb_sha256": "18501794c24da60501ea1fa8a1c841581c3dd27b5b794ac99e95b42e684a4a9e",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          242.0,
+          242.0,
+          242.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 316705,
+      "cleared_pixels": 316498,
+      "retained_pixels": 76631
+    },
+    {
+      "character": "emi",
+      "action": "jump_land",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/jump_land/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "71c98f6c141e9427c523df5c0b9f171c2514b2e4c34a62640e89d8095612cf48",
+      "output_rgb_sha256": "71c98f6c141e9427c523df5c0b9f171c2514b2e4c34a62640e89d8095612cf48",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          242.0,
+          241.0,
+          241.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 297121,
+      "cleared_pixels": 296564,
+      "retained_pixels": 96565
+    },
+    {
+      "character": "emi",
+      "action": "jump_land",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/jump_land/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "60360d1c7d1ff29ba39b1a29798dbeed222a927591befbb6def360156d0ea6fc",
+      "output_rgb_sha256": "60360d1c7d1ff29ba39b1a29798dbeed222a927591befbb6def360156d0ea6fc",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          242.0,
+          242.0,
+          242.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 293866,
+      "cleared_pixels": 293531,
+      "retained_pixels": 99598
+    },
+    {
+      "character": "emi",
+      "action": "jump_land",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/jump_land/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "0b4a57c8e724aa9c1c30e2798f5c635f2b4771a20b0f19190b6a24360a6d8b58",
+      "output_rgb_sha256": "0b4a57c8e724aa9c1c30e2798f5c635f2b4771a20b0f19190b6a24360a6d8b58",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          242.0,
+          242.0,
+          242.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 306803,
+      "cleared_pixels": 306561,
+      "retained_pixels": 86568
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ca31dc595dcaf5d19a09622b0aa87a194c23796faad5f1d63f1d400dbd56c849",
+      "output_rgb_sha256": "ca31dc595dcaf5d19a09622b0aa87a194c23796faad5f1d63f1d400dbd56c849",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 226129,
+      "cleared_pixels": 225903,
+      "retained_pixels": 36241
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b4f10de5488059c36d626fc154a9fce7d705f39c17a89954a6691315e4838dd5",
+      "output_rgb_sha256": "b4f10de5488059c36d626fc154a9fce7d705f39c17a89954a6691315e4838dd5",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 226390,
+      "cleared_pixels": 226097,
+      "retained_pixels": 36047
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "c4c236a77a55c702cd671a2e2a334aab4f5035cdb3dff880d8e9a0f5c569d7f8",
+      "output_rgb_sha256": "c4c236a77a55c702cd671a2e2a334aab4f5035cdb3dff880d8e9a0f5c569d7f8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 220054,
+      "cleared_pixels": 219030,
+      "retained_pixels": 43114
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "a287b2df5755dc353a2b50ccf364dff938ede18838421247a50e3a263f1da1b3",
+      "output_rgb_sha256": "a287b2df5755dc353a2b50ccf364dff938ede18838421247a50e3a263f1da1b3",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 200661,
+      "cleared_pixels": 196223,
+      "retained_pixels": 65921
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b7648b6b45ea1ea4d95b82abfefc75dc13557a0fc2b10a84e093a291d3876f81",
+      "output_rgb_sha256": "b7648b6b45ea1ea4d95b82abfefc75dc13557a0fc2b10a84e093a291d3876f81",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 221962,
+      "cleared_pixels": 221375,
+      "retained_pixels": 40769
+    },
+    {
+      "character": "emi",
+      "action": "special",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/special/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "22557979e993b3d4f9aacd9e975b3e10612ffedbbd36f028c821aecec252ad9d",
+      "output_rgb_sha256": "22557979e993b3d4f9aacd9e975b3e10612ffedbbd36f028c821aecec252ad9d",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 225683,
+      "cleared_pixels": 225488,
+      "retained_pixels": 36656
+    },
+    {
+      "character": "emi",
+      "action": "recover",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/recover/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b83ccc3b5925dba8046aa0b1eb63afefc70f342094f9b1d8bb615d9bd22c0a1b",
+      "output_rgb_sha256": "b83ccc3b5925dba8046aa0b1eb63afefc70f342094f9b1d8bb615d9bd22c0a1b",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 313950,
+      "cleared_pixels": 313817,
+      "retained_pixels": 79312
+    },
+    {
+      "character": "emi",
+      "action": "recover",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/recover/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "bf94d4d22071fe4791bfe3073579b80352002c261ea71f742fd219898595cb77",
+      "output_rgb_sha256": "bf94d4d22071fe4791bfe3073579b80352002c261ea71f742fd219898595cb77",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 319083,
+      "cleared_pixels": 319041,
+      "retained_pixels": 74088
+    },
+    {
+      "character": "emi",
+      "action": "recover",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/recover/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ad48105df233974756061dd6a7a53b901341b7cbb86fc7d6988c999aad24615f",
+      "output_rgb_sha256": "ad48105df233974756061dd6a7a53b901341b7cbb86fc7d6988c999aad24615f",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 311605,
+      "cleared_pixels": 311478,
+      "retained_pixels": 81651
+    },
+    {
+      "character": "emi",
+      "action": "recover",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/recover/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "443146df39aafba6282107c810558a010d1c18df1cc280b8b142755e73d5f9b1",
+      "output_rgb_sha256": "443146df39aafba6282107c810558a010d1c18df1cc280b8b142755e73d5f9b1",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 306896,
+      "cleared_pixels": 306753,
+      "retained_pixels": 86376
+    },
+    {
+      "character": "emi",
+      "action": "sleep",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/sleep/00.png",
+      "source_size": [
+        724,
+        724
+      ],
+      "output_size": [
+        724,
+        724
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "33517b5ebc1963ebb8d836256bb33c780e6bc480ac2a817382962770fa187a26",
+      "output_rgb_sha256": "33517b5ebc1963ebb8d836256bb33c780e6bc480ac2a817382962770fa187a26",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 427110,
+      "cleared_pixels": 426728,
+      "retained_pixels": 97448
+    },
+    {
+      "character": "emi",
+      "action": "sleep",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/sleep/01.png",
+      "source_size": [
+        724,
+        724
+      ],
+      "output_size": [
+        724,
+        724
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e8d3b0a4eb4ed1ed49f938818a70017e50d2419dd74d2448e4d6153d4372e1db",
+      "output_rgb_sha256": "e8d3b0a4eb4ed1ed49f938818a70017e50d2419dd74d2448e4d6153d4372e1db",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 425417,
+      "cleared_pixels": 424815,
+      "retained_pixels": 99361
+    },
+    {
+      "character": "emi",
+      "action": "sleep",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/emi/sleep/02.png",
+      "source_size": [
+        724,
+        724
+      ],
+      "output_size": [
+        724,
+        724
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b4fae957b23a986d8d8aa1e4d8dfe57875ab6835896f8cc96db98fcd4934b94d",
+      "output_rgb_sha256": "b4fae957b23a986d8d8aa1e4d8dfe57875ab6835896f8cc96db98fcd4934b94d",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 427477,
+      "cleared_pixels": 426938,
+      "retained_pixels": 97238
+    },
+    {
+      "character": "kaelani",
+      "action": "idle",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/idle/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "fbe46ab509a50b6d46d93c9f26a6cb7f198c9c19bacf9b0f2959dfcf047411dd",
+      "output_rgb_sha256": "fbe46ab509a50b6d46d93c9f26a6cb7f198c9c19bacf9b0f2959dfcf047411dd",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 279397,
+      "cleared_pixels": 278352,
+      "retained_pixels": 114777
+    },
+    {
+      "character": "kaelani",
+      "action": "idle",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/idle/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "2654c4e380f32540925997858474a518251ad1fe205b10c479dd34da56b2b989",
+      "output_rgb_sha256": "2654c4e380f32540925997858474a518251ad1fe205b10c479dd34da56b2b989",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 266044,
+      "cleared_pixels": 264728,
+      "retained_pixels": 128401
+    },
+    {
+      "character": "kaelani",
+      "action": "idle",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/idle/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "d4b581a0a0f6e27b5d471f9fe033f0f8cbc985e34ee0a10cabdd4c6bfe6524f3",
+      "output_rgb_sha256": "d4b581a0a0f6e27b5d471f9fe033f0f8cbc985e34ee0a10cabdd4c6bfe6524f3",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 279510,
+      "cleared_pixels": 278462,
+      "retained_pixels": 114667
+    },
+    {
+      "character": "kaelani",
+      "action": "idle",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/idle/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "8af47d673aada05d09c24a093be70abd60159c30094feb30fcb0cb19bee13c1a",
+      "output_rgb_sha256": "8af47d673aada05d09c24a093be70abd60159c30094feb30fcb0cb19bee13c1a",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          245.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 280888,
+      "cleared_pixels": 279718,
+      "retained_pixels": 113411
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "6847dc9973dd38f7789909fac1e07cf511d8532372c71669bb9892d843930fda",
+      "output_rgb_sha256": "6847dc9973dd38f7789909fac1e07cf511d8532372c71669bb9892d843930fda",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 194549,
+      "cleared_pixels": 193386,
+      "retained_pixels": 68758
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "9cf75385dafe029b972360f1cd73a442aa872c1f46d86dba265eefe7edcc6244",
+      "output_rgb_sha256": "9cf75385dafe029b972360f1cd73a442aa872c1f46d86dba265eefe7edcc6244",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 200261,
+      "cleared_pixels": 199317,
+      "retained_pixels": 62827
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "6f963e337198c416eb1dc92808fc140ee5ee49573d367a98c699ed4c5e254b10",
+      "output_rgb_sha256": "6f963e337198c416eb1dc92808fc140ee5ee49573d367a98c699ed4c5e254b10",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 199177,
+      "cleared_pixels": 198426,
+      "retained_pixels": 63718
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ab65e68880d13067d7d1f06d24da83457ef311f258981169380ae59fa8b74235",
+      "output_rgb_sha256": "ab65e68880d13067d7d1f06d24da83457ef311f258981169380ae59fa8b74235",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 197679,
+      "cleared_pixels": 196810,
+      "retained_pixels": 65334
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "7da2f2d34a70c4edc14753f6cd79a731ea008ef6ea82c564bd4a46b5d9fa75cf",
+      "output_rgb_sha256": "7da2f2d34a70c4edc14753f6cd79a731ea008ef6ea82c564bd4a46b5d9fa75cf",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 202088,
+      "cleared_pixels": 201285,
+      "retained_pixels": 60859
+    },
+    {
+      "character": "kaelani",
+      "action": "walk",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/walk/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "c5edd2f53465ff97df36d31b51ad3db4120fb3ca69baeaf99a39ea64f2ebb699",
+      "output_rgb_sha256": "c5edd2f53465ff97df36d31b51ad3db4120fb3ca69baeaf99a39ea64f2ebb699",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 204039,
+      "cleared_pixels": 203279,
+      "retained_pixels": 58865
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 0,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        442,
+        442
+      ],
+      "source_bounds": [
+        83,
+        61,
+        461,
+        437
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 11,
+      "retained_pixels": 72053,
+      "retained_rgb_sha256": "7ac04318e550bd9bdefc8e2a53917c1051366f344c2d7a83d59e9624ce1750ef",
+      "output_rgb_sha256": "7ac04318e550bd9bdefc8e2a53917c1051366f344c2d7a83d59e9624ce1750ef",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 1,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        411,
+        411
+      ],
+      "source_bounds": [
+        561,
+        97,
+        900,
+        444
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 8,
+      "retained_pixels": 59786,
+      "retained_rgb_sha256": "197d31bb2d66166f78b54dd08d17a8f76dcfd7d244edc7e90488d1715a3257e4",
+      "output_rgb_sha256": "197d31bb2d66166f78b54dd08d17a8f76dcfd7d244edc7e90488d1715a3257e4",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 2,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        451,
+        451
+      ],
+      "source_bounds": [
+        1015,
+        45,
+        1400,
+        432
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 20,
+      "retained_pixels": 69016,
+      "retained_rgb_sha256": "4c047dc84ea2e99ea62080d865d2840db61f773fe59590335137300144fc4ae1",
+      "output_rgb_sha256": "4c047dc84ea2e99ea62080d865d2840db61f773fe59590335137300144fc4ae1",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 3,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        482,
+        482
+      ],
+      "source_bounds": [
+        67,
+        519,
+        485,
+        882
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 19,
+      "retained_pixels": 71973,
+      "retained_rgb_sha256": "8d569d6bd8d30066a869d49a57216bc1b77d2538569d8b3e29a1bcea25916fba",
+      "output_rgb_sha256": "8d569d6bd8d30066a869d49a57216bc1b77d2538569d8b3e29a1bcea25916fba",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 4,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        450,
+        450
+      ],
+      "source_bounds": [
+        560,
+        545,
+        883,
+        931
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 15,
+      "retained_pixels": 62011,
+      "retained_rgb_sha256": "a128fbd0eaa6ad1b1e33eceb7f1dccad316eff060b9bca1c7411d8dea37fe9cd",
+      "output_rgb_sha256": "a128fbd0eaa6ad1b1e33eceb7f1dccad316eff060b9bca1c7411d8dea37fe9cd",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "run",
+      "frame": 5,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/run_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        445,
+        445
+      ],
+      "source_bounds": [
+        1032,
+        550,
+        1366,
+        931
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 11,
+      "retained_pixels": 62657,
+      "retained_rgb_sha256": "c79d29823a236ed3baa65a05e5a1c579766df5527c571c2522129118ee0bb5b2",
+      "output_rgb_sha256": "c79d29823a236ed3baa65a05e5a1c579766df5527c571c2522129118ee0bb5b2",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1179008,
+      "sheet_cleared_pixels": 1175368,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "jump_land",
+      "frame": 0,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/jump_land_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        580,
+        580
+      ],
+      "source_bounds": [
+        80,
+        121,
+        539,
+        637
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 33,
+      "retained_pixels": 112906,
+      "retained_rgb_sha256": "dc155fa6d9144e158fa5edd61b29e010bfb58e83711153b12bfe3d9330f3c8fa",
+      "output_rgb_sha256": "dc155fa6d9144e158fa5edd61b29e010bfb58e83711153b12bfe3d9330f3c8fa",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [
+        {
+          "bounds": [
+            310,
+            546,
+            311,
+            548
+          ],
+          "expected_pixels": 2,
+          "reason": "isolated neutral background residue, 57 px below main pose",
+          "excluded_pixels": 2,
+          "rgb_changed": false
+        }
+      ],
+      "sheet_background_candidates": 1054728,
+      "sheet_cleared_pixels": 1048170,
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "jump_land",
+      "frame": 1,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/jump_land_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        618,
+        618
+      ],
+      "source_bounds": [
+        619,
+        19,
+        1173,
+        567
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 48,
+      "retained_pixels": 150916,
+      "retained_rgb_sha256": "0b486fea2a2a2c51633afae3470f9aca97aa6ace82b7430ddf36aaa3b6fb05a8",
+      "output_rgb_sha256": "0b486fea2a2a2c51633afae3470f9aca97aa6ace82b7430ddf36aaa3b6fb05a8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1054728,
+      "sheet_cleared_pixels": 1048170,
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "jump_land",
+      "frame": 2,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/jump_land_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        599,
+        599
+      ],
+      "source_bounds": [
+        79,
+        626,
+        560,
+        1161
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 43,
+      "retained_pixels": 140226,
+      "retained_rgb_sha256": "c5504f468a19c3140bf41c18c3f1dc78c96416dffcb15dfe841c2064cfd93651",
+      "output_rgb_sha256": "c5504f468a19c3140bf41c18c3f1dc78c96416dffcb15dfe841c2064cfd93651",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1054728,
+      "sheet_cleared_pixels": 1048170,
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "jump_land",
+      "frame": 3,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/jump_land_sheet.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "output_size": [
+        579,
+        579
+      ],
+      "source_bounds": [
+        621,
+        749,
+        1136,
+        1197
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 25,
+      "retained_pixels": 120296,
+      "retained_rgb_sha256": "6fbac06a3659648fb6890b39daeb55b8f5b2e1ce29e00101215ac33ff53d682b",
+      "output_rgb_sha256": "6fbac06a3659648fb6890b39daeb55b8f5b2e1ce29e00101215ac33ff53d682b",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1054728,
+      "sheet_cleared_pixels": 1048170,
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 0,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        539,
+        539
+      ],
+      "source_bounds": [
+        184,
+        8,
+        413,
+        483
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 6,
+      "retained_pixels": 64954,
+      "retained_rgb_sha256": "6d04e261c9d475030a6aee2bc76536c942bd77d1b1ce633b42e06ad12d46eba4",
+      "output_rgb_sha256": "6d04e261c9d475030a6aee2bc76536c942bd77d1b1ce633b42e06ad12d46eba4",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 1,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        562,
+        562
+      ],
+      "source_bounds": [
+        646,
+        11,
+        874,
+        509
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 8,
+      "retained_pixels": 66510,
+      "retained_rgb_sha256": "7eb4d9532285b3be2191ea2688649ca662647f3bece63c4a5c8d5262e56ff599",
+      "output_rgb_sha256": "7eb4d9532285b3be2191ea2688649ca662647f3bece63c4a5c8d5262e56ff599",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [
+        {
+          "bounds": [
+            278,
+            527,
+            283,
+            530
+          ],
+          "expected_pixels": 10,
+          "reason": "isolated neutral background residue, 22 px below main pose",
+          "excluded_pixels": 10,
+          "rgb_changed": false
+        }
+      ],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 2,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        537,
+        537
+      ],
+      "source_bounds": [
+        1069,
+        11,
+        1396,
+        484
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 27,
+      "retained_pixels": 94178,
+      "retained_rgb_sha256": "aacb43634662e5337bbd3853424894f73e2a65dbb1646fed359811b9820513ee",
+      "output_rgb_sha256": "aacb43634662e5337bbd3853424894f73e2a65dbb1646fed359811b9820513ee",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 3,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        525,
+        525
+      ],
+      "source_bounds": [
+        96,
+        509,
+        489,
+        970
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 69,
+      "retained_pixels": 120994,
+      "retained_rgb_sha256": "87d0d6f3a91c5352a2feab596ba21b4ec51979bd0d847d7faead4d22d3ea2bd8",
+      "output_rgb_sha256": "87d0d6f3a91c5352a2feab596ba21b4ec51979bd0d847d7faead4d22d3ea2bd8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 4,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        521,
+        521
+      ],
+      "source_bounds": [
+        620,
+        506,
+        916,
+        963
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 46,
+      "retained_pixels": 75932,
+      "retained_rgb_sha256": "b2c962acb74ba8674407018575de308dad05e921382ff717d4bbcb4ee147a813",
+      "output_rgb_sha256": "b2c962acb74ba8674407018575de308dad05e921382ff717d4bbcb4ee147a813",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "special",
+      "frame": 5,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        521,
+        521
+      ],
+      "source_bounds": [
+        1104,
+        506,
+        1394,
+        963
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 8,
+      "retained_pixels": 66639,
+      "retained_rgb_sha256": "adb68d85a6cdf1bb6bc7dc71c9f435100cf9b541257aba939f47c7a5bb870e09",
+      "output_rgb_sha256": "adb68d85a6cdf1bb6bc7dc71c9f435100cf9b541257aba939f47c7a5bb870e09",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1095285,
+      "sheet_cleared_pixels": 1083647,
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "happy",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/happy/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "08503581e0c2053167cd7d002e64f28b974227905f3484db000ca1d5eaedfac0",
+      "output_rgb_sha256": "08503581e0c2053167cd7d002e64f28b974227905f3484db000ca1d5eaedfac0",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 280707,
+      "cleared_pixels": 279664,
+      "retained_pixels": 113465
+    },
+    {
+      "character": "kaelani",
+      "action": "happy",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/happy/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e7212a602336e36db22e68252c5aa5d1cf85f42824ac97f013ac43427f7e2790",
+      "output_rgb_sha256": "e7212a602336e36db22e68252c5aa5d1cf85f42824ac97f013ac43427f7e2790",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 289569,
+      "cleared_pixels": 288600,
+      "retained_pixels": 104529
+    },
+    {
+      "character": "kaelani",
+      "action": "happy",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/happy/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "10d6a0dbddaabe98a6c1882977fa6f872bd6656cb18cb6fed7a19b440e9e6b9e",
+      "output_rgb_sha256": "10d6a0dbddaabe98a6c1882977fa6f872bd6656cb18cb6fed7a19b440e9e6b9e",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 271715,
+      "cleared_pixels": 270834,
+      "retained_pixels": 122295
+    },
+    {
+      "character": "kaelani",
+      "action": "happy",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/kaelani/happy/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e591df2b586307f4e353af66b93171a3844aab3d5361733e31a9c17bc4d6220f",
+      "output_rgb_sha256": "e591df2b586307f4e353af66b93171a3844aab3d5361733e31a9c17bc4d6220f",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          245.0,
+          245.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 286910,
+      "cleared_pixels": 286038,
+      "retained_pixels": 107091
+    },
+    {
+      "character": "kaelani",
+      "action": "sleep",
+      "frame": 0,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/sleep_sheet.png",
+      "source_size": [
+        1974,
+        797
+      ],
+      "output_size": [
+        693,
+        693
+      ],
+      "source_bounds": [
+        55,
+        84,
+        646,
+        713
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 34,
+      "retained_pixels": 191833,
+      "retained_rgb_sha256": "fd264109b0fd8f5b7eb71c425865841e2240d20788595f3da7a2f60ab4ceeb5e",
+      "output_rgb_sha256": "fd264109b0fd8f5b7eb71c425865841e2240d20788595f3da7a2f60ab4ceeb5e",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 995445,
+      "sheet_cleared_pixels": 992021,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "sleep",
+      "frame": 1,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/sleep_sheet.png",
+      "source_size": [
+        1974,
+        797
+      ],
+      "output_size": [
+        693,
+        693
+      ],
+      "source_bounds": [
+        683,
+        87,
+        1270,
+        716
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 21,
+      "retained_pixels": 201123,
+      "retained_rgb_sha256": "ebd3c8f5f71fa0f82d702b89df103b7fa96883eaed736da9b053b254340aa382",
+      "output_rgb_sha256": "ebd3c8f5f71fa0f82d702b89df103b7fa96883eaed736da9b053b254340aa382",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 995445,
+      "sheet_cleared_pixels": 992021,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "kaelani",
+      "action": "sleep",
+      "frame": 2,
+      "mode": "full_sheet_components",
+      "source": "generated/kaelani/sleep_sheet.png",
+      "source_size": [
+        1974,
+        797
+      ],
+      "output_size": [
+        691,
+        691
+      ],
+      "source_bounds": [
+        1314,
+        91,
+        1890,
+        718
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 21,
+      "retained_pixels": 188301,
+      "retained_rgb_sha256": "83d85a6d637719a4a8f01a83a732affd8f5e8ad99f634dbcb34aa079b6f0b47f",
+      "output_rgb_sha256": "83d85a6d637719a4a8f01a83a732affd8f5e8ad99f634dbcb34aa079b6f0b47f",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 995445,
+      "sheet_cleared_pixels": 992021,
+      "checker_centers": [
+        [
+          243.0,
+          243.0,
+          243.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "idle",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/idle/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "4143bc9ebda41ebdd5523ae732fc6f84907c670c01c3ecd60c8038e918dc165e",
+      "output_rgb_sha256": "4143bc9ebda41ebdd5523ae732fc6f84907c670c01c3ecd60c8038e918dc165e",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          250.0,
+          250.0,
+          250.0
+        ]
+      ],
+      "background_candidates": 303410,
+      "cleared_pixels": 303213,
+      "retained_pixels": 89916
+    },
+    {
+      "character": "mira",
+      "action": "idle",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/idle/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "3946f6497af136ecf3ac3cf0d41e87954d8918d2534e103a709bb125d5d0e5d3",
+      "output_rgb_sha256": "3946f6497af136ecf3ac3cf0d41e87954d8918d2534e103a709bb125d5d0e5d3",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          250.0,
+          250.0,
+          250.0
+        ]
+      ],
+      "background_candidates": 297877,
+      "cleared_pixels": 297577,
+      "retained_pixels": 95552
+    },
+    {
+      "character": "mira",
+      "action": "idle",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/idle/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "e91c1003861416a3567cf8e3222c30397054979ebd3d1d2ff20e073141e01332",
+      "output_rgb_sha256": "e91c1003861416a3567cf8e3222c30397054979ebd3d1d2ff20e073141e01332",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          250.0,
+          250.0,
+          250.0
+        ]
+      ],
+      "background_candidates": 305561,
+      "cleared_pixels": 305406,
+      "retained_pixels": 87723
+    },
+    {
+      "character": "mira",
+      "action": "idle",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/idle/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "a659f757f1b97ac02a8768efdf116d14c9054a2f3aaccf08bb771ee852741db5",
+      "output_rgb_sha256": "a659f757f1b97ac02a8768efdf116d14c9054a2f3aaccf08bb771ee852741db5",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          250.0,
+          250.0,
+          250.0
+        ]
+      ],
+      "background_candidates": 304919,
+      "cleared_pixels": 304615,
+      "retained_pixels": 88514
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "29a10a3d9ca172143e7eb82dcf0ff5719195b815abbffef72d1fbdefa88bdd62",
+      "output_rgb_sha256": "29a10a3d9ca172143e7eb82dcf0ff5719195b815abbffef72d1fbdefa88bdd62",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 193921,
+      "cleared_pixels": 193508,
+      "retained_pixels": 68636
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b741805fe736c7a08497dfd490a6009dbbcf193814a284d91d68f3e3e64669a8",
+      "output_rgb_sha256": "b741805fe736c7a08497dfd490a6009dbbcf193814a284d91d68f3e3e64669a8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 202955,
+      "cleared_pixels": 202602,
+      "retained_pixels": 59542
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "3f7bdc096ecb542ee1ec422fc3688979b0265bc53c714ac08a35e75ad24c85ab",
+      "output_rgb_sha256": "3f7bdc096ecb542ee1ec422fc3688979b0265bc53c714ac08a35e75ad24c85ab",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 200405,
+      "cleared_pixels": 199732,
+      "retained_pixels": 62412
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "ba1667ccaf5ab41a414ff801bb0116353624290b92c9c1928e25e4453c696f1f",
+      "output_rgb_sha256": "ba1667ccaf5ab41a414ff801bb0116353624290b92c9c1928e25e4453c696f1f",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 194330,
+      "cleared_pixels": 193915,
+      "retained_pixels": 68229
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "9bd55811d709bad7b45d2a960112ae7d20401c9f84fbb0e8ef126a896e18aa9a",
+      "output_rgb_sha256": "9bd55811d709bad7b45d2a960112ae7d20401c9f84fbb0e8ef126a896e18aa9a",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 202387,
+      "cleared_pixels": 202058,
+      "retained_pixels": 60086
+    },
+    {
+      "character": "mira",
+      "action": "walk",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/walk/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "cd779fabb0dcfb6fc82a1047cb47eba6f5e3d68a589a9c815ee0aa6ef7fce58a",
+      "output_rgb_sha256": "cd779fabb0dcfb6fc82a1047cb47eba6f5e3d68a589a9c815ee0aa6ef7fce58a",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          246.0,
+          246.0,
+          246.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 196224,
+      "cleared_pixels": 195914,
+      "retained_pixels": 66230
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/00.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "f269d38bbf10961bbd4de1172836d70cdc661224ecdf92465ea6061b76a6ecc8",
+      "output_rgb_sha256": "f269d38bbf10961bbd4de1172836d70cdc661224ecdf92465ea6061b76a6ecc8",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 201873,
+      "cleared_pixels": 201730,
+      "retained_pixels": 60414
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/01.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "d0f9f35b4166aa63999f1d4e2709f015454328d000718f7fa5f30e5855b8aa35",
+      "output_rgb_sha256": "d0f9f35b4166aa63999f1d4e2709f015454328d000718f7fa5f30e5855b8aa35",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 205388,
+      "cleared_pixels": 205266,
+      "retained_pixels": 56878
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/02.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "fd5f33029111086301b30ce15c3ab0233c962b94ee16c9cfb9373f71789ea4f2",
+      "output_rgb_sha256": "fd5f33029111086301b30ce15c3ab0233c962b94ee16c9cfb9373f71789ea4f2",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 202152,
+      "cleared_pixels": 201981,
+      "retained_pixels": 60163
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/03.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "de8367d6d23ee35a3071d82c7aa8d4787a0f075f4e1a3dd73098c8299abe7b06",
+      "output_rgb_sha256": "de8367d6d23ee35a3071d82c7aa8d4787a0f075f4e1a3dd73098c8299abe7b06",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 207032,
+      "cleared_pixels": 206919,
+      "retained_pixels": 55225
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 4,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/04.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "a28b8bd374e7a6ab2cf9335d18f848bd74c26d4de08e2c58e1045ac401cb82e3",
+      "output_rgb_sha256": "a28b8bd374e7a6ab2cf9335d18f848bd74c26d4de08e2c58e1045ac401cb82e3",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 205678,
+      "cleared_pixels": 205571,
+      "retained_pixels": 56573
+    },
+    {
+      "character": "mira",
+      "action": "run",
+      "frame": 5,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/run/05.png",
+      "source_size": [
+        512,
+        512
+      ],
+      "output_size": [
+        512,
+        512
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "78a45c0552428c580888bf273f508054e0dadd0bf1240548f9df4e8513b65625",
+      "output_rgb_sha256": "78a45c0552428c580888bf273f508054e0dadd0bf1240548f9df4e8513b65625",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 208905,
+      "cleared_pixels": 208708,
+      "retained_pixels": 53436
+    },
+    {
+      "character": "mira",
+      "action": "jump_land",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/jump_land/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "0af937943cdcac7a2b2f4acc459bd38bfd9bf28853b246a293ccd512d28f886d",
+      "output_rgb_sha256": "0af937943cdcac7a2b2f4acc459bd38bfd9bf28853b246a293ccd512d28f886d",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 310846,
+      "cleared_pixels": 310011,
+      "retained_pixels": 83118
+    },
+    {
+      "character": "mira",
+      "action": "jump_land",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/jump_land/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "58d541438cf81e5149bf38d0c81ea09d4ac300f265b84d69614b1970e76515c2",
+      "output_rgb_sha256": "58d541438cf81e5149bf38d0c81ea09d4ac300f265b84d69614b1970e76515c2",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 289911,
+      "cleared_pixels": 289018,
+      "retained_pixels": 104111
+    },
+    {
+      "character": "mira",
+      "action": "jump_land",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/jump_land/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "2878f85e2c1b042ff984754d1671daa01e4cb2bc1aac9f225fec0310562574e6",
+      "output_rgb_sha256": "2878f85e2c1b042ff984754d1671daa01e4cb2bc1aac9f225fec0310562574e6",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 294520,
+      "cleared_pixels": 293896,
+      "retained_pixels": 99233
+    },
+    {
+      "character": "mira",
+      "action": "jump_land",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/jump_land/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "d4497e7fb46bbcfcb063128909095d8fdb7fb4e20bcf45bd5df46b57e042b746",
+      "output_rgb_sha256": "d4497e7fb46bbcfcb063128909095d8fdb7fb4e20bcf45bd5df46b57e042b746",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [
+        {
+          "bounds": [
+            425,
+            184,
+            430,
+            185
+          ],
+          "expected_pixels": 5,
+          "reason": "isolated neutral background residue, 10 px right of main pose",
+          "excluded_pixels": 5,
+          "rgb_changed": false
+        }
+      ],
+      "checker_centers": [
+        [
+          237.0,
+          237.0,
+          237.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 302974,
+      "cleared_pixels": 301879,
+      "retained_pixels": 91250
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 0,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        481,
+        481
+      ],
+      "source_bounds": [
+        253,
+        30,
+        460,
+        447
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 4,
+      "retained_pixels": 57145,
+      "retained_rgb_sha256": "e4f87381c470a48790796c3b97bfe3927437b7bb2c8434e33f0b9c430ce8de5a",
+      "output_rgb_sha256": "e4f87381c470a48790796c3b97bfe3927437b7bb2c8434e33f0b9c430ce8de5a",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 1,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        477,
+        477
+      ],
+      "source_bounds": [
+        652,
+        34,
+        928,
+        447
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 12,
+      "retained_pixels": 63814,
+      "retained_rgb_sha256": "316d335a6f7604239080801e15fdc003ae214bb489a43b7a195fef3c8b997f82",
+      "output_rgb_sha256": "316d335a6f7604239080801e15fdc003ae214bb489a43b7a195fef3c8b997f82",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 2,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        482,
+        482
+      ],
+      "source_bounds": [
+        995,
+        31,
+        1326,
+        449
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 29,
+      "retained_pixels": 69510,
+      "retained_rgb_sha256": "5a00c799b567b87d198d4c56ee046e51a73ac3a281c445b96bd2a13bcf6e3a46",
+      "output_rgb_sha256": "5a00c799b567b87d198d4c56ee046e51a73ac3a281c445b96bd2a13bcf6e3a46",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 3,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        511,
+        511
+      ],
+      "source_bounds": [
+        120,
+        496,
+        495,
+        943
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 5,
+      "retained_pixels": 112911,
+      "retained_rgb_sha256": "2e1f9ead6c916f398ec8b4d0a7dc6582c86dcffce7c225546f3861f02ff31032",
+      "output_rgb_sha256": "2e1f9ead6c916f398ec8b4d0a7dc6582c86dcffce7c225546f3861f02ff31032",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 4,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        475,
+        475
+      ],
+      "source_bounds": [
+        573,
+        531,
+        931,
+        942
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 27,
+      "retained_pixels": 69186,
+      "retained_rgb_sha256": "02f37883bcf0a99de89fc91af019573143942ec31ef4b8c06f9f4d7c17813786",
+      "output_rgb_sha256": "02f37883bcf0a99de89fc91af019573143942ec31ef4b8c06f9f4d7c17813786",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "special",
+      "frame": 5,
+      "mode": "full_sheet_components",
+      "source": "generated/mira/special_sheet.png",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "output_size": [
+        477,
+        477
+      ],
+      "source_bounds": [
+        1120,
+        528,
+        1322,
+        941
+      ],
+      "source_edge_contacts": {},
+      "assigned_components": 5,
+      "retained_pixels": 57124,
+      "retained_rgb_sha256": "00ad133b45be58a965aa67abc87c1ad0efee40d151251f00937253db2ba340cb",
+      "output_rgb_sha256": "00ad133b45be58a965aa67abc87c1ad0efee40d151251f00937253db2ba340cb",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "sheet_background_candidates": 1167696,
+      "sheet_cleared_pixels": 1143174,
+      "checker_centers": [
+        [
+          247.0,
+          247.0,
+          247.0
+        ],
+        [
+          252.0,
+          252.0,
+          252.0
+        ]
+      ]
+    },
+    {
+      "character": "mira",
+      "action": "happy",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/happy/00.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "b667b0606796cd6c4f1811eb2dc3e408a6b09f77da188befb6c1ee4c05325d7c",
+      "output_rgb_sha256": "b667b0606796cd6c4f1811eb2dc3e408a6b09f77da188befb6c1ee4c05325d7c",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          238.0,
+          238.0,
+          238.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 296270,
+      "cleared_pixels": 295864,
+      "retained_pixels": 97265
+    },
+    {
+      "character": "mira",
+      "action": "happy",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/happy/01.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "bc59417ce32ef7c1bb006cf67bfe55812a73ca9f89fd1b04b4a8ae62c994c553",
+      "output_rgb_sha256": "bc59417ce32ef7c1bb006cf67bfe55812a73ca9f89fd1b04b4a8ae62c994c553",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          238.0,
+          238.0,
+          238.0
+        ],
+        [
+          253.0,
+          253.0,
+          253.0
+        ]
+      ],
+      "background_candidates": 299451,
+      "cleared_pixels": 299343,
+      "retained_pixels": 93786
+    },
+    {
+      "character": "mira",
+      "action": "happy",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/happy/02.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "f15139dee699f32ee6f8ef7a133039e03dc2b995b8b219112495561d756f169e",
+      "output_rgb_sha256": "f15139dee699f32ee6f8ef7a133039e03dc2b995b8b219112495561d756f169e",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          238.0,
+          238.0,
+          238.0
+        ],
+        [
+          253.0,
+          253.0,
+          252.0
+        ]
+      ],
+      "background_candidates": 298363,
+      "cleared_pixels": 298032,
+      "retained_pixels": 95097
+    },
+    {
+      "character": "mira",
+      "action": "happy",
+      "frame": 3,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/happy/03.png",
+      "source_size": [
+        627,
+        627
+      ],
+      "output_size": [
+        627,
+        627
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "7858223999e27b99fca5834eabae5199c824c45b5556feb6c58a0bbce92f7316",
+      "output_rgb_sha256": "7858223999e27b99fca5834eabae5199c824c45b5556feb6c58a0bbce92f7316",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          238.0,
+          238.0,
+          238.0
+        ],
+        [
+          253.0,
+          253.0,
+          252.0
+        ]
+      ],
+      "background_candidates": 300576,
+      "cleared_pixels": 300338,
+      "retained_pixels": 92791
+    },
+    {
+      "character": "mira",
+      "action": "sleep",
+      "frame": 0,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/sleep/00.png",
+      "source_size": [
+        591,
+        887
+      ],
+      "output_size": [
+        591,
+        887
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "8d0ce6f2c3fd545e79994e0ae0713c4cded8374346d4c56f65e156ee28691430",
+      "output_rgb_sha256": "8d0ce6f2c3fd545e79994e0ae0713c4cded8374346d4c56f65e156ee28691430",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          245.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 386758,
+      "cleared_pixels": 386202,
+      "retained_pixels": 138015
+    },
+    {
+      "character": "mira",
+      "action": "sleep",
+      "frame": 1,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/sleep/01.png",
+      "source_size": [
+        592,
+        887
+      ],
+      "output_size": [
+        592,
+        887
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "adb12164cdc13aafe6fd51a48e2ff2ec501377ff219b159adc05761827f8570d",
+      "output_rgb_sha256": "adb12164cdc13aafe6fd51a48e2ff2ec501377ff219b159adc05761827f8570d",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 386351,
+      "cleared_pixels": 385130,
+      "retained_pixels": 139974
+    },
+    {
+      "character": "mira",
+      "action": "sleep",
+      "frame": 2,
+      "mode": "equal_grid_crop",
+      "source": "frame_alpha_input/mira/sleep/02.png",
+      "source_size": [
+        591,
+        887
+      ],
+      "output_size": [
+        591,
+        887
+      ],
+      "source_edge_contacts": {},
+      "retained_rgb_sha256": "544cf4214652c67105ad2119918dcd4cb55d8e2619af94e137fee2b89e4ebcd9",
+      "output_rgb_sha256": "544cf4214652c67105ad2119918dcd4cb55d8e2619af94e137fee2b89e4ebcd9",
+      "retained_rgb_byte_identical": true,
+      "geometric_exclusions": [],
+      "checker_centers": [
+        [
+          244.0,
+          244.0,
+          244.0
+        ],
+        [
+          254.0,
+          254.0,
+          254.0
+        ]
+      ],
+      "background_candidates": 386928,
+      "cleared_pixels": 386103,
+      "retained_pixels": 138114
+    }
+  ]
+}

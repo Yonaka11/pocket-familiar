@@ -11,10 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 DRAWABLE = ROOT / "app" / "src" / "main" / "res" / "drawable-nodpi"
 
 EXPECTED = {
-    "emi": {"idle": 4, "walk": 4, "run": 4, "jump_land": 4, "special": 4, "recover": 3, "sleep": 2},
-    "kaelani": {"idle": 4, "walk": 4, "run": 4, "jump_land": 4, "special": 4, "happy": 3, "sleep": 2},
-    "mira": {"idle": 4, "walk": 4, "run": 4, "jump_land": 4, "special": 4, "happy": 3, "sleep": 2},
+    "emi": {"idle": 4, "walk": 6, "run": 6, "jump_land": 4, "special": 6, "recover": 4, "sleep": 3},
+    "kaelani": {"idle": 4, "walk": 6, "run": 6, "jump_land": 4, "special": 6, "happy": 4, "sleep": 3},
+    "mira": {"idle": 4, "walk": 6, "run": 6, "jump_land": 4, "special": 6, "happy": 4, "sleep": 3},
 }
+
+EXPECTED_CELL_SIZE = 200
+MIN_EDGE_MARGIN = 2
 
 
 def load_rgba(path: Path) -> Image.Image:
@@ -52,6 +55,12 @@ def main() -> int:
                     f"expected {frames} square cells"
                 )
                 continue
+            if height != EXPECTED_CELL_SIZE:
+                errors.append(
+                    f"bad cell size {path.relative_to(ROOT)}: {height}px; "
+                    f"expected {EXPECTED_CELL_SIZE}px"
+                )
+                continue
 
             action_file_digests[action] = sha256(path.read_bytes()).hexdigest()
             cell_width = width // frames
@@ -64,6 +73,25 @@ def main() -> int:
                     errors.append(
                         f"blank animation cell {path.relative_to(ROOT)} frame {index + 1}/{frames}"
                     )
+                else:
+                    left, top, right, bottom = alpha.getbbox()
+                    if (
+                        left < MIN_EDGE_MARGIN
+                        or top < MIN_EDGE_MARGIN
+                        or right > cell_width - MIN_EDGE_MARGIN
+                        or bottom > height - MIN_EDGE_MARGIN
+                    ):
+                        errors.append(
+                            f"clipped/unsafe edge margin {path.relative_to(ROOT)} "
+                            f"frame {index + 1}/{frames}: alpha bounds "
+                            f"{(left, top, right, bottom)}"
+                        )
+                    opaque_pixels = alpha.histogram()[255]
+                    if opaque_pixels > int(cell_width * height * 0.9):
+                        errors.append(
+                            f"likely opaque background {path.relative_to(ROOT)} "
+                            f"frame {index + 1}/{frames}"
+                        )
                 frame_digests.append(frame_digest(frame))
 
             unique_frames = len(set(frame_digests))
