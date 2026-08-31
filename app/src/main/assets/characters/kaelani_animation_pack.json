@@ -5,12 +5,12 @@
   "format": "horizontal_strips",
   "animations": {
     "idle": {"resource": "kaelani_anim_idle", "frames": 4, "frameMs": 360, "loop": true},
-    "walk": {"resource": "kaelani_anim_walk", "frames": 4, "frameMs": 165, "loop": true},
-    "run": {"resource": "kaelani_anim_run", "frames": 4, "frameMs": 112, "loop": true},
+    "walk": {"resource": "kaelani_anim_walk", "frames": 6, "frameMs": 165, "loop": true},
+    "run": {"resource": "kaelani_anim_run", "frames": 6, "frameMs": 112, "loop": true},
     "jump_land": {"resource": "kaelani_anim_jump_land", "frames": 4, "frameMs": 135, "loop": false},
-    "special": {"resource": "kaelani_anim_special", "frames": 4, "frameMs": 175, "loop": false},
-    "happy": {"resource": "kaelani_anim_happy", "frames": 3, "frameMs": 260, "loop": false},
-    "sleep": {"resource": "kaelani_anim_sleep", "frames": 2, "frameMs": 760, "loop": true}
+    "special": {"resource": "kaelani_anim_special", "frames": 6, "frameMs": 175, "loop": false},
+    "happy": {"resource": "kaelani_anim_happy", "frames": 4, "frameMs": 260, "loop": false},
+    "sleep": {"resource": "kaelani_anim_sleep", "frames": 3, "frameMs": 760, "loop": true}
   },
   "motionRules": [
     "Movement flows through curls, sleeves, skirt panels and jewelry with overlap and follow-through.",

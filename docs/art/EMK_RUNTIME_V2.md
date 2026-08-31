@@ -26,13 +26,13 @@ Expected files:
 
 | File | Frames | Runtime use |
 | --- | ---: | --- |
-| `emi_anim_idle.webp` | 4 | idle breathing, glance, blink |
-| `emi_anim_walk.webp` | 4 | full walk cycle |
-| `emi_anim_run.webp` | 4 | full run cycle |
-| `emi_anim_jump_land.webp` | 4 | anticipation → airborne → landing → recovery |
-| `emi_anim_special.webp` | 4 | Glitch Sovereign / electric special |
-| `emi_anim_recover.webp` | 3 | hurt → brace → recover |
-| `emi_anim_sleep.webp` | 2 | settle → breathing/rest |
+| `emi_anim_idle.png` | 4 | idle breathing, glance, blink |
+| `emi_anim_walk.png` | 6 | full walk cycle |
+| `emi_anim_run.png` | 6 | full run cycle |
+| `emi_anim_jump_land.png` | 4 | anticipation → airborne → landing → recovery |
+| `emi_anim_special.png` | 6 | Glitch Sovereign / electric special |
+| `emi_anim_recover.png` | 4 | hurt → brace → recover |
+| `emi_anim_sleep.png` | 3 | settle → breathing/rest |
 
 Timing target: idle 240–360 ms/frame, walk 120–165 ms/frame, run 80–115 ms/frame, special 110–180 ms/frame.
 
@@ -44,13 +44,13 @@ Expected files:
 
 | File | Frames | Runtime use |
 | --- | ---: | --- |
-| `kaelani_anim_idle.webp` | 4 | breathing, hair settling, blink |
-| `kaelani_anim_walk.webp` | 4 | flowing walk cycle |
-| `kaelani_anim_run.webp` | 4 | controlled run cycle |
-| `kaelani_anim_jump_land.webp` | 4 | lift → airborne → land → settle |
-| `kaelani_anim_special.webp` | 4 | Blooming Grace / lotus sequence |
-| `kaelani_anim_happy.webp` | 3 | gentle happy / affectionate reaction |
-| `kaelani_anim_sleep.webp` | 2 | seated/rest → sleep |
+| `kaelani_anim_idle.png` | 4 | breathing, hair settling, blink |
+| `kaelani_anim_walk.png` | 6 | flowing walk cycle |
+| `kaelani_anim_run.png` | 6 | controlled run cycle |
+| `kaelani_anim_jump_land.png` | 4 | lift → airborne → land → settle |
+| `kaelani_anim_special.png` | 6 | Blooming Grace / lotus sequence |
+| `kaelani_anim_happy.png` | 4 | gentle happy / affectionate reaction |
+| `kaelani_anim_sleep.png` | 3 | seated/rest → sleep |
 
 Timing target: idle 280–400 ms/frame, walk 135–175 ms/frame, run 95–125 ms/frame, special 150–220 ms/frame.
 
@@ -62,13 +62,13 @@ Expected files:
 
 | File | Frames | Runtime use |
 | --- | ---: | --- |
-| `mira_anim_idle.webp` | 4 | breathing, glance, blink |
-| `mira_anim_walk.webp` | 4 | careful walk cycle |
-| `mira_anim_run.webp` | 4 | hurried scholar run |
-| `mira_anim_jump_land.webp` | 4 | crouch → jump → land → recover |
-| `mira_anim_special.webp` | 4 | Arcanist's Page / book-and-glyph sequence |
-| `mira_anim_happy.webp` | 3 | curious/thinking/happy reaction |
-| `mira_anim_sleep.webp` | 2 | book-stack rest → blanket sleep |
+| `mira_anim_idle.png` | 4 | breathing, glance, blink |
+| `mira_anim_walk.png` | 6 | careful walk cycle |
+| `mira_anim_run.png` | 6 | hurried scholar run |
+| `mira_anim_jump_land.png` | 4 | crouch → jump → land → recover |
+| `mira_anim_special.png` | 6 | Arcanist's Page / book-and-glyph sequence |
+| `mira_anim_happy.png` | 4 | curious/thinking/happy reaction |
+| `mira_anim_sleep.png` | 3 | book-stack rest → blanket sleep |
 
 Timing target: idle 300–420 ms/frame, walk 145–185 ms/frame, run 100–135 ms/frame, special 150–230 ms/frame.
 
@@ -88,24 +88,24 @@ The runtime should not apply procedural bobbing to a character while a genuine m
 
 ## Reproducible exporter
 
-`tools/build_emk_runtime_assets.py` contains the crop map for the supplied character sheets and exports the runtime strips deterministically.
+`tools/ingest_emk_action_sheets.py` splits approved transparent action sheets into individual frames. `tools/build_emk_runtime_assets.py` then normalizes those frames and exports the runtime strips deterministically.
 
-Place the locked source files at:
+The current approved production sheets arrived with a baked checkerboard. Their one-time recovery is implemented by `tools/extract_emk_checkerboard_frames.py`: it clears only spatially matched, edge-connected checker pixels, preserves retained RGB bytes exactly, and records the four individually reviewed geometric exclusions in `docs/art/EMK_BACKGROUND_EXTRACTION_AUDIT.json`. It does not recolor, rescale, redraw, or substitute character art. This recovery path is not a replacement for receiving true-alpha source sheets.
+
+Place the approved transparent action sheets at:
 
 ```text
-art_source/emi_character_sheet.png
-art_source/kaelani_character_sheet.png
-art_source/mira_character_sheet.png
-art_source/episode0_storyboard_page1.png
-art_source/episode0_storyboard_page2.png
-art_source/episode0_storyboard_page3.png
+animation_work/generated/<character>/<action>_sheet.png
 ```
 
 Then run:
 
 ```bash
-python -m pip install pillow numpy
+python -m pip install pillow
+python tools/ingest_emk_action_sheets.py
 python tools/build_emk_runtime_assets.py
 ```
+
+For the audited one-time checkerboard recovery, install `numpy`, `scipy`, and `pillow`, then run `tools/extract_emk_checkerboard_frames.py` before the strip builder. The builder verifies each PNG before and after publishing it via an atomic rename, preventing partially written runtime strips.
 
 The generated binary art is intentionally separate from the showcase/reference sheets. The showcase art remains useful as a character bible, but presentation sheets must never be sliced directly by the Android runtime.
